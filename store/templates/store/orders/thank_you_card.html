@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Thank You — Cladly{% endblock %}
+{% block content %}
+<div style="padding:40px 16px;display:flex;flex-direction:column;align-items:center;">
+  <div class="thank-you-card">
+    <div style="position:absolute;top:16px;right:16px;font-size:20px;opacity:0.3;">✦</div>
+    <div style="position:absolute;bottom:16px;left:16px;font-size:16px;opacity:0.2;">✦</div>
+
+    <div class="ty-logo">Cladly</div>
+    <div style="font-size:10px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:24px;">Premium Fashion Accessories</div>
+
+    <div style="font-size:48px;margin-bottom:16px;">💝</div>
+    <h1 class="ty-title">Thank You!</h1>
+    <p class="ty-message">
+      Thank you for shopping with <strong style="color:var(--gold)">Cladly</strong>.<br>
+      We hope you love your new piece as much as we loved curating it for you. ✨
+    </p>
+
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Order: <strong style="color:var(--gold)">{{ order.order_id }}</strong></div>
+
+    <div class="ty-coupon">
+      <div class="ty-coupon-label">Your next purchase discount</div>
+      <div class="ty-coupon-code">CLADLY10</div>
+      <div class="ty-coupon-value">10% off on your next order · Valid 30 days</div>
+    </div>
+
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">
+      Share your look with us on Instagram!<br>
+      <strong style="color:var(--gold)">@cladly.in</strong>
+    </div>
+
+    <!-- Fake QR code placeholder -->
+    <div style="width:80px;height:80px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-muted);">QR</div>
+
+    <div style="font-size:11px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;">With love from Cladly 🖤</div>
+  </div>
+
+  <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;justify-content:center;">
+    <button onclick="window.print()" class="btn btn-gold">🖨️ Print / Save Card</button>
+    <a href="{% url 'product_list' %}" class="btn btn-outline">Continue Shopping →</a>
+  </div>
+</div>
+
+<style>
+@media print {
+  .navbar, .category-nav, .mobile-bottom-nav, footer, .btn { display:none !important; }
+  .thank-you-card { box-shadow:none; border:2px solid #C9A84C; }
+}
+</style>
+{% endblock %}

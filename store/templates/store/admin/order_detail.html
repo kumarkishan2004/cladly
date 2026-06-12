@@ -1,0 +1,128 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}Order {{ order.order_id }} — Cladly Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">Order {{ order.order_id }}</div>
+  <a href="{% url 'admin_orders' %}" class="btn btn-dark btn-sm">← Back to Orders</a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 360px;gap:20px;">
+  <div>
+    <!-- Items -->
+    <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
+      <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:16px;">Items ({{ order.items.count }})</h3>
+      {% for item in order.items.all %}
+        <div style="display:flex;gap:14px;align-items:center;{% if not forloop.last %}border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:14px;{% endif %}">
+          {% if item.product_image %}
+            <img src="{{ item.product_image }}" style="width:56px;height:56px;border-radius:var(--radius-sm);object-fit:cover;">
+          {% else %}
+            <div style="width:56px;height:56px;border-radius:var(--radius-sm);background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text-muted);">✦</div>
+          {% endif %}
+          <div style="flex:1;">
+            <div style="font-weight:500;">{{ item.product_name }}</div>
+            <div style="font-size:12px;color:var(--text-muted);">Qty: {{ item.quantity }} × ₹{{ item.price|floatformat:0 }}</div>
+          </div>
+          <div style="font-weight:700;color:var(--gold);">₹{{ item.subtotal|floatformat:0 }}</div>
+        </div>
+      {% endfor %}
+
+      <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
+          <span style="color:var(--text-muted);">Subtotal</span><span>₹{{ order.subtotal|floatformat:0 }}</span>
+        </div>
+        {% if order.discount_amount > 0 %}
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
+            <span style="color:var(--text-muted);">Discount ({{ order.coupon_code }})</span>
+            <span style="color:var(--success);">− ₹{{ order.discount_amount|floatformat:0 }}</span>
+          </div>
+        {% endif %}
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
+          <span style="color:var(--text-muted);">Delivery</span>
+          <span>{% if order.delivery_charge == 0 %}<span style="color:var(--success)">FREE</span>{% else %}₹{{ order.delivery_charge|floatformat:0 }}{% endif %}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;margin-top:8px;">
+          <span>Grand Total</span><span style="color:var(--gold);">₹{{ order.grand_total|floatformat:0 }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivery Address -->
+    <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
+      <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:12px;">Delivery Address</h3>
+      <div style="font-size:13px;line-height:2;color:var(--text-secondary);">
+        <div style="font-weight:600;color:var(--text-primary);font-size:15px;">{{ order.delivery_name }}</div>
+        <div>📞 {{ order.delivery_mobile }}</div>
+        <div>{{ order.delivery_address }}</div>
+        {% if order.delivery_college %}<div>🎓 {{ order.delivery_college }}</div>{% endif %}
+        {% if order.delivery_hostel %}<div>🏠 {{ order.delivery_hostel }}{% if order.delivery_room %}, Room {{ order.delivery_room }}{% endif %}</div>{% endif %}
+        <div>{{ order.delivery_city }} — {{ order.delivery_pincode }}</div>
+      </div>
+    </div>
+
+    <!-- Status History -->
+    <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+      <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:16px;">Status History</h3>
+      {% for history in order.status_history.all %}
+        <div style="display:flex;gap:14px;align-items:flex-start;{% if not forloop.last %}border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px;{% endif %}">
+          <div style="width:8px;height:8px;background:var(--gold);border-radius:50%;margin-top:5px;flex-shrink:0;"></div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:13px;">{{ history.status|title }}</div>
+            {% if history.note %}<div style="font-size:12px;color:var(--text-muted);">{{ history.note }}</div>{% endif %}
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;">{{ history.updated_at|date:"d M Y, h:i A" }}</div>
+        </div>
+      {% empty %}
+        <p style="color:var(--text-muted);font-size:13px;">No history yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div>
+    <!-- Current Status -->
+    <div style="background:var(--black-card);border:1px solid var(--border-gold);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
+      <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:16px;">Update Status</h3>
+      <div style="margin-bottom:12px;">
+        <span style="font-size:13px;color:var(--text-muted);">Current:</span>
+        <span class="status-badge status-{{ order.status }}" style="margin-left:8px;">{{ order.get_status_display }}</span>
+      </div>
+      <form method="post" action="{% url 'admin_update_order_status' order.order_id %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">New Status</label>
+          <select name="status" class="form-control">
+            {% for val, label in status_choices %}
+              <option value="{{ val }}" {% if order.status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Note (optional)</label>
+          <textarea name="note" class="form-control" rows="2" placeholder="Add a note for the customer…"></textarea>
+        </div>
+        <button type="submit" class="btn btn-gold btn-full">Update Status</button>
+      </form>
+    </div>
+
+    <!-- Order Info -->
+    <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+      <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:12px;">Order Info</h3>
+      <div style="font-size:13px;line-height:2;color:var(--text-secondary);">
+        <div>Order ID: <span style="color:var(--text-primary);">{{ order.order_id }}</span></div>
+        <div>Placed: <span style="color:var(--text-primary);">{{ order.placed_at|date:"d M Y, h:i A" }}</span></div>
+        <div>Payment: <span style="color:var(--text-primary);">{{ order.get_payment_method_display }}</span></div>
+        <div>Paid: <span style="color:{% if order.payment_status %}var(--success){% else %}var(--warning){% endif %}">{% if order.payment_status %}Yes{% else %}Pending{% endif %}</span></div>
+        {% if order.expected_delivery %}
+          <div>Expected: <span style="color:var(--text-primary);">{{ order.expected_delivery|date:"d M Y" }}</span></div>
+        {% endif %}
+        {% if order.user %}
+          <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;">
+            Customer: <span style="color:var(--gold);">{{ order.user.full_name }}</span><br>
+            <span style="color:var(--text-muted);">{{ order.user.email }}</span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

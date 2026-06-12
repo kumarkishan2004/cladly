@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin — Cladly{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'store/css/main.css' %}">
+</head>
+<body style="padding-bottom:0;">
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="django-message" data-type="{{ message.tags }}" style="display:none">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <a href="{% url 'admin_dashboard' %}" class="admin-logo">Cladly Admin</a>
+
+    <a href="{% url 'admin_dashboard' %}" class="admin-nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+      <span class="admin-nav-icon">📊</span> Dashboard
+    </a>
+    <a href="{% url 'admin_orders' %}" class="admin-nav-item {% if 'admin_order' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="admin-nav-icon">📦</span> Orders
+    </a>
+    <a href="{% url 'admin_products' %}" class="admin-nav-item {% if 'admin_product' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="admin-nav-icon">✦</span> Products
+    </a>
+    <a href="{% url 'admin_categories' %}" class="admin-nav-item {% if 'admin_categor' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="admin-nav-icon">🗂️</span> Categories
+    </a>
+    <a href="{% url 'admin_coupons' %}" class="admin-nav-item {% if 'admin_coupon' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="admin-nav-icon">🏷️</span> Coupons
+    </a>
+    <a href="{% url 'admin_banners' %}" class="admin-nav-item {% if 'admin_banner' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="admin-nav-icon">🖼️</span> Banners
+    </a>
+    <a href="{% url 'admin_customers' %}" class="admin-nav-item {% if 'admin_customer' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="admin-nav-icon">👥</span> Customers
+    </a>
+    <a href="{% url 'admin_reviews' %}" class="admin-nav-item {% if 'admin_review' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="admin-nav-icon">⭐</span> Reviews
+    </a>
+
+    <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
+    <a href="{% url 'home' %}" class="admin-nav-item">
+      <span class="admin-nav-icon">🏠</span> View Store
+    </a>
+    <a href="{% url 'logout' %}" class="admin-nav-item" style="color:var(--error);">
+      <span class="admin-nav-icon">🚪</span> Logout
+    </a>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    {% block admin_content %}{% endblock %}
+  </main>
+</div>
+
+<script src="{% static 'store/js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

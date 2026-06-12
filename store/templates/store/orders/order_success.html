@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Order Placed! — Cladly{% endblock %}
+{% block content %}
+<div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:40px 16px;">
+  <div style="text-align:center;max-width:480px;">
+    <div style="font-size:64px;margin-bottom:16px;animation:bounce 1s ease;">🎉</div>
+    <h1 style="font-family:var(--font-display);font-size:2rem;color:var(--gold);margin-bottom:8px;">Order Placed!</h1>
+    <p style="color:var(--text-secondary);font-size:15px;margin-bottom:24px;">
+      Thank you for your order. We'll get it to you super fast! ✨
+    </p>
+    <div style="background:var(--black-card);border:1px solid var(--border-gold);border-radius:var(--radius-lg);padding:20px;margin-bottom:24px;">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Order ID</div>
+      <div style="font-size:1.4rem;font-weight:700;color:var(--gold);letter-spacing:2px;">{{ order.order_id }}</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">
+        Expected delivery: <strong>{{ order.expected_delivery|date:"D, d M Y" }}</strong>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+      <a href="{% url 'order_detail' order.order_id %}" class="btn btn-gold">Track Order →</a>
+      <a href="{% url 'thank_you_card' order.order_id %}" class="btn btn-outline">Thank You Card 🎁</a>
+      <a href="{% url 'product_list' %}" class="btn btn-dark">Continue Shopping</a>
+    </div>
+  </div>
+</div>
+<style>@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}</style>
+{% endblock %}

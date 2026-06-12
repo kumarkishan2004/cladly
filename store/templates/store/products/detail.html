@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} — Cladly{% endblock %}
+{% block meta_desc %}{{ product.description|truncatewords:20 }}{% endblock %}
+
+{% block content %}
+<div class="product-detail container" style="padding-top:20px;">
+
+  <!-- Breadcrumb -->
+  <nav style="font-size:13px;color:var(--text-muted);margin-bottom:20px;display:flex;gap:8px;align-items:center;">
+    <a href="{% url 'home' %}" style="color:var(--text-muted);">Home</a>
+    <span>›</span>
+    {% if product.category %}
+      <a href="{% url 'category_products' product.category.slug %}" style="color:var(--text-muted);">{{ product.category.name }}</a>
+      <span>›</span>
+    {% endif %}
+    <span style="color:var(--text-primary);">{{ product.name|truncatechars:40 }}</span>
+  </nav>
+
+  <div class="product-detail-grid">
+    <!-- Gallery -->
+    <div class="product-gallery">
+      <div class="gallery-main">
+        {% with img=product.primary_image %}
+          <img id="gallery-main-img"
+               src="{% if img and img.image %}{{ img.image.url }}{% else %}{% static 'store/images/placeholder.jpg' %}{% endif %}"
+               alt="{{ product.name }}">
+        {% endwith %}
+      </div>
+      {% if product.images.count > 1 %}
+        <div class="gallery-thumbs">
+          {% for img in product.images.all %}
+            <div class="gallery-thumb {% if forloop.first %}active{% endif %}"
+                 data-full="{{ img.image.url }}">
+              <img src="{{ img.image.url }}" alt="{{ product.name }} view {{ forloop.counter }}">
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Product Info -->
+    <div class="product-info-panel">
+      {% if product.category %}
+        <div class="product-category-tag">{{ product.category.name }}</div>
+      {% endif %}
+
+      <h1 class="product-detail-name">{{ product.name }}</h1>
+
+      {% with avg=product.average_rating count=product.review_count %}
+      {% if count > 0 %}
+        <div class="product-rating-row">
+          <div class="stars">
+            {% for i in "12345" %}{% if forloop.counter <= avg %}★{% else %}☆{% endif %}{% endfor %}
+          </div>
+          <span style="color:var(--gold);font-weight:600;font-size:14px;">{{ avg }}</span>
+          <span class="rating-count">({{ count }} review{{ count|pluralize }})</span>
+        </div>
+      {% endif %}
+      {% endwith %}
+
+      <div class="product-detail-price">
+        <span class="price-big">₹{{ product.selling_price|floatformat:0 }}</span>
+        {% if product.discount_percent > 0 %}
+          <span class="price-orig-big">₹{{ product.original_price|floatformat:0 }}</span>
+          <span class="price-disc-big">{{ product.discount_percent }}% OFF</span>
+        {% endif %}
+      </div>
+
+      <!-- Stock Status -->
+      {% if product.stock_status == 'in_stock' %}
+        <p style="font-size:13px;color:var(--success);margin-bottom:12px;">✓ In Stock</p>
+      {% elif product.stock_status == 'low_stock' %}
+        <p style="font-size:13px;color:var(--warning);margin-bottom:12px;">⚡ Only a few left!</p>
+      {% else %}
+        <p style="font-size:13px;color:var(--error);margin-bottom:12px;">✕ Out of Stock</p>
+      {% endif %}
+
+      <!-- Delivery Info -->
+      <div class="delivery-info">
+        <span class="delivery-icon">🚀</span>
+        <div>
+          <div style="font-weight:600;font-size:14px;">
+            {% if product.delivery_days == 0 or product.delivery_days == 1 %}Same-day delivery available
+            {% else %}Delivery in {{ product.delivery_days }} day{{ product.delivery_days|pluralize }}{% endif %}
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);">On-campus & city delivery · Premium packaging</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="detail-buttons">
+        {% if product.stock_status != 'out_of_stock' %}
+          <button class="btn btn-gold"
+                  data-add-cart="{{ product.id }}"
+                  data-qty="1">
+            🛍 Add to Cart
+          </button>
+          <a href="{% url 'cart' %}" class="btn btn-outline"
+             onclick="
+               fetch('/cart/add/{{ product.id }}/',{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest','X-CSRFToken':'{{ csrf_token }}'},body:new URLSearchParams({quantity:1,csrfmiddlewaretoken:'{{ csrf_token }}'})})
+             ">
+            Buy Now
+          </a>
+        {% else %}
+          <button class="btn btn-dark" disabled style="opacity:0.5;">Out of Stock</button>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+          <button class="btn btn-dark btn-icon product-wishlist-btn {% if product.id in wishlist_ids %}active{% endif %}"
+                  data-wishlist="{{ product.id }}"
+                  style="flex-shrink:0;font-size:20px;">
+            {% if product.id in wishlist_ids %}♥{% else %}♡{% endif %}
+          </button>
+        {% endif %}
+      </div>
+
+      <!-- Product Meta -->
+      <div class="product-meta">
+        {% if product.material %}
+          <div class="meta-row">
+            <span class="meta-label">Material</span>
+            <span class="meta-value">{{ product.material }}</span>
+          </div>
+        {% endif %}
+        {% if product.color %}
+          <div class="meta-row">
+            <span class="meta-label">Color</span>
+            <span class="meta-value">{{ product.color }}</span>
+          </div>
+        {% endif %}
+        {% if product.category %}
+          <div class="meta-row">
+            <span class="meta-label">Category</span>
+            <span class="meta-value">{{ product.category.name }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Description -->
+      {% if product.description %}
+        <div class="product-description">
+          <h4>About this piece</h4>
+          <p>{{ product.description }}</p>
+        </div>
+      {% endif %}
+
+      <!-- Coupons hint -->
+      <div style="background:rgba(201,168,76,0.08);border:1px dashed var(--border-gold);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text-secondary);">
+        🏷️ Use code <strong style="color:var(--gold)">CLADLY10</strong> for 10% off your first order
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="reviews-section" style="max-width:900px;margin:40px auto 0;">
+    <div class="section-header" style="text-align:left;">
+      <div class="section-eyebrow">Customer feedback</div>
+      <h2 class="section-title">Reviews</h2>
+    </div>
+
+    {% if can_review and not user_review %}
+      <div style="background:var(--black-card);border:1px solid var(--border-gold);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;">
+        <h4 style="color:var(--gold);margin-bottom:16px;">Write a Review</h4>
+        <form method="post" action="{% url 'submit_review' product.slug %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="form-label">Rating</label>
+            {{ review_form.rating }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            {{ review_form.title }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Review</label>
+            {{ review_form.content }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Photo (optional)</label>
+            {{ review_form.image }}
+          </div>
+          <button type="submit" class="btn btn-gold btn-sm">Submit Review</button>
+        </form>
+      </div>
+    {% elif not user.is_authenticated %}
+      <div class="alert alert-info" style="margin-bottom:16px;">
+        <a href="{% url 'login' %}?next={{ request.path }}" style="color:inherit;font-weight:600;">Login</a> to write a review after purchase.
+      </div>
+    {% endif %}
+
+    {% if reviews %}
+      {% for review in reviews %}
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-avatar">{{ review.user.full_name|first|upper }}</div>
+            <div style="flex:1;">
+              <div class="reviewer-name">{{ review.user.full_name }}</div>
+              <div class="review-stars">
+                {% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}
+              </div>
+            </div>
+            <div class="review-date">{{ review.created_at|date:"M d, Y" }}</div>
+          </div>
+          {% if review.title %}
+            <div style="font-weight:600;font-size:14px;margin-bottom:6px;">{{ review.title }}</div>
+          {% endif %}
+          <p class="review-content">{{ review.content }}</p>
+          {% if review.image %}
+            <img src="{{ review.image.url }}" alt="Review photo" style="max-width:200px;border-radius:var(--radius-sm);margin-top:10px;">
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">⭐</div>
+        <div class="empty-title">No reviews yet</div>
+        <div class="empty-text">Be the first to review this piece</div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Related Products -->
+  {% if related_products %}
+    <section class="products-section" style="padding:40px 0 0;">
+      <div class="section-header">
+        <div class="section-eyebrow">You may also like</div>
+        <h2 class="section-title">Related Products</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div class="products-grid">
+        {% for product in related_products %}
+          {% include 'store/includes/product_card.html' %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+</div>
+{% endblock %}

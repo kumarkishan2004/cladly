@@ -1,0 +1,94 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}{{ action }} Product — Cladly Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">{{ action }} Product</div>
+  <a href="{% url 'admin_products' %}" class="btn btn-dark btn-sm">← Back</a>
+</div>
+
+<div style="max-width:800px;">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="form-group" style="grid-column:1/-1;">
+        <label class="form-label">Product Name</label>{{ form.name }}
+      </div>
+      <div class="form-group" style="grid-column:1/-1;">
+        <label class="form-label">Slug (URL)</label>{{ form.slug }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>{{ form.category }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Color</label>{{ form.color }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Original Price (₹)</label>{{ form.original_price }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Selling Price (₹)</label>{{ form.selling_price }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stock Quantity</label>{{ form.stock_quantity }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Material</label>{{ form.material }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Delivery Days</label>{{ form.delivery_days }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags</label>{{ form.tags }}
+      </div>
+      <div class="form-group" style="grid-column:1/-1;">
+        <label class="form-label">Description</label>{{ form.description }}
+      </div>
+
+      <!-- Images -->
+      <div class="form-group" style="grid-column:1/-1;">
+        <label class="form-label">Product Images (select multiple)</label>
+        <input type="file" name="images" multiple accept="image/*" class="form-control">
+        {% if product %}
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+            {% for img in product.images.all %}
+              <div style="position:relative;">
+                <img src="{{ img.image.url }}" style="width:80px;height:80px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);">
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Toggles -->
+      <div style="grid-column:1/-1;display:flex;gap:24px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">{{ form.is_active }} Active</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">{{ form.is_new_arrival }} New Arrival</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">{{ form.is_best_seller }} Best Seller</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">{{ form.is_featured }} Featured</label>
+      </div>
+    </div>
+
+    {% if form.errors %}
+      <div class="alert alert-error" style="margin-top:12px;">Please fix the errors above.</div>
+    {% endif %}
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button type="submit" class="btn btn-gold">{{ action }} Product</button>
+      <a href="{% url 'admin_products' %}" class="btn btn-dark">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+// Auto-generate slug from name
+document.querySelector('[name=name]')?.addEventListener('input', function() {
+  const slug = document.querySelector('[name=slug]');
+  if (slug && !slug.dataset.manual) {
+    slug.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  }
+});
+document.querySelector('[name=slug]')?.addEventListener('input', function() {
+  this.dataset.manual = '1';
+});
+</script>
+{% endblock %}

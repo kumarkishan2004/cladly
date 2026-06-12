@@ -1,0 +1,56 @@
+{% load static %}
+{% with img=product.primary_image %}
+<div class="product-card">
+  <div class="product-image-wrap">
+    <a href="{% url 'product_detail' product.slug %}">
+      {% if img and img.image %}
+        <img src="{{ img.image.url }}" alt="{{ product.name }}" loading="lazy">
+      {% else %}
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:2rem;">✦</div>
+      {% endif %}
+    </a>
+
+    {% if product.discount_percent > 0 %}
+      <span class="product-badge">{{ product.discount_percent }}% OFF</span>
+    {% elif product.is_new_arrival %}
+      <span class="product-badge new">NEW</span>
+    {% elif product.is_best_seller %}
+      <span class="product-badge hot">HOT</span>
+    {% endif %}
+
+    <button class="product-wishlist-btn {% if product.id in wishlist_ids %}active{% endif %}"
+            data-wishlist="{{ product.id }}"
+            data-guest="{% if not request.user.is_authenticated %}true{% else %}false{% endif %}"
+            aria-label="{% if product.id in wishlist_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
+      {% if product.id in wishlist_ids %}♥{% else %}♡{% endif %}
+    </button>
+  </div>
+
+  <div class="product-info">
+    <a href="{% url 'product_detail' product.slug %}">
+      <div class="product-name">{{ product.name }}</div>
+    </a>
+    <div class="product-pricing">
+      <span class="price-current">₹{{ product.selling_price|floatformat:0 }}</span>
+      {% if product.discount_percent > 0 %}
+        <span class="price-original">₹{{ product.original_price|floatformat:0 }}</span>
+        <span class="price-discount">{{ product.discount_percent }}% off</span>
+      {% endif %}
+    </div>
+    <div class="product-actions">
+      {% if product.stock_status == 'out_of_stock' %}
+        <button class="btn-add-cart" disabled style="opacity:0.5;cursor:not-allowed;">Out of Stock</button>
+      {% else %}
+        <button class="btn-add-cart"
+                data-add-cart="{{ product.id }}"
+                data-qty="1">
+          {% if product.stock_status == 'low_stock' %}
+            <span class="stock-badge stock-low" style="margin-right:4px;">Low Stock</span>
+          {% endif %}
+          Add to Cart
+        </button>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endwith %}

@@ -1,0 +1,131 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}Dashboard — Cladly Admin{% endblock %}
+
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">Dashboard</div>
+  <div style="font-size:13px;color:var(--text-muted);">Welcome back, {{ request.user.full_name }} 👋</div>
+</div>
+
+<!-- Revenue Stats -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-card-icon">💰</div>
+    <div class="stat-card-label">Today's Revenue</div>
+    <div class="stat-card-value">₹{{ daily_revenue|floatformat:0 }}</div>
+    <div class="stat-card-sub">{{ daily_orders }} orders today</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icon">📈</div>
+    <div class="stat-card-label">This Week</div>
+    <div class="stat-card-value">₹{{ weekly_revenue|floatformat:0 }}</div>
+    <div class="stat-card-sub">{{ weekly_orders }} orders</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icon">📅</div>
+    <div class="stat-card-label">This Month</div>
+    <div class="stat-card-value">₹{{ monthly_revenue|floatformat:0 }}</div>
+    <div class="stat-card-sub">{{ monthly_orders }} orders</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icon">🏆</div>
+    <div class="stat-card-label">Total Revenue</div>
+    <div class="stat-card-value">₹{{ total_revenue|floatformat:0 }}</div>
+    <div class="stat-card-sub">{{ total_orders }} total orders</div>
+  </div>
+</div>
+
+<!-- Quick Stats Row -->
+<div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+  <div class="stat-card">
+    <div class="stat-card-label">Total Customers</div>
+    <div class="stat-card-value">{{ total_customers }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-label">Active Products</div>
+    <div class="stat-card-value">{{ total_products }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-label">Pending Orders</div>
+    <div class="stat-card-value" style="color:var(--warning);">{{ pending_orders }}</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+  <!-- Best Sellers -->
+  <div>
+    <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:12px;">🏆 Best Sellers</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Product</th><th>Sold</th></tr></thead>
+        <tbody>
+          {% for item in best_sellers %}
+            <tr>
+              <td style="font-weight:500;">{{ item.product__name|default:"Deleted"|truncatechars:30 }}</td>
+              <td style="color:var(--gold);font-weight:700;">{{ item.total_sold }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="2" style="text-align:center;color:var(--text-muted);">No sales yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Stock Alerts -->
+  <div>
+    <h3 style="font-family:var(--font-display);color:var(--warning);margin-bottom:12px;">⚠️ Stock Alerts</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Product</th><th>Stock</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for p in low_stock %}
+            <tr>
+              <td>{{ p.name|truncatechars:25 }}</td>
+              <td>{{ p.stock_quantity }}</td>
+              <td><span class="status-badge" style="background:rgba(224,160,80,0.15);color:var(--warning);">Low Stock</span></td>
+            </tr>
+          {% endfor %}
+          {% for p in out_of_stock %}
+            <tr>
+              <td>{{ p.name|truncatechars:25 }}</td>
+              <td>0</td>
+              <td><span class="status-badge" style="background:rgba(224,80,80,0.15);color:var(--error);">Out of Stock</span></td>
+            </tr>
+          {% endfor %}
+          {% if not low_stock and not out_of_stock %}
+            <tr><td colspan="3" style="text-align:center;color:var(--success);">✓ All products in stock</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Orders -->
+<h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:12px;">📦 Recent Orders</h3>
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Order ID</th><th>Customer</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in recent_orders %}
+        <tr>
+          <td style="color:var(--gold);font-weight:600;">{{ order.order_id }}</td>
+          <td>{{ order.delivery_name }}</td>
+          <td style="font-weight:600;">₹{{ order.grand_total|floatformat:0 }}</td>
+          <td>{{ order.get_payment_method_display }}</td>
+          <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+          <td style="color:var(--text-muted);">{{ order.placed_at|date:"d M Y" }}</td>
+          <td><a href="{% url 'admin_order_detail' order.order_id %}" class="btn btn-dark btn-sm">View</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" style="text-align:center;color:var(--text-muted);">No orders yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

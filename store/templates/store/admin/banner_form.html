@@ -1,0 +1,29 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}{{ action }} Banner — Cladly Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">{{ action }} Banner</div>
+  <a href="{% url 'admin_banners' %}" class="btn btn-dark btn-sm">← Back</a>
+</div>
+<div style="max-width:640px;">
+  <form method="post" enctype="multipart/form-data" style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
+    {% csrf_token %}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="form-group" style="grid-column:1/-1;"><label class="form-label">Title</label>{{ form.title }}</div>
+      <div class="form-group" style="grid-column:1/-1;"><label class="form-label">Subtitle</label>{{ form.subtitle }}</div>
+      <div class="form-group"><label class="form-label">Banner Image</label>{{ form.image }}</div>
+      <div class="form-group"><label class="form-label">Mobile Image (optional)</label>{{ form.mobile_image }}</div>
+      <div class="form-group"><label class="form-label">Link URL</label>{{ form.link }}</div>
+      <div class="form-group"><label class="form-label">Banner Type</label>{{ form.banner_type }}</div>
+      <div class="form-group"><label class="form-label">Display Order</label>{{ form.order }}</div>
+      <div class="form-group"><label class="form-label">Start Date</label>{{ form.start_date }}</div>
+      <div class="form-group"><label class="form-label">End Date</label>{{ form.end_date }}</div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:14px;cursor:pointer;">{{ form.is_active }} Active</label>
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn btn-gold">{{ action }} Banner</button>
+      <a href="{% url 'admin_banners' %}" class="btn btn-dark">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

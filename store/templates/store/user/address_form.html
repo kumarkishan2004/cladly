@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Address — Cladly{% endblock %}
+{% block content %}
+<div class="user-page">
+  <div style="max-width:600px;">
+    <h1 style="font-family:var(--font-display);font-size:1.4rem;margin-bottom:24px;">{{ action }} Address</h1>
+    <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name</label>{{ form.name }}<div class="form-error">{{ form.name.errors.0 }}</div></div>
+          <div class="form-group"><label class="form-label">Mobile</label>{{ form.mobile }}<div class="form-error">{{ form.mobile.errors.0 }}</div></div>
+        </div>
+        <div class="form-group"><label class="form-label">Address</label>{{ form.address_line }}<div class="form-error">{{ form.address_line.errors.0 }}</div></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">College Name</label>{{ form.college_name }}</div>
+          <div class="form-group"><label class="form-label">Hostel Name</label>{{ form.hostel_name }}</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Room Number</label>{{ form.room_number }}</div>
+          <div class="form-group"><label class="form-label">City</label>{{ form.city }}</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">State</label>{{ form.state }}</div>
+          <div class="form-group"><label class="form-label">Pincode</label>{{ form.pincode }}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+          {{ form.is_default }}
+          <label style="font-size:14px;color:var(--text-secondary);cursor:pointer;">Set as default address</label>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button type="submit" class="btn btn-gold">Save Address</button>
+          <a href="{% url 'address_list' %}" class="btn btn-dark">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
