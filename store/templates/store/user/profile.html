@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}My Profile — Cladly{% endblock %}
+{% block content %}
+<div class="user-page">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      {% if user.profile_image %}<img src="{{ user.profile_image.url }}" alt="">{% else %}{{ user.full_name|first|upper }}{% endif %}
+    </div>
+    <div style="flex:1;">
+      <div class="profile-name">{{ user.full_name }}</div>
+      <div class="profile-email">{{ user.email }}</div>
+      {% if user.mobile %}<div style="font-size:13px;color:var(--text-muted);">📞 {{ user.mobile }}</div>{% endif %}
+      <div class="profile-stats">
+        <div class="stat-item"><div class="stat-num">{{ orders_count }}</div><div class="stat-label">Orders</div></div>
+        <div class="stat-item"><div class="stat-num">{{ wishlist_count }}</div><div class="stat-label">Wishlist</div></div>
+        <div class="stat-item"><div class="stat-num" style="font-size:0.9rem;letter-spacing:1px;">{{ user.referral_code }}</div><div class="stat-label">Referral</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Grid -->
+  <div class="profile-menu">
+    <a href="{% url 'my_orders' %}" class="profile-menu-item">
+      <div class="menu-icon">📦</div>
+      <div class="menu-label">My Orders</div>
+    </a>
+    <a href="{% url 'wishlist' %}" class="profile-menu-item">
+      <div class="menu-icon">♥</div>
+      <div class="menu-label">Wishlist</div>
+    </a>
+    <a href="{% url 'address_list' %}" class="profile-menu-item">
+      <div class="menu-icon">📍</div>
+      <div class="menu-label">Addresses</div>
+    </a>
+    <a href="{% url 'edit_profile' %}" class="profile-menu-item">
+      <div class="menu-icon">✏️</div>
+      <div class="menu-label">Edit Profile</div>
+    </a>
+    <a href="{% url 'notifications' %}" class="profile-menu-item">
+      <div class="menu-icon">🔔</div>
+      <div class="menu-label">Notifications {% if notif_count > 0 %}<span style="color:var(--gold)">({{ notif_count }})</span>{% endif %}</div>
+    </a>
+    <a href="{% url 'change_password' %}" class="profile-menu-item">
+      <div class="menu-icon">🔒</div>
+      <div class="menu-label">Password</div>
+    </a>
+  </div>
+
+  <!-- Referral Banner -->
+  <div style="background:linear-gradient(135deg,var(--black-card),var(--surface));border:1px solid var(--border-gold);border-radius:var(--radius-lg);padding:20px;margin-top:20px;text-align:center;">
+    <div style="font-family:var(--font-display);font-size:1.1rem;color:var(--gold);margin-bottom:6px;">Refer & Earn</div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Invite friends and earn rewards when they order!</p>
+    <div style="background:var(--surface);border:1px dashed var(--gold);border-radius:var(--radius-sm);padding:10px 16px;display:inline-block;">
+      <span style="font-size:1rem;font-weight:700;color:var(--gold);letter-spacing:2px;">{{ user.referral_code }}</span>
+    </div>
+    <button onclick="navigator.clipboard?.writeText('{{ user.referral_code }}');this.textContent='Copied! ✓'" class="btn btn-outline btn-sm" style="margin-left:10px;">Copy Code</button>
+  </div>
+
+  <div style="margin-top:20px;text-align:center;">
+    <a href="{% url 'logout' %}" class="btn btn-dark" style="color:var(--error);border-color:var(--error);">Logout</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}Order {{ order.order_id }} — Cladly{% endblock %}
+
+{% block content %}
+<div class="user-page">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+    <a href="{% url 'my_orders' %}" style="color:var(--text-muted);font-size:20px;">←</a>
+    <div>
+      <h1 style="font-family:var(--font-display);font-size:1.4rem;">Order Details</h1>
+      <p style="font-size:13px;color:var(--text-muted);">{{ order.order_id }} · Placed {{ order.placed_at|date:"d M Y" }}</p>
+    </div>
+    <div style="margin-left:auto;">
+      <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+    </div>
+  </div>
+
+  <!-- Progress Tracker -->
+  {% if order.status != 'cancelled' %}
+  <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;">
+    <div class="order-tracker">
+      {% with steps="placed,confirmed,packed,out_for_delivery,delivered" %}
+      {% with status_list=steps|split:"," %}
+      <div class="tracker-steps">
+        {% for step in "placed confirmed packed out_for_delivery delivered"|split:" " %}
+          {% if forloop.counter == 1 %}{% with s="placed" label="Placed" icon="📦" %}
+          {% elif forloop.counter == 2 %}{% with s="confirmed" label="Confirmed" icon="✓" %}
+          {% elif forloop.counter == 3 %}{% with s="packed" label="Packed" icon="🎁" %}
+          {% elif forloop.counter == 4 %}{% with s="out_for_delivery" label="On Way" icon="🚴" %}
+          {% else %}{% with s="delivered" label="Delivered" icon="✅" %}
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endwith %}{% endwith %}
+    </div>
+    <!-- Simplified tracker since Django template can't do complex logic easily -->
+    <div style="display:flex;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:16px;left:5%;right:5%;height:2px;background:var(--border);z-index:0;"></div>
+      {% for step_name, step_label in order.STATUS_CHOICES %}
+        {% if step_name != 'cancelled' %}
+          {% with step_done=False %}
+          <div style="flex:1;text-align:center;position:relative;z-index:1;">
+            <div style="width:32px;height:32px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:13px;
+              {% if order.status == step_name %}background:var(--black);border:2px solid var(--gold);color:var(--gold);box-shadow:0 0 0 4px rgba(201,168,76,0.2);
+              {% elif order.status == 'delivered' or order.status == 'out_for_delivery' and step_name == 'packed' or order.status == 'out_for_delivery' and step_name == 'confirmed' or order.status == 'out_for_delivery' and step_name == 'placed' or order.status == 'packed' and step_name == 'confirmed' or order.status == 'packed' and step_name == 'placed' or order.status == 'confirmed' and step_name == 'placed' %}background:var(--gold);border:2px solid var(--gold);color:var(--black);
+              {% else %}background:var(--surface);border:2px solid var(--border);color:var(--text-muted);{% endif %}
+            ">
+              {% if step_name == 'placed' %}📦{% elif step_name == 'confirmed' %}✓{% elif step_name == 'packed' %}🎁{% elif step_name == 'out_for_delivery' %}🚴{% else %}✅{% endif %}
+            </div>
+            <div style="font-size:11px;{% if order.status == step_name %}color:var(--gold);font-weight:600;{% else %}color:var(--text-muted);{% endif %}">{{ step_label }}</div>
+          </div>
+          {% endwith %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div style="display:grid;gap:16px;">
+    <!-- Items -->
+    <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+      <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:16px;font-size:1rem;">Items Ordered</h3>
+      {% for item in order.items.all %}
+        <div style="display:flex;gap:14px;align-items:center;{% if not forloop.last %}border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:14px;{% endif %}">
+          {% if item.product_image %}
+            <img src="{{ item.product_image }}" style="width:60px;height:60px;border-radius:var(--radius-sm);object-fit:cover;background:var(--surface);">
+          {% else %}
+            <div style="width:60px;height:60px;border-radius:var(--radius-sm);background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text-muted);">✦</div>
+          {% endif %}
+          <div style="flex:1;">
+            <div style="font-weight:500;font-size:14px;">{{ item.product_name }}</div>
+            <div style="font-size:12px;color:var(--text-muted);">Qty: {{ item.quantity }}</div>
+          </div>
+          <div style="font-weight:700;color:var(--gold);">₹{{ item.subtotal|floatformat:0 }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <!-- Delivery Address -->
+      <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+        <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:12px;font-size:1rem;">Delivery Address</h3>
+        <div style="font-size:13px;line-height:1.8;color:var(--text-secondary);">
+          <div style="font-weight:600;color:var(--text-primary);">{{ order.delivery_name }}</div>
+          <div>📞 {{ order.delivery_mobile }}</div>
+          <div>{{ order.delivery_address }}</div>
+          {% if order.delivery_college %}<div>🎓 {{ order.delivery_college }}</div>{% endif %}
+          {% if order.delivery_hostel %}<div>🏠 {{ order.delivery_hostel }}{% if order.delivery_room %}, Room {{ order.delivery_room }}{% endif %}</div>{% endif %}
+          <div>{{ order.delivery_city }} - {{ order.delivery_pincode }}</div>
+        </div>
+      </div>
+
+      <!-- Payment & Total -->
+      <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+        <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:12px;font-size:1rem;">Payment</h3>
+        <div style="font-size:13px;line-height:2;color:var(--text-secondary);">
+          <div>Method: <span style="color:var(--text-primary);">{{ order.get_payment_method_display }}</span></div>
+          {% if order.coupon_code %}<div>Coupon: <span style="color:var(--success);">{{ order.coupon_code }}</span></div>{% endif %}
+          <div>Subtotal: ₹{{ order.subtotal|floatformat:0 }}</div>
+          {% if order.discount_amount > 0 %}<div>Discount: <span style="color:var(--success);">− ₹{{ order.discount_amount|floatformat:0 }}</span></div>{% endif %}
+          <div>Delivery: {% if order.delivery_charge == 0 %}<span style="color:var(--success)">FREE</span>{% else %}₹{{ order.delivery_charge|floatformat:0 }}{% endif %}</div>
+          <div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;">
+            <strong style="color:var(--gold);font-size:16px;">Total: ₹{{ order.grand_total|floatformat:0 }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      {% if order.status in 'placed,confirmed' %}
+        <form method="post" action="{% url 'cancel_order' order.order_id %}" onsubmit="return confirm('Cancel this order?')">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-dark" style="border-color:var(--error);color:var(--error);">Cancel Order</button>
+        </form>
+      {% endif %}
+      {% if order.status == 'delivered' %}
+        <a href="{% url 'thank_you_card' order.order_id %}" class="btn btn-outline">Download Thank You Card 🎁</a>
+      {% endif %}
+      <a href="{% url 'my_orders' %}" class="btn btn-dark">← All Orders</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

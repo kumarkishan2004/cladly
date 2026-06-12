@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Notifications — Cladly{% endblock %}
+{% block content %}
+<div class="user-page">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+    <h1 style="font-family:var(--font-display);font-size:1.6rem;">Notifications</h1>
+    {% if notifications %}<button onclick="fetch('/notifications/mark-read/',{method:'POST',headers:{'X-CSRFToken':'{{ csrf_token }}','X-Requested-With':'XMLHttpRequest'}}).then(()=>location.reload())" class="btn btn-dark btn-sm">Mark all read</button>{% endif %}
+  </div>
+  {% if notifications %}
+    {% for notif in notifications %}
+      <div style="background:var(--black-card);border:1px solid {% if not notif.is_read %}var(--border-gold){% else %}var(--border){% endif %};border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;{% if not notif.is_read %}border-left-width:3px;{% endif %}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            {% if not notif.is_read %}<span style="width:8px;height:8px;background:var(--gold);border-radius:50%;display:inline-block;margin-right:8px;"></span>{% endif %}
+            <span style="font-weight:600;font-size:14px;">{{ notif.title }}</span>
+          </div>
+          <span style="font-size:11px;color:var(--text-muted);">{{ notif.created_at|timesince }} ago</span>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-top:6px;">{{ notif.message }}</p>
+        {% if notif.link %}<a href="{{ notif.link }}" style="font-size:12px;color:var(--gold);">View →</a>{% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🔔</div>
+      <div class="empty-title">No notifications</div>
+      <div class="empty-text">Order updates and offers will appear here</div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

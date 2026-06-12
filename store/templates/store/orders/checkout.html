@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Checkout — Cladly{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+  <h1 style="font-family:var(--font-display);font-size:1.8rem;margin-bottom:24px;">Checkout</h1>
+
+  <form method="post" action="{% url 'place_order' %}" id="checkout-form">
+    {% csrf_token %}
+    <div class="checkout-grid">
+      <div>
+        <!-- Delivery Address -->
+        <div class="checkout-section">
+          <h3>📍 Delivery Address</h3>
+
+          {% if addresses %}
+            {% for addr in addresses %}
+              <div class="address-card {% if forloop.first or addr.is_default %}selected{% endif %}"
+                   onclick="selectAddress(this, '{{ addr.id }}')">
+                <div class="address-radio">
+                  <input type="radio" name="address_id" value="{{ addr.id }}"
+                         {% if forloop.first or addr.is_default %}checked{% endif %}
+                         style="margin-top:3px;accent-color:var(--gold);">
+                  <div>
+                    <div style="font-weight:600;font-size:14px;">{{ addr.name }} · {{ addr.mobile }}</div>
+                    <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">
+                      {{ addr.address_line }}
+                      {% if addr.college_name %}, {{ addr.college_name }}{% endif %}
+                      {% if addr.hostel_name %} · {{ addr.hostel_name }}{% if addr.room_number %}, Room {{ addr.room_number }}{% endif %}{% endif %}
+                    </div>
+                    <div style="font-size:13px;color:var(--text-muted);">{{ addr.city }} — {{ addr.pincode }}</div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <button type="button" id="add-new-address" class="btn btn-dark btn-sm" style="margin-top:10px;">
+            + Add New Address
+          </button>
+
+          <div id="new-address-form" style="display:{% if not addresses %}block{% else %}none{% endif %};margin-top:16px;">
+            <input type="hidden" name="new_address_flag" value="1">
+            {% if not addresses %}<input type="radio" name="address_id" value="new" checked style="display:none;">{% endif %}
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Delivery name" value="{{ user.full_name }}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mobile</label>
+                <input type="text" name="mobile" class="form-control" placeholder="10-digit number" value="{{ user.mobile }}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Address</label>
+              <textarea name="address_line" class="form-control" rows="2" placeholder="Street, Area, Landmark"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">College Name</label>
+                <input type="text" name="college_name" class="form-control" placeholder="Your college">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Hostel Name</label>
+                <input type="text" name="hostel_name" class="form-control" placeholder="Hostel / PG">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Room Number</label>
+                <input type="text" name="room_number" class="form-control" placeholder="Room / Block">
+              </div>
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <input type="text" name="city" class="form-control" placeholder="City">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">State</label>
+                <input type="text" name="state" class="form-control" placeholder="State">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pincode</label>
+                <input type="text" name="pincode" class="form-control" placeholder="6-digit pincode">
+              </div>
+            </div>
+            {% if addresses %}
+              <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                <input type="radio" name="address_id" value="new" id="use-new">
+                <label for="use-new" style="font-size:13px;color:var(--text-secondary);cursor:pointer;">Use this new address</label>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="checkout-section">
+          <h3>💳 Payment Method</h3>
+          <div class="payment-options">
+            <div class="payment-option selected" onclick="selectPayment(this,'cod')">
+              <input type="radio" name="payment_method" value="cod" checked style="accent-color:var(--gold);">
+              <span class="payment-icon">💵</span>
+              <div>
+                <div style="font-weight:600;font-size:14px;">Cash on Delivery</div>
+                <div style="font-size:12px;color:var(--text-muted);">Pay when your order arrives</div>
+              </div>
+            </div>
+            <div class="payment-option" onclick="selectPayment(this,'upi')">
+              <input type="radio" name="payment_method" value="upi" style="accent-color:var(--gold);">
+              <span class="payment-icon">📱</span>
+              <div>
+                <div style="font-weight:600;font-size:14px;">UPI Payment</div>
+                <div style="font-size:12px;color:var(--text-muted);">GPay, PhonePe, Paytm & more</div>
+              </div>
+            </div>
+            <div class="payment-option" onclick="selectPayment(this,'online')">
+              <input type="radio" name="payment_method" value="online" style="accent-color:var(--gold);">
+              <span class="payment-icon">🏦</span>
+              <div>
+                <div style="font-weight:600;font-size:14px;">Card / Net Banking</div>
+                <div style="font-size:12px;color:var(--text-muted);">All major cards accepted</div>
+              </div>
+            </div>
+             <div class="payment-option" onclick="selectPayment(this,'online')">
+              <input type="radio" name="payment_method" value="online" style="accent-color:var(--gold);">
+              <span class="payment-icon">💵</span>
+              <div>
+                <div style="font-weight:600;font-size:14px;">Special COD 😁</div>
+                <div style="font-size:12px;color:var(--text-muted);">accepted order from CEO 🤣</div>
+              </div>
+            </div>
+    
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div>
+        <div class="cart-summary">
+          <h3>Order Summary</h3>
+
+          {% for item in cart_items %}
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+              {% with img=item.product.primary_image %}
+                {% if img and img.image %}
+                  <img src="{{ img.image.url }}" style="width:48px;height:48px;border-radius:var(--radius-sm);object-fit:cover;">
+                {% endif %}
+              {% endwith %}
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:500;">{{ item.product.name|truncatechars:30 }}</div>
+                <div style="font-size:12px;color:var(--text-muted);">Qty: {{ item.quantity }}</div>
+              </div>
+              <div style="font-weight:600;font-size:14px;color:var(--gold);">₹{{ item.subtotal|floatformat:0 }}</div>
+            </div>
+          {% endfor %}
+
+          {% if coupon %}
+            <div class="summary-row">
+              <span class="summary-label">Coupon ({{ coupon.code }})</span>
+              <span style="color:var(--success);">− ₹{{ discount_amount|floatformat:0 }}</span>
+            </div>
+          {% endif %}
+          <div class="summary-row">
+            <span class="summary-label">Subtotal</span>
+            <span class="summary-val">₹{{ subtotal|floatformat:0 }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Delivery</span>
+            <span class="summary-val">{% if delivery_charge == 0 %}<span style="color:var(--success)">FREE</span>{% else %}₹{{ delivery_charge|floatformat:0 }}{% endif %}</span>
+          </div>
+          <div class="summary-row total">
+            <span class="summary-label">Total to Pay</span>
+            <span class="summary-val">₹{{ grand_total|floatformat:0 }}</span>
+          </div>
+
+          <button type="submit" class="btn btn-gold btn-full btn-lg" style="margin-top:16px;">
+            Place Order →
+          </button>
+          <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;">
+            🔒 Secure &amp; encrypted checkout
+          </p>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+function selectAddress(card, id) {
+  document.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const radio = card.querySelector('input[type=radio]');
+  if (radio) radio.checked = true;
+  const newForm = document.getElementById('new-address-form');
+  if (newForm && id !== 'new') newForm.style.display = 'none';
+}
+function selectPayment(opt, val) {
+  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+  opt.classList.add('selected');
+  const radio = opt.querySelector('input[type=radio]');
+  if (radio) radio.checked = true;
+}
+document.getElementById('add-new-address')?.addEventListener('click', function() {
+  const f = document.getElementById('new-address-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  const r = document.getElementById('use-new');
+  if (r) { r.checked = true; document.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected')); }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Addresses — Cladly{% endblock %}
+{% block content %}
+<div class="user-page">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+    <h1 style="font-family:var(--font-display);font-size:1.6rem;">Saved Addresses</h1>
+    <a href="{% url 'add_address' %}" class="btn btn-gold btn-sm">+ Add New</a>
+  </div>
+  {% if addresses %}
+    {% for addr in addresses %}
+      <div style="background:var(--black-card);border:1px solid {% if addr.is_default %}var(--gold){% else %}var(--border){% endif %};border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;position:relative;">
+        {% if addr.is_default %}<span style="position:absolute;top:12px;right:12px;font-size:11px;background:var(--gold);color:var(--black);padding:2px 8px;border-radius:4px;font-weight:700;">DEFAULT</span>{% endif %}
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px;">{{ addr.name }} · {{ addr.mobile }}</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">
+          {{ addr.address_line }}
+          {% if addr.college_name %}<br>🎓 {{ addr.college_name }}{% endif %}
+          {% if addr.hostel_name %}<br>🏠 {{ addr.hostel_name }}{% if addr.room_number %}, Room {{ addr.room_number }}{% endif %}{% endif %}
+          <br>{{ addr.city }}, {{ addr.state }} — {{ addr.pincode }}
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <a href="{% url 'edit_address' addr.pk %}" class="btn btn-dark btn-sm">Edit</a>
+          {% if not addr.is_default %}
+            <form method="post" action="{% url 'set_default_address' addr.pk %}">{% csrf_token %}<button type="submit" class="btn btn-outline btn-sm">Set Default</button></form>
+          {% endif %}
+          <form method="post" action="{% url 'delete_address' addr.pk %}" onsubmit="return confirm('Delete this address?')">{% csrf_token %}<button type="submit" class="btn btn-sm" style="color:var(--error);background:none;border:1px solid var(--error);">Delete</button></form>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📍</div>
+      <div class="empty-title">No addresses saved</div>
+      <a href="{% url 'add_address' %}" class="btn btn-gold">Add Address</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

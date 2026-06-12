@@ -1,0 +1,30 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}{{ action }} Category — Cladly Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">{{ action }} Category</div>
+  <a href="{% url 'admin_categories' %}" class="btn btn-dark btn-sm">← Back</a>
+</div>
+<div style="max-width:560px;">
+  <form method="post" enctype="multipart/form-data" style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
+    {% csrf_token %}
+    <div class="form-group"><label class="form-label">Name</label>{{ form.name }}</div>
+    <div class="form-group"><label class="form-label">Slug</label>{{ form.slug }}</div>
+    <div class="form-group"><label class="form-label">Image</label>{{ form.image }}</div>
+    <div class="form-group"><label class="form-label">Description</label>{{ form.description }}</div>
+    <div class="form-group"><label class="form-label">Display Order</label>{{ form.order }}</div>
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:14px;cursor:pointer;">{{ form.is_active }} Active</label>
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn btn-gold">{{ action }} Category</button>
+      <a href="{% url 'admin_categories' %}" class="btn btn-dark">Cancel</a>
+    </div>
+  </form>
+</div>
+<script>
+document.querySelector('[name=name]')?.addEventListener('input', function() {
+  const slug = document.querySelector('[name=slug]');
+  if (slug && !slug.dataset.manual) slug.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+});
+document.querySelector('[name=slug]')?.addEventListener('input', function() { this.dataset.manual='1'; });
+</script>
+{% endblock %}

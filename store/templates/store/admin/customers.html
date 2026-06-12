@@ -1,0 +1,35 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}Customers — Cladly Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">Customers</div>
+  <div style="font-size:13px;color:var(--text-muted);">{{ customers|length }} registered customers</div>
+</div>
+<div class="table-wrap">
+  <table class="data-table">
+    <thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Orders</th><th>Total Spent</th><th>Joined</th><th>Referral</th></tr></thead>
+    <tbody>
+      {% for customer in customers %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--gold);color:var(--black);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">
+                {{ customer.full_name|first|upper }}
+              </div>
+              <span style="font-weight:500;">{{ customer.full_name }}</span>
+            </div>
+          </td>
+          <td style="color:var(--text-muted);font-size:13px;">{{ customer.email }}</td>
+          <td style="color:var(--text-muted);font-size:13px;">{{ customer.mobile|default:"—" }}</td>
+          <td style="color:var(--gold);font-weight:600;">{{ customer.order_count }}</td>
+          <td style="font-weight:600;">₹{{ customer.total_spend|floatformat:0|default:"0" }}</td>
+          <td style="color:var(--text-muted);font-size:13px;">{{ customer.date_joined|date:"d M Y" }}</td>
+          <td style="font-family:monospace;font-size:12px;color:var(--text-muted);">{{ customer.referral_code }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted);">No customers yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

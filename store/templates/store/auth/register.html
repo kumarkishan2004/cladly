@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Create Account — Cladly{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div style="width:100%;max-width:480px;">
+    <div class="auth-brand">
+      <div class="auth-logo">Cladly</div>
+      <div class="auth-tagline">Your premium fashion destination</div>
+    </div>
+    <div class="form-card">
+      <div class="form-title">Create Account</div>
+      <div class="form-sub">Join thousands of fashion-forward women ✨</div>
+
+      <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          {{ form.full_name }}
+          {% if form.full_name.errors %}<div class="form-error">{{ form.full_name.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          {{ form.email }}
+          {% if form.email.errors %}<div class="form-error">{{ form.email.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mobile Number</label>
+          {{ form.mobile }}
+          {% if form.mobile.errors %}<div class="form-error">{{ form.mobile.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            {{ form.password }}
+            {% if form.password.errors %}<div class="form-error">{{ form.password.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            {{ form.confirm_password }}
+          </div>
+        </div>
+
+        <!-- Referral -->
+        {% if request.GET.ref %}
+          <input type="hidden" name="ref_code" value="{{ request.GET.ref }}">
+        {% endif %}
+
+        <button type="submit" class="btn btn-gold btn-full btn-lg" style="margin-top:8px;">Create My Account</button>
+      </form>
+
+      <hr class="form-divider">
+      <p style="text-align:center;font-size:14px;color:var(--text-muted);">
+        Already have an account? <a href="{% url 'login' %}" style="color:var(--gold);font-weight:600;">Login</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

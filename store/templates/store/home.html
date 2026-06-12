@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cladly — Premium Fashion Accessories | Same-Day Campus Delivery{% endblock %}
+
+{% block content %}
+
+<!-- ── HERO SLIDER ── -->
+{% if hero_banners %}
+<section class="hero-slider">
+  {% for banner in hero_banners %}
+    <div class="hero-slide {% if forloop.first %}active{% endif %}">
+      <img src="{{ banner.image.url }}" alt="{{ banner.title }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+      <div class="hero-slide-overlay">
+        <div class="hero-content">
+          <div class="hero-eyebrow">New Collection</div>
+          <h1 class="hero-title">{{ banner.title }}</h1>
+          {% if banner.subtitle %}<p class="hero-sub">{{ banner.subtitle }}</p>{% endif %}
+          <a href="{{ banner.link|default:'/products/' }}" class="btn btn-gold">Shop Now →</a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  {% if hero_banners|length > 1 %}
+    <div class="hero-dots">
+      {% for banner in hero_banners %}
+        <button class="hero-dot {% if forloop.first %}active{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+{% else %}
+<!-- Default hero when no banners set -->
+<section class="hero-slider" style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1208 50%,#0a0a0a 100%);">
+  <div class="hero-slide active">
+    <div class="hero-slide-overlay" style="background:transparent;padding:48px 32px;">
+      <div class="hero-content">
+        <div class="hero-eyebrow">✦ New Arrivals</div>
+        <h1 class="hero-title" style="color:var(--gold)">Adorn Your<br><em style="font-style:italic">Story</em></h1>
+        <p class="hero-sub">Premium accessories. Same-day campus delivery.<br>Luxury packaging on every order.</p>
+        <a href="{% url 'product_list' %}" class="btn btn-gold btn-lg">Explore Collection →</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── FLASH SALE BANNER ── -->
+{% with flash=flash_banners.first %}
+{% if flash %}
+<div class="flash-banner">
+  <div class="flash-inner">
+    <span class="flash-icon">⚡</span>
+    <span class="flash-text">{{ flash.title }}</span>
+    <div class="flash-countdown" id="flash-countdown" data-end="{{ flash.end_date|date:'c' }}"></div>
+    <a href="{{ flash.link|default:'/products/?on_sale=1' }}" class="btn btn-dark btn-sm" style="background:rgba(0,0,0,0.2);color:var(--black);border-color:rgba(0,0,0,0.3)">Shop Flash Sale →</a>
+  </div>
+</div>
+{% endif %}
+{% endwith %}
+
+<!-- ── CATEGORIES GRID ── -->
+{% if categories %}
+<section class="categories-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Browse by style</div>
+      <h2 class="section-title">Shop by Category</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="categories-grid">
+      {% for cat in categories %}
+        <a href="{% url 'category_products' cat.slug %}" class="category-card">
+          <div class="cat-image-wrap">
+            {% if cat.image %}
+              <img src="{{ cat.image.url }}" alt="{{ cat.name }}" loading="lazy">
+            {% else %}
+              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;">
+                {% if cat.name == 'Earrings' %}💎
+                {% elif cat.name == 'Jhumkas' %}🪬
+                {% elif cat.name == 'Necklaces' %}📿
+                {% elif cat.name == 'Rings' %}💍
+                {% elif cat.name == 'Bangles' %}🔮
+                {% elif cat.name == 'Bracelets' %}✨
+                {% elif cat.name == 'Hair Accessories' %}🌸
+                {% elif cat.name == 'Gift Sets' %}🎁
+                {% else %}✦{% endif %}
+              </div>
+            {% endif %}
+          </div>
+          <div class="cat-name">{{ cat.name }}</div>
+          <div class="cat-count">{{ cat.product_count }} items</div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── SALE BANNER ── -->
+{% with sale=sale_banners.first %}
+{% if sale %}
+<section style="padding:0 16px 40px;">
+  <div class="container" style="max-width:1280px;">
+    <a href="{{ sale.link|default:'/products/' }}" style="display:block;border-radius:var(--radius-xl);overflow:hidden;position:relative;">
+      <img src="{{ sale.image.url }}" alt="{{ sale.title }}" style="width:100%;height:min(40vw,280px);object-fit:cover;">
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0.65) 0%,transparent 60%);display:flex;align-items:center;padding:32px;">
+        <div>
+          <div class="section-eyebrow">Limited Time</div>
+          <h2 class="section-title" style="margin:0">{{ sale.title }}</h2>
+          {% if sale.subtitle %}<p style="color:var(--text-secondary);font-size:14px;margin:8px 0 16px">{{ sale.subtitle }}</p>{% endif %}
+          <span class="btn btn-gold">Grab the Deal →</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+{% endif %}
+{% endwith %}
+
+<!-- ── NEW ARRIVALS ── -->
+{% if new_arrivals %}
+<section class="products-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Just landed</div>
+      <h2 class="section-title">New Arrivals</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="products-grid">
+      {% for product in new_arrivals %}
+        {% include 'store/includes/product_card.html' %}
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a href="{% url 'product_list' %}?new_arrivals=1" class="btn btn-outline">View All New Arrivals →</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── BEST SELLERS ── -->
+{% if best_sellers %}
+<section class="products-section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Most loved</div>
+      <h2 class="section-title">Best Sellers</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="products-grid">
+      {% for product in best_sellers %}
+        {% include 'store/includes/product_card.html' %}
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a href="{% url 'product_list' %}?best_sellers=1" class="btn btn-outline">View All Best Sellers →</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── RECENTLY VIEWED ── -->
+{% if recently_viewed %}
+<section class="products-section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Picked up where you left off</div>
+      <h2 class="section-title">Recently Viewed</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="products-grid">
+      {% for item in recently_viewed %}
+        {% with product=item.product %}
+          {% include 'store/includes/product_card.html' %}
+        {% endwith %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── WHY CLADLY ── -->
+<section style="padding:40px 16px;background:var(--black-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:900px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;grid-column:1/-1;">
+      </div>
+      {% for item in perks %}{% endfor %}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:900px;margin:0 auto;">
+      {% for perk in "1234" %}
+        <div style="text-align:center;padding:20px 16px;">
+          <div style="font-size:2rem;margin-bottom:10px;">
+            {% if forloop.counter == 1 %}🚀{% elif forloop.counter == 2 %}💝{% elif forloop.counter == 3 %}✨{% else %}💳{% endif %}
+          </div>
+          <div style="font-family:var(--font-display);font-size:1rem;color:var(--gold);margin-bottom:6px;">
+            {% if forloop.counter == 1 %}Same-Day Delivery
+            {% elif forloop.counter == 2 %}Premium Packaging
+            {% elif forloop.counter == 3 %}Genuine Quality
+            {% else %}Easy Returns{% endif %}
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);">
+            {% if forloop.counter == 1 %}On-campus & city-wide, same day
+            {% elif forloop.counter == 2 %}Luxury unboxing experience
+            {% elif forloop.counter == 3 %}Carefully curated collections
+            {% else %}Hassle-free 7-day returns{% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURED ── -->
+{% if featured %}
+<section class="products-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Handpicked</div>
+      <h2 class="section-title">Featured Pieces</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="products-grid">
+      {% for product in featured %}
+        {% include 'store/includes/product_card.html' %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

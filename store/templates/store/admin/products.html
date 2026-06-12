@@ -1,0 +1,74 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}Products — Cladly Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">Products</div>
+  <a href="{% url 'admin_add_product' %}" class="btn btn-gold btn-sm">+ Add Product</a>
+</div>
+
+<!-- Search -->
+<form method="get" style="margin-bottom:16px;display:flex;gap:10px;max-width:400px;">
+  <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search products…" class="form-control">
+  <button type="submit" class="btn btn-dark btn-sm">Search</button>
+</form>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+        <tr>
+          <td>
+            {% with img=product.primary_image %}
+              {% if img and img.image %}
+                <img src="{{ img.image.url }}" style="width:44px;height:44px;border-radius:var(--radius-sm);object-fit:cover;">
+              {% else %}
+                <div style="width:44px;height:44px;background:var(--surface);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--text-muted);">✦</div>
+              {% endif %}
+            {% endwith %}
+          </td>
+          <td style="font-weight:500;">
+            {{ product.name|truncatechars:35 }}
+            {% if product.is_new_arrival %}<span style="font-size:10px;background:rgba(80,184,120,0.2);color:var(--success);padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>{% endif %}
+            {% if product.is_best_seller %}<span style="font-size:10px;background:rgba(224,80,80,0.2);color:var(--error);padding:1px 5px;border-radius:3px;margin-left:4px;">HOT</span>{% endif %}
+          </td>
+          <td style="color:var(--text-muted);">{{ product.category.name|default:"—" }}</td>
+          <td>
+            <span style="color:var(--gold);font-weight:600;">₹{{ product.selling_price|floatformat:0 }}</span>
+            {% if product.discount_percent > 0 %}<br><span style="font-size:11px;color:var(--text-muted);text-decoration:line-through;">₹{{ product.original_price|floatformat:0 }}</span>{% endif %}
+          </td>
+          <td>
+            <span style="{% if product.stock_status == 'out_of_stock' %}color:var(--error){% elif product.stock_status == 'low_stock' %}color:var(--warning){% else %}color:var(--success){% endif %}">
+              {{ product.stock_quantity }}
+            </span>
+          </td>
+          <td>
+            {% if product.is_active %}<span class="status-badge status-delivered">Active</span>{% else %}<span class="status-badge status-cancelled">Inactive</span>{% endif %}
+          </td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <a href="{% url 'admin_edit_product' product.pk %}" class="btn btn-dark btn-sm">Edit</a>
+              <form method="post" action="{% url 'admin_delete_product' product.pk %}" onsubmit="return confirm('Delete this product?')">
+                {% csrf_token %}<button type="submit" class="btn btn-sm" style="color:var(--error);background:none;border:1px solid var(--error);">Del</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted);">No products found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+{% if products.has_other_pages %}
+  <div class="pagination">
+    {% if products.has_previous %}<a href="?page={{ products.previous_page_number }}" class="page-link">‹</a>{% endif %}
+    {% for num in products.paginator.page_range %}<a href="?page={{ num }}" class="page-link {% if products.number == num %}active{% endif %}">{{ num }}</a>{% endfor %}
+    {% if products.has_next %}<a href="?page={{ products.next_page_number }}" class="page-link">›</a>{% endif %}
+  </div>
+{% endif %}
+{% endblock %}

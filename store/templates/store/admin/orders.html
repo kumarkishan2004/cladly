@@ -1,0 +1,50 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}Orders — Cladly Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">Orders</div>
+</div>
+
+<!-- Status filter -->
+<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px;">
+  <a href="?" class="btn btn-sm {% if not current_status %}btn-gold{% else %}btn-dark{% endif %}">All</a>
+  {% for val, label in status_choices %}
+    <a href="?status={{ val }}" class="btn btn-sm {% if current_status == val %}btn-gold{% else %}btn-dark{% endif %}">{{ label }}</a>
+  {% endfor %}
+</div>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+        <tr>
+          <td style="color:var(--gold);font-weight:600;">{{ order.order_id }}</td>
+          <td>
+            <div style="font-weight:500;">{{ order.delivery_name }}</div>
+            {% if order.user %}<div style="font-size:12px;color:var(--text-muted);">{{ order.user.email }}</div>{% endif %}
+          </td>
+          <td>{{ order.items.count }}</td>
+          <td style="font-weight:600;">₹{{ order.grand_total|floatformat:0 }}</td>
+          <td style="font-size:13px;">{{ order.get_payment_method_display }}</td>
+          <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+          <td style="color:var(--text-muted);font-size:13px;">{{ order.placed_at|date:"d M Y, h:i A" }}</td>
+          <td><a href="{% url 'admin_order_detail' order.order_id %}" class="btn btn-dark btn-sm">View</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted);">No orders found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if orders.has_other_pages %}
+  <div class="pagination">
+    {% if orders.has_previous %}<a href="?page={{ orders.previous_page_number }}" class="page-link">‹</a>{% endif %}
+    {% for num in orders.paginator.page_range %}<a href="?page={{ num }}" class="page-link {% if orders.number == num %}active{% endif %}">{{ num }}</a>{% endfor %}
+    {% if orders.has_next %}<a href="?page={{ orders.next_page_number }}" class="page-link">›</a>{% endif %}
+  </div>
+{% endif %}
+{% endblock %}

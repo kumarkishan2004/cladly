@@ -1,0 +1,41 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}Categories — Cladly Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">Categories</div>
+  <a href="{% url 'admin_add_category' %}" class="btn btn-gold btn-sm">+ Add Category</a>
+</div>
+<div class="table-wrap">
+  <table class="data-table">
+    <thead><tr><th>Image</th><th>Name</th><th>Slug</th><th>Products</th><th>Order</th><th>Active</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for cat in categories %}
+        <tr>
+          <td>
+            {% if cat.image %}
+              <img src="{{ cat.image.url }}" style="width:44px;height:44px;border-radius:var(--radius-sm);object-fit:cover;">
+            {% else %}
+              <div style="width:44px;height:44px;background:var(--surface);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--text-muted);">✦</div>
+            {% endif %}
+          </td>
+          <td style="font-weight:600;">{{ cat.name }}</td>
+          <td style="color:var(--text-muted);font-size:13px;">{{ cat.slug }}</td>
+          <td style="color:var(--gold);">{{ cat.prod_count }}</td>
+          <td>{{ cat.order }}</td>
+          <td>{% if cat.is_active %}<span style="color:var(--success);">✓</span>{% else %}<span style="color:var(--error);">✕</span>{% endif %}</td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <a href="{% url 'admin_edit_category' cat.pk %}" class="btn btn-dark btn-sm">Edit</a>
+              <form method="post" action="{% url 'admin_delete_category' cat.pk %}" onsubmit="return confirm('Delete category?')">
+                {% csrf_token %}<button type="submit" class="btn btn-sm" style="color:var(--error);background:none;border:1px solid var(--error);">Del</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted);">No categories yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ current_category.name }} — Cladly{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:24px;padding-bottom:40px;">
+
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <nav style="font-size:12px;color:var(--text-muted);margin-bottom:6px;display:flex;gap:6px;">
+        <a href="{% url 'home' %}" style="color:var(--text-muted);">Home</a>
+        <span>›</span>
+        <span style="color:var(--gold);">{{ current_category.name }}</span>
+      </nav>
+      <h1 style="font-family:var(--font-display);font-size:1.8rem;">{{ current_category.name }}</h1>
+      <p style="color:var(--text-muted);font-size:13px;">{{ products.paginator.count }} product{{ products.paginator.count|pluralize }}</p>
+    </div>
+
+    <!-- Sort -->
+    <form method="get" style="display:flex;align-items:center;gap:8px;">
+      <label style="font-size:13px;color:var(--text-muted);">Sort:</label>
+      <select name="sort" class="form-control" style="width:auto;padding:8px 12px;font-size:13px;" onchange="this.form.submit()">
+        <option value="" {% if not current_sort %}selected{% endif %}>Newest</option>
+        <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+        <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+        <option value="discount" {% if current_sort == 'discount' %}selected{% endif %}>Best Discount</option>
+      </select>
+    </form>
+  </div>
+
+  <!-- Filters bar -->
+  <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:20px;scrollbar-width:none;">
+    <a href="?" class="btn btn-sm {% if not request.GET.new_arrivals and not request.GET.best_sellers and not request.GET.on_sale %}btn-gold{% else %}btn-dark{% endif %}">All</a>
+    <a href="?new_arrivals=1" class="btn btn-sm {% if request.GET.new_arrivals %}btn-gold{% else %}btn-dark{% endif %}">New Arrivals</a>
+    <a href="?best_sellers=1" class="btn btn-sm {% if request.GET.best_sellers %}btn-gold{% else %}btn-dark{% endif %}">Best Sellers</a>
+    <a href="?on_sale=1" class="btn btn-sm {% if request.GET.on_sale %}btn-gold{% else %}btn-dark{% endif %}">On Sale</a>
+  </div>
+
+  {% if products %}
+    <div class="products-grid">
+      {% for product in products %}
+        {% include 'store/includes/product_card.html' %}
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if products.has_other_pages %}
+      <div class="pagination">
+        {% if products.has_previous %}
+          <a href="?page={{ products.previous_page_number }}" class="page-link">‹</a>
+        {% endif %}
+        {% for num in products.paginator.page_range %}
+          <a href="?page={{ num }}" class="page-link {% if products.number == num %}active{% endif %}">{{ num }}</a>
+        {% endfor %}
+        {% if products.has_next %}
+          <a href="?page={{ products.next_page_number }}" class="page-link">›</a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">No products found</div>
+      <div class="empty-text">Try adjusting your filters or browse all products.</div>
+      <a href="{% url 'product_list' %}" class="btn btn-gold">Browse All</a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

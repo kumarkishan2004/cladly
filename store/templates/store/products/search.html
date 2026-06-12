@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Search: {{ query }} — Cladly{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:24px;padding-bottom:40px;">
+  <div style="margin-bottom:24px;">
+    <h1 style="font-family:var(--font-display);font-size:1.6rem;">
+      {% if query %}Results for "{{ query }}"{% else %}Search{% endif %}
+    </h1>
+    {% if products.paginator.count > 0 %}
+      <p style="color:var(--text-muted);font-size:13px;">{{ products.paginator.count }} result{{ products.paginator.count|pluralize }}</p>
+    {% endif %}
+  </div>
+
+  <!-- Search form -->
+  <form action="{% url 'search' %}" method="get" style="margin-bottom:32px;">
+    <div style="display:flex;gap:10px;max-width:500px;">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search jewellery, accessories…" class="form-control" style="flex:1;">
+      <button type="submit" class="btn btn-gold">Search</button>
+    </div>
+  </form>
+
+  {% if query %}
+    {% if products %}
+      <div class="products-grid">
+        {% for product in products %}{% include 'store/includes/product_card.html' %}{% endfor %}
+      </div>
+      {% if products.has_other_pages %}
+        <div class="pagination">
+          {% if products.has_previous %}<a href="?q={{ query }}&page={{ products.previous_page_number }}" class="page-link">‹</a>{% endif %}
+          {% for num in products.paginator.page_range %}
+            <a href="?q={{ query }}&page={{ num }}" class="page-link {% if products.number == num %}active{% endif %}">{{ num }}</a>
+          {% endfor %}
+          {% if products.has_next %}<a href="?q={{ query }}&page={{ products.next_page_number }}" class="page-link">›</a>{% endif %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">No results for "{{ query }}"</div>
+        <div class="empty-text">Try different keywords or browse our categories.</div>
+        <a href="{% url 'product_list' %}" class="btn btn-gold">Browse All Products</a>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">What are you looking for?</div>
+      <div class="empty-text">Search by product name, category, or color — e.g. "gold earrings", "jhumka", "blue bangles"</div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
