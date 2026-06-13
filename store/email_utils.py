@@ -11,7 +11,7 @@ Hi {user.full_name},
 Welcome to Cladly! 🎉
 
 We're so excited to have you here. Cladly is your go-to destination
-for premium fashion accessories — delivered to your campus, same day.
+for premium fashion accessories — delivered to your campus and city Bhubaneswar, same day.
 
 🎁 As a welcome gift, here's an exclusive coupon just for you:
 
@@ -21,7 +21,7 @@ for premium fashion accessories — delivered to your campus, same day.
         ╚══════════════════════╝
 
 Use code  WELCOME50  on your first order and get ₹50 off!
-Minimum order: ₹299 | Valid for 30 days
+Minimum order: ₹199 | Valid for 10 days
 
 👉 Shop now: http://cladly.in
 
@@ -53,7 +53,7 @@ fresh arrivals and exciting deals are waiting for you.
 
 ✨ New arrivals just dropped
 🏷️ Use code  CLADLY10  for 10% off today
-🚀 Same-day campus delivery available
+🚀 Same-day all campus and city delivery available in bhubaneswar
 
 👉 Shop now: http://cladly.in
 
@@ -69,4 +69,37 @@ Instagram: @cladly Fashion
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
         fail_silently=True,
+    )
+
+
+
+def send_password_reset_email(user, reset_link):
+    subject = "Reset your Cladly password 🔐"
+
+    message = f"""
+Hi {user.full_name},
+
+We received a request to reset your Cladly account password.
+
+Click the link below to reset your password:
+
+👉 {reset_link}
+
+⚠️  This link will expire in 30 minutes.
+
+If you did NOT request a password reset, please ignore this email.
+Your password will remain unchanged.
+
+Stay safe,
+The Cladly Team 🖤
+——————————————————————————
+Instagram: @cladly fashion
+"""
+
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        fail_silently=False,
     )
