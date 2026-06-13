@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}Verify OTP — Cladly{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div style="width:100%;max-width:440px;">
+    <div class="auth-brand">
+      <div class="auth-logo">Cladly</div>
+      <div class="auth-tagline">Almost there!</div>
+    </div>
+    <div class="form-card">
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="font-size:48px;margin-bottom:12px;">📧</div>
+        <div class="form-title" style="font-size:1.4rem;">Verify Your Email</div>
+        <div class="form-sub">
+          We sent a 6-digit OTP to<br>
+          <strong style="color:var(--gold);">{{ email }}</strong>
+        </div>
+      </div>
+
+      {% if error %}
+        <div class="alert alert-error" style="margin-bottom:16px;">
+          {{ error }}
+        </div>
+      {% endif %}
+
+     <form method="post" action="{% url 'verify_otp' %}">
+        {% csrf_token %}
+        <input type="hidden" name="identifier" value="{{ identifier }}">
+        <input type="hidden" name="purpose" value="{{ purpose }}">
+        <input type="hidden" name="email" value="{{ email }}">
+        <input type="hidden" name="name" value="{{ name }}">
+
+        <div class="form-group">
+          <label class="form-label" style="text-align:center;display:block;">Enter 6-digit OTP</label>
+          <!-- OTP Input Boxes -->
+          <div style="display:flex;gap:10px;justify-content:center;margin:16px 0;">
+            <input type="text" name="otp" id="otp-input" maxlength="6"
+                   class="form-control"
+                   style="text-align:center;font-size:1.8rem;font-weight:700;letter-spacing:10px;padding:12px;color:var(--gold);"
+                   placeholder="——————"
+                   autocomplete="one-time-code"
+                   autofocus>
+          </div>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div style="text-align:center;margin-bottom:16px;">
+          <span style="font-size:13px;color:var(--text-muted);">OTP expires in </span>
+          <span id="countdown" style="color:var(--gold);font-weight:700;font-size:14px;">10:00</span>
+        </div>
+
+       <button type="submit" class="btn btn-gold btn-full btn-lg"
+         onclick="if(window._submitting) return false; window._submitting=true; this.disabled=true; this.textContent='Verifying...';">
+         Verify OTP
+       </button>
+      </form>
+
+      <hr class="form-divider">
+
+      <!-- Resend OTP -->
+      <form method="post" action="{% url 'resend_otp' %}">
+        {% csrf_token %}
+        <input type="hidden" name="identifier" value="{{ identifier }}">
+        <input type="hidden" name="purpose" value="{{ purpose }}">
+        <input type="hidden" name="email" value="{{ email }}">
+        <input type="hidden" name="name" value="{{ name }}">
+        <div style="text-align:center;">
+          <span style="font-size:13px;color:var(--text-muted);">Didn't receive OTP? </span>
+          <button type="submit" style="background:none;border:none;color:var(--gold);font-weight:600;font-size:13px;cursor:pointer;">
+            Resend OTP
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// OTP countdown timer
+let seconds = 600; // 10 minutes
+const countdown = document.getElementById('countdown');
+const timer = setInterval(() => {
+  seconds--;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  countdown.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if (seconds <= 60) countdown.style.color = 'var(--error)';
+  if (seconds <= 0) {
+    clearInterval(timer);
+    countdown.textContent = 'Expired';
+    document.querySelector('button[type=submit]').disabled = true;
+  }
+}, 1000);
+
+// Auto submit when 6 digits entered
+let submitted = false;
+document.getElementById('otp-input').addEventListener('input', function() {
+  if (this.value.length === 6 && !submitted) {
+    submitted = true;
+    this.closest('form').submit();
+  }
+});
+</script>
+{% endblock %}

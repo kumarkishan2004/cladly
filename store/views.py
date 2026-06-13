@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -12,6 +13,10 @@ from datetime import timedelta, date
 import json
 from .email_utils import send_welcome_email, send_welcome_back_email, send_password_reset_email
 from .password_reset_tokens import generate_reset_token, verify_reset_token, delete_reset_token
+from .otp_utils import (
+    generate_otp, send_otp_email, store_otp, verify_otp,
+    delete_otp, increment_otp_attempts, get_otp_attempts, clear_otp_attempts
+)
 from .models import (
     User, Category, Product, ProductImage, Address, Cart, Wishlist,
     Order, OrderItem, OrderStatusHistory, Coupon, Review, Banner,
@@ -104,26 +109,30 @@ def register_view(request):
         return redirect('home')
     form = RegistrationForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
-        user = form.save(commit=False)
-        user.set_password(form.cleaned_data['password'])
-        # Handle referral
-        ref_code = request.GET.get('ref') or request.POST.get('ref_code')
-        if ref_code:
-            try:
-                referrer = User.objects.get(referral_code=ref_code)
-                user.referred_by = referrer
-            except User.DoesNotExist:
-                pass
-        user.save()
-        login(request, user)
-        # Merge guest cart
-        _merge_guest_cart(request, user)
-        # Send welcome email with coupon
-        send_welcome_email(user)
-        messages.success(request, f'Welcome to Cladly, {user.full_name}! 🎉 Check your email for a surprise gift!')
-        return redirect('home')
-    return render(request, 'store/auth/register.html', {'form': form})
+        # Don't save yet — send OTP first
+        email = form.cleaned_data['email']
+        full_name = form.cleaned_data['full_name']
 
+        # Store form data in cache temporarily
+        import json
+        cache_key = f'register_data_{email}'
+        cache.set(cache_key, {
+            'full_name': full_name,
+            'email': email,
+            'mobile': form.cleaned_data.get('mobile', ''),
+            'password': form.cleaned_data['password'],
+            'ref_code': request.GET.get('ref') or request.POST.get('ref_code', ''),
+        }, timeout=600)
+
+        # Generate and send OTP
+        otp = generate_otp()
+        store_otp(email, otp, {'purpose': 'register', 'name': full_name})
+        send_otp_email(email, full_name, otp, purpose='register')
+
+        messages.success(request, f'OTP sent to {email}. Please verify to complete registration.')
+        return redirect(f'/verify-otp/?identifier={email}&purpose=register&email={email}&name={full_name}')
+
+    return render(request, 'store/auth/register.html', {'form': form})
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -132,26 +141,33 @@ def login_view(request):
     if request.method == 'POST' and form.is_valid():
         identifier = form.cleaned_data['identifier']
         password = form.cleaned_data['password']
-        # Try email
+
+        # Try email login
         user = authenticate(request, username=identifier, password=password)
         if not user:
-            # Try mobile
+            # Try mobile login
             try:
                 u = User.objects.get(mobile=identifier)
                 user = authenticate(request, username=u.email, password=password)
             except User.DoesNotExist:
                 pass
+
         if user:
-            login(request, user)
-            _merge_guest_cart(request, user)
-            # Send welcome back email
-            send_welcome_back_email(user)
-            messages.success(request, f'Welcome back, {user.full_name}! 👋')
-            return redirect(request.GET.get('next', 'home'))
+            # Send OTP before logging in
+            otp = generate_otp()
+            store_otp(user.email, otp, {
+                'purpose': 'login',
+                'user_id': user.id,
+                'name': user.full_name,
+            })
+            send_otp_email(user.email, user.full_name, otp, purpose='login')
+
+            messages.info(request, f'OTP sent to your email. Please verify to login.')
+            return redirect(f'/verify-otp/?identifier={user.email}&purpose=login&email={user.email}&name={user.full_name}')
         else:
             messages.error(request, 'Invalid credentials. Please try again.')
-    return render(request, 'store/auth/login.html', {'form': form})
 
+    return render(request, 'store/auth/login.html', {'form': form})
 
 def logout_view(request):
     logout(request)
@@ -174,6 +190,152 @@ def forgot_password(request):
             # Show same message even if email not found (security best practice)
             messages.success(request, 'If this email exists, a reset link has been sent.')
     return render(request, 'store/auth/forgot_password.html', {'form': form})
+
+def verify_otp_view(request):
+    # GET request — just show the form
+    if request.method == 'GET':
+        identifier = request.GET.get('identifier', '')
+        purpose = request.GET.get('purpose', '')
+        email = request.GET.get('email', identifier)
+        name = request.GET.get('name', '')
+        return render(request, 'store/auth/verify_otp.html', {
+            'identifier': identifier,
+            'purpose': purpose,
+            'email': email,
+            'name': name,
+            'error': None,
+        })
+
+    # POST request — verify the OTP
+    identifier = request.POST.get('identifier', '').strip()
+    purpose = request.POST.get('purpose', '').strip()
+    email = request.POST.get('email', identifier).strip()
+    name = request.POST.get('name', '').strip()
+    entered_otp = request.POST.get('otp', '').strip()
+
+    # Prevent double submission
+    if cache.get(f'otp_used_{identifier}'):
+        messages.info(request, 'Login successful!')
+        return redirect('home')
+
+    # Check too many wrong attempts
+    attempts = get_otp_attempts(identifier)
+    if attempts >= 5:
+        delete_otp(identifier)
+        clear_otp_attempts(identifier)
+        messages.error(request, 'Too many wrong attempts. Please request a new OTP.')
+        return redirect('register' if purpose == 'register' else 'login')
+
+    # Get OTP data from cache directly
+    otp_data = cache.get(f'otp_{identifier}')
+
+    # Check if OTP expired
+    if not otp_data:
+        messages.error(request, 'OTP expired. Please request a new one.')
+        return redirect('register' if purpose == 'register' else 'login')
+
+    # Compare OTP
+    stored_otp = str(otp_data.get('otp', '')).strip()
+    entered_otp_clean = str(entered_otp).strip()
+
+    if stored_otp == entered_otp_clean:
+        # ── CORRECT OTP ──
+
+        # Mark as used immediately — blocks any second submission
+        cache.set(f'otp_used_{identifier}', True, timeout=60)
+        # Delete OTP from cache
+        delete_otp(identifier)
+        clear_otp_attempts(identifier)
+
+        if purpose == 'register':
+            reg_data = cache.get(f'register_data_{identifier}')
+            if reg_data:
+                # Check if user already created (double submit safety)
+                if User.objects.filter(email=reg_data['email']).exists():
+                    user = User.objects.get(email=reg_data['email'])
+                    login(request, user)
+                    return redirect('home')
+
+                user = User(
+                    full_name=reg_data['full_name'],
+                    email=reg_data['email'],
+                    mobile=reg_data.get('mobile', ''),
+                )
+                user.set_password(reg_data['password'])
+                if reg_data.get('ref_code'):
+                    try:
+                        referrer = User.objects.get(referral_code=reg_data['ref_code'])
+                        user.referred_by = referrer
+                    except User.DoesNotExist:
+                        pass
+                user.save()
+                cache.delete(f'register_data_{identifier}')
+                login(request, user)
+                _merge_guest_cart(request, user)
+                send_welcome_email(user)
+                messages.success(request, f'Welcome to Cladly, {user.full_name}! 🎉')
+                return redirect('home')
+            else:
+                messages.error(request, 'Session expired. Please register again.')
+                return redirect('register')
+
+        elif purpose == 'login':
+            user_id = otp_data.get('user_id')
+            if not user_id:
+                messages.error(request, 'Something went wrong. Please login again.')
+                return redirect('login')
+            try:
+                user = User.objects.get(id=user_id)
+                login(request, user)
+                _merge_guest_cart(request, user)
+                send_welcome_back_email(user)
+                messages.success(request, f'Welcome back, {user.full_name}! 👋')
+                return redirect('home')
+            except User.DoesNotExist:
+                messages.error(request, 'Something went wrong. Please login again.')
+                return redirect('login')
+
+    else:
+        # ── WRONG OTP ──
+        attempts = increment_otp_attempts(identifier)
+        remaining = 5 - attempts
+        if remaining > 0:
+            error = f'Wrong OTP. {remaining} attempt{"s" if remaining > 1 else ""} remaining.'
+        else:
+            delete_otp(identifier)
+            clear_otp_attempts(identifier)
+            messages.error(request, 'Too many wrong attempts. Please request a new OTP.')
+            return redirect('register' if purpose == 'register' else 'login')
+
+        return render(request, 'store/auth/verify_otp.html', {
+            'identifier': identifier,
+            'purpose': purpose,
+            'email': email,
+            'name': name,
+            'error': error,
+        })
+    
+    
+def resend_otp(request):
+    if request.method == 'POST':
+        identifier = request.POST.get('identifier')
+        purpose = request.POST.get('purpose')
+        email = request.POST.get('email', identifier)
+        name = request.POST.get('name', '')
+
+        clear_otp_attempts(identifier)
+        otp = generate_otp()
+        store_otp(identifier, otp, {
+            'purpose': purpose,
+            'name': name,
+        })
+        send_otp_email(email, name, otp, purpose=purpose)
+        messages.success(request, 'New OTP sent to your email!')
+
+    return redirect(f'/verify-otp/?identifier={identifier}&purpose={purpose}&email={email}&name={name}')
+
+
+
 
 def reset_password(request, token):
     # Verify token is valid
