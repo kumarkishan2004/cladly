@@ -36,6 +36,11 @@
         <span class="price-original">₹{{ product.original_price|floatformat:0 }}</span>
         <span class="price-discount">{{ product.discount_percent }}% off</span>
       {% endif %}
+      {% if product.local_market_price %}
+         <span style="font-size:10px;color:var(--text-muted);display:block;margin-top:2px;">
+           Market price: ₹{{ product.local_market_price|floatformat:0 }}
+         </span>
+      {% endif %}
     </div>
     <div class="product-actions">
       {% if product.stock_status == 'out_of_stock' %}

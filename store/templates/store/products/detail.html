@@ -67,7 +67,13 @@
           <span class="price-disc-big">{{ product.discount_percent }}% OFF</span>
         {% endif %}
       </div>
-
+       {% if product.local_market_price %}
+           <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.08);border:1px solid var(--border-gold);border-radius:var(--radius-sm);padding:6px 12px;margin-bottom:12px;font-size:13px;">
+              <span style="color:var(--text-muted);">🏪 Local market price:</span>
+              <span style="color:var(--text-secondary);text-decoration:line-through;">₹{{ product.local_market_price|floatformat:0 }}</span>
+              <span style="color:var(--success);font-weight:600;">You save ₹{{ product.local_market_price|add:"-0" }}</span>
+           </div>
+       {% endif %}
       <!-- Stock Status -->
       {% if product.stock_status == 'in_stock' %}
         <p style="font-size:13px;color:var(--success);margin-bottom:12px;">✓ In Stock</p>
