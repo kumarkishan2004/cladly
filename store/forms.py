@@ -111,7 +111,7 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ['name', 'slug', 'category', 'description', 'material', 'color',
                   'original_price', 'selling_price', 'local_market_price','stock_quantity',
-                  'is_active', 'is_new_arrival', 'is_best_seller', 'is_featured',
+                   'styling_tips','is_active', 'is_new_arrival', 'is_best_seller', 'is_featured',
                   'delivery_days', 'tags']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 5, 'class': FORM_CTRL}),
@@ -123,6 +123,7 @@ class ProductForm(forms.ModelForm):
             'original_price': forms.NumberInput(attrs={'class': FORM_CTRL}),
             'selling_price': forms.NumberInput(attrs={'class': FORM_CTRL}),
             'local_market_price': forms.NumberInput(attrs={'class': FORM_CTRL, 'placeholder': 'e.g. 599'}),
+            'styling_tips': forms.Textarea(attrs={'class': FORM_CTRL, 'rows': 4, 'placeholder': 'e.g. Pair with a floral kurta and jhumkas for a festive look...'}),
             'stock_quantity': forms.NumberInput(attrs={'class': FORM_CTRL}),
             'delivery_days': forms.NumberInput(attrs={'class': FORM_CTRL}),
             'category': forms.Select(attrs={'class': FORM_CTRL}),
