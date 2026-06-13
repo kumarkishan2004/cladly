@@ -29,6 +29,12 @@
         <label class="form-label">Selling Price (₹)</label>{{ form.selling_price }}
       </div>
       <div class="form-group">
+        <label class="form-label">Local Market Price (₹)
+        <span style="font-size:11px;color:var(--text-muted);font-weight:400;">— shown to customers as reference</span>
+        </label>
+        {{ form.local_market_price }}
+      </div>
+      <div class="form-group">
         <label class="form-label">Stock Quantity</label>{{ form.stock_quantity }}
       </div>
       <div class="form-group">

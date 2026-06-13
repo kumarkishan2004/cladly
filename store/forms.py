@@ -110,7 +110,7 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'slug', 'category', 'description', 'material', 'color',
-                  'original_price', 'selling_price', 'stock_quantity',
+                  'original_price', 'selling_price', 'local_market_price','stock_quantity',
                   'is_active', 'is_new_arrival', 'is_best_seller', 'is_featured',
                   'delivery_days', 'tags']
         widgets = {
@@ -122,6 +122,7 @@ class ProductForm(forms.ModelForm):
             'color': forms.TextInput(attrs={'class': FORM_CTRL}),
             'original_price': forms.NumberInput(attrs={'class': FORM_CTRL}),
             'selling_price': forms.NumberInput(attrs={'class': FORM_CTRL}),
+            'local_market_price': forms.NumberInput(attrs={'class': FORM_CTRL, 'placeholder': 'e.g. 599'}),
             'stock_quantity': forms.NumberInput(attrs={'class': FORM_CTRL}),
             'delivery_days': forms.NumberInput(attrs={'class': FORM_CTRL}),
             'category': forms.Select(attrs={'class': FORM_CTRL}),
