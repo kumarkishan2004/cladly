@@ -95,3 +95,11 @@ DEFAULT_FROM_EMAIL = 'Cladly <fashioncladly@gmail.com>'
 # Session
 SESSION_COOKIE_AGE = 86400 * 30  # 30 days
 SESSION_SAVE_EVERY_REQUEST = True
+
+# cache for otp store
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cladly_cache_table',
+    }
+}
