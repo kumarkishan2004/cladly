@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -9,7 +10,8 @@ from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 from datetime import timedelta, date
 import json
-from .email_utils import send_welcome_email, send_welcome_back_email
+from .email_utils import send_welcome_email, send_welcome_back_email, send_password_reset_email
+from .password_reset_tokens import generate_reset_token, verify_reset_token, delete_reset_token
 from .models import (
     User, Category, Product, ProductImage, Address, Cart, Wishlist,
     Order, OrderItem, OrderStatusHistory, Coupon, Review, Banner,
@@ -163,19 +165,38 @@ def forgot_password(request):
         email = form.cleaned_data['email']
         try:
             user = User.objects.get(email=email)
-            # In production: send real reset email with token
-            messages.success(request, 'Password reset instructions sent to your email.')
+            # Generate token and send email
+            token = generate_reset_token(user.id)
+            reset_link = f"{settings.FRONTEND_URL}/reset-password/{token}/"
+            send_password_reset_email(user, reset_link)
+            messages.success(request, 'Password reset link sent! Check your email inbox.')
         except User.DoesNotExist:
-            messages.error(request, 'No account found with this email.')
+            # Show same message even if email not found (security best practice)
+            messages.success(request, 'If this email exists, a reset link has been sent.')
     return render(request, 'store/auth/forgot_password.html', {'form': form})
 
-
 def reset_password(request, token):
+    # Verify token is valid
+    user_id = verify_reset_token(token)
+    if not user_id:
+        messages.error(request, 'This reset link is invalid or has expired. Please request a new one.')
+        return redirect('forgot_password')
+
     form = ResetPasswordForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
-        messages.success(request, 'Password updated successfully.')
-        return redirect('login')
-    return render(request, 'store/auth/reset_password.html', {'form': form})
+        try:
+            user = User.objects.get(id=user_id)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            # Delete token so it cannot be reused
+            delete_reset_token(token)
+            messages.success(request, 'Password reset successfully! You can now login.')
+            return redirect('login')
+        except User.DoesNotExist:
+            messages.error(request, 'Something went wrong. Please try again.')
+            return redirect('forgot_password')
+
+    return render(request, 'store/auth/reset_password.html', {'form': form, 'token': token})
 
 
 def _merge_guest_cart(request, user):
