@@ -49,7 +49,12 @@
       <div class="form-group" style="grid-column:1/-1;">
         <label class="form-label">Description</label>{{ form.description }}
       </div>
-
+      <div class="form-group" style="grid-column:1/-1;">
+         <label class="form-label">Styling Tips
+         <span style="font-size:11px;color:var(--text-muted);font-weight:400;">— shown to customers on product page</span>
+         </label>
+         {{ form.styling_tips }}
+      </div>
       <!-- Images -->
       <div class="form-group" style="grid-column:1/-1;">
         <label class="form-label">Product Images (select multiple)</label>

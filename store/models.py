@@ -94,6 +94,7 @@ class Product(models.Model):
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
     local_market_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text='local market Price')
+    styling_tips = models.TextField(blank=True, null=True, help_text='Styling tips shown to customers on product page')
     stock_quantity = models.IntegerField(default=0)
     stock_status = models.CharField(max_length=20, choices=STOCK_STATUS, default='in_stock')
     is_active = models.BooleanField(default=True)

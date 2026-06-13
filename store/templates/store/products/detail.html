@@ -151,7 +151,15 @@
           <p>{{ product.description }}</p>
         </div>
       {% endif %}
-
+      <!-- Styling Tips -->
+      {% if product.styling_tips %}
+        <div class="product-description" style="background:rgba(201,168,76,0.05);border:1px solid var(--border-gold);border-radius:var(--radius);padding:16px;margin-bottom:24px;">
+          <h4 style="display:flex;align-items:center;gap:8px;">
+          <span>✨</span> Styling Tips
+          </h4>
+          <p style="margin-top:8px;white-space:pre-line;">{{ product.styling_tips }}</p>
+        </div>
+{% endif %}
       <!-- Coupons hint -->
       <div style="background:rgba(201,168,76,0.08);border:1px dashed var(--border-gold);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text-secondary);">
         🏷️ Use code <strong style="color:var(--gold)">CLADLY10</strong> for 10% off your first order

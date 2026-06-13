@@ -29,6 +29,12 @@
   <div class="product-info">
     <a href="{% url 'product_detail' product.slug %}">
       <div class="product-name">{{ product.name }}</div>
+      <!-- Styling Tips -->
+     {% if product.styling_tips %}
+      <div style="display:inline-flex;align-items:center;gap:4px;background:rgba(201,168,76,0.1);border:1px solid var(--border-gold);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--gold);margin-bottom:6px;">
+         ✨ Styling Tips Available
+      </div>
+     {% endif %}
     </a>
     <div class="product-pricing">
       <span class="price-current">₹{{ product.selling_price|floatformat:0 }}</span>
