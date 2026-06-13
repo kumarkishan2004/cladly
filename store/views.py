@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 from datetime import timedelta, date
 import json
-
+from .email_utils import send_welcome_email, send_welcome_back_email
 from .models import (
     User, Category, Product, ProductImage, Address, Cart, Wishlist,
     Order, OrderItem, OrderStatusHistory, Coupon, Review, Banner,
@@ -116,7 +116,9 @@ def register_view(request):
         login(request, user)
         # Merge guest cart
         _merge_guest_cart(request, user)
-        messages.success(request, f'Welcome to Cladly, {user.full_name}! 🎉')
+        # Send welcome email with coupon
+        send_welcome_email(user)
+        messages.success(request, f'Welcome to Cladly, {user.full_name}! 🎉 Check your email for a surprise gift!')
         return redirect('home')
     return render(request, 'store/auth/register.html', {'form': form})
 
@@ -140,7 +142,9 @@ def login_view(request):
         if user:
             login(request, user)
             _merge_guest_cart(request, user)
-            messages.success(request, f'Welcome back, {user.full_name}!')
+            # Send welcome back email
+            send_welcome_back_email(user)
+            messages.success(request, f'Welcome back, {user.full_name}! 👋')
             return redirect(request.GET.get('next', 'home'))
         else:
             messages.error(request, 'Invalid credentials. Please try again.')
