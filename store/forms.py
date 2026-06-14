@@ -83,8 +83,6 @@ class AddressForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': FORM_CTRL}),
             'mobile': forms.TextInput(attrs={'class': FORM_CTRL}),
             'college_name': forms.TextInput(attrs={'class': FORM_CTRL}),
-            'hostel_name': forms.TextInput(attrs={'class': FORM_CTRL}),
-            'room_number': forms.TextInput(attrs={'class': FORM_CTRL}),
             'city': forms.TextInput(attrs={'class': FORM_CTRL}),
             'state': forms.TextInput(attrs={'class': FORM_CTRL}),
             'pincode': forms.TextInput(attrs={'class': FORM_CTRL}),

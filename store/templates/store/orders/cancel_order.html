@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Cancel Order — Cladly{% endblock %}
+{% block content %}
+<div class="user-page">
+  <div style="max-width:500px;margin:0 auto;">
+
+    <!-- Warning Box -->
+    <div style="background:rgba(224,80,80,0.08);border:1px solid rgba(224,80,80,0.3);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
+      <h2 style="font-family:var(--font-display);color:var(--error);margin-bottom:8px;">Cancel Order?</h2>
+      <p style="color:var(--text-secondary);font-size:14px;">
+        Are you sure you want to cancel order
+        <strong style="color:var(--gold);">{{ order.order_id }}</strong>?
+        This action cannot be undone.
+      </p>
+    </div>
+
+    <!-- Order Summary -->
+    <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:20px;">
+      <h3 style="font-family:var(--font-display);color:var(--gold);margin-bottom:16px;font-size:1rem;">Order Summary</h3>
+      {% for item in order.items.all %}
+        <div style="display:flex;gap:12px;align-items:center;{% if not forloop.last %}margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);{% endif %}">
+          {% if item.product_image %}
+            <img src="{{ item.product_image }}" style="width:48px;height:48px;border-radius:var(--radius-sm);object-fit:cover;">
+          {% endif %}
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">{{ item.product_name }}</div>
+            <div style="font-size:12px;color:var(--text-muted);">Qty: {{ item.quantity }}</div>
+          </div>
+          <div style="font-weight:700;color:var(--gold);">₹{{ item.subtotal|floatformat:0 }}</div>
+        </div>
+      {% endfor %}
+      <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;">
+        <span style="color:var(--text-muted);">Total Paid</span>
+        <span style="font-weight:700;color:var(--gold);">₹{{ order.grand_total|floatformat:0 }}</span>
+      </div>
+    </div>
+
+    <!-- Cancel Form -->
+    <form method="post" action="{% url 'cancel_order' order.order_id %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Reason for cancellation
+          <span style="color:var(--text-muted);font-weight:400;">(optional)</span>
+        </label>
+        <select name="cancel_reason" class="form-control">
+          <option value="">Select a reason</option>
+          <option value="Changed my mind">Changed my mind</option>
+          <option value="Ordered by mistake">Ordered by mistake</option>
+          <option value="Found better price elsewhere">Found better price elsewhere</option>
+          <option value="Delivery taking too long">Delivery taking too long</option>
+          <option value="Wrong item ordered">Wrong item ordered</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:20px;">
+        <button type="submit" class="btn btn-full"
+                style="background:var(--error);color:white;border:none;padding:14px;border-radius:var(--radius);font-weight:600;cursor:pointer;">
+          Yes, Cancel Order
+        </button>
+        <a href="{% url 'order_detail' order.order_id %}"
+           class="btn btn-dark btn-full" style="text-align:center;padding:14px;">
+          Keep Order
+        </a>
+      </div>
+    </form>
+
+    <!-- Refund Note -->
+    {% if order.payment_method != 'cod' %}
+      <div style="margin-top:16px;padding:12px 16px;background:rgba(80,184,120,0.08);border:1px solid rgba(80,184,120,0.2);border-radius:var(--radius);font-size:13px;color:var(--text-secondary);">
+        💳 Refund will be processed in <strong style="color:var(--success);">5-7 business days</strong> to your original payment method.
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
