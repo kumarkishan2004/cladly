@@ -103,3 +103,8 @@ CACHES = {
         'LOCATION': 'cladly_cache_table',
     }
 }
+
+# Razorpay payment
+RAZORPAY_KEY_ID = 'rzp_test_T1VGBthGJHr4J1'      #  key id
+RAZORPAY_KEY_SECRET = 'tcYvoTB70IirNiVN4Z5E6zrK' #  key secret
+RAZORPAY_CURRENCY = 'INR'

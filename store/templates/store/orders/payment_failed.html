@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Payment Failed — Cladly{% endblock %}
+{% block content %}
+<div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:40px 16px;">
+  <div style="text-align:center;max-width:480px;">
+    <div style="font-size:64px;margin-bottom:16px;">❌</div>
+    <h1 style="font-family:var(--font-display);font-size:2rem;color:var(--error);margin-bottom:8px;">
+      Payment Failed
+    </h1>
+    <p style="color:var(--text-secondary);margin-bottom:24px;">
+      Your payment for order <strong style="color:var(--gold);">{{ order.order_id }}</strong> could not be processed.
+      No amount has been deducted.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="{% url 'initiate_payment' order.order_id %}" class="btn btn-gold">
+        Try Again →
+      </a>
+      <a href="{% url 'my_orders' %}" class="btn btn-dark">
+        My Orders
+      </a>
+    </div>
+    <p style="margin-top:20px;font-size:13px;color:var(--text-muted);">
+      Need help? Contact us on Instagram <strong style="color:var(--gold);">@cladly.in</strong>
+    </p>
+  </div>
+</div>
+{% endblock %}

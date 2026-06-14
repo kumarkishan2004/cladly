@@ -313,6 +313,9 @@ class Order(models.Model):
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='cod')
     payment_status = models.BooleanField(default=False)
     payment_transaction_id = models.CharField(max_length=200, blank=True)
+    razorpay_order_id = models.CharField(max_length=200, blank=True)
+    razorpay_payment_id = models.CharField(max_length=200, blank=True)
+    razorpay_signature = models.CharField(max_length=500, blank=True)
 
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='placed')
     placed_at = models.DateTimeField(auto_now_add=True)
