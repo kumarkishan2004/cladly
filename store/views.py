@@ -69,6 +69,8 @@ def home(request):
     sale_banners = Banner.objects.filter(banner_type='sale', is_active=True)
     flash_banners = Banner.objects.filter(banner_type='flash', is_active=True)
     categories = Category.objects.filter(is_active=True).order_by('order')
+    girls_categories = Category.objects.filter(is_active=True, gender='girls').order_by('order')
+    boys_categories = Category.objects.filter(is_active=True, gender='boys').order_by('order')
     new_arrivals = Product.objects.filter(is_new_arrival=True, is_active=True)[:12]
     best_sellers = Product.objects.filter(is_best_seller=True, is_active=True)[:12]
     featured = Product.objects.filter(is_featured=True, is_active=True)[:8]
@@ -92,6 +94,8 @@ def home(request):
         'sale_banners': sale_banners,
         'flash_banners': flash_banners,
         'categories': categories,
+        'girls_categories': girls_categories,
+        'boys_categories': boys_categories,
         'new_arrivals': new_arrivals,
         'best_sellers': best_sellers,
         'featured': featured,
@@ -1125,10 +1129,14 @@ def admin_categories(request):
 @user_passes_test(is_admin, login_url='/login/')
 def admin_add_category(request):
     form = CategoryForm(request.POST or None, request.FILES or None)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, 'Category created.')
-        return redirect('admin_categories')
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category created successfully!')
+            return redirect('admin_categories')
+        else:
+            # Show what went wrong
+            print("Form errors:", form.errors)
     return render(request, 'store/admin/category_form.html', {'form': form, 'action': 'Add'})
 
 

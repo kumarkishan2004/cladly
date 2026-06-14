@@ -5,26 +5,96 @@
   <div class="admin-page-title">{{ action }} Category</div>
   <a href="{% url 'admin_categories' %}" class="btn btn-dark btn-sm">← Back</a>
 </div>
+
 <div style="max-width:560px;">
-  <form method="post" enctype="multipart/form-data" style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
+  <form method="post" enctype="multipart/form-data" 
+        style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
     {% csrf_token %}
-    <div class="form-group"><label class="form-label">Name</label>{{ form.name }}</div>
-    <div class="form-group"><label class="form-label">Slug</label>{{ form.slug }}</div>
-    <div class="form-group"><label class="form-label">Image</label>{{ form.image }}</div>
-    <div class="form-group"><label class="form-label">Description</label>{{ form.description }}</div>
-    <div class="form-group"><label class="form-label">Display Order</label>{{ form.order }}</div>
-    <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:14px;cursor:pointer;">{{ form.is_active }} Active</label>
+
+    {% if form.errors %}
+      <div class="alert alert-error" style="margin-bottom:16px;">
+        Please fix the errors below:
+        {% for field, errors in form.errors.items %}
+          {% for error in errors %}
+            <div>→ {{ field }}: {{ error }}</div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="form-group">
+      <label class="form-label">Category Name</label>
+      {{ form.name }}
+      {% if form.name.errors %}
+        <div class="form-error">{{ form.name.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Slug (URL)
+        <span style="font-size:11px;color:var(--text-muted);font-weight:400;">— auto generated</span>
+      </label>
+      {{ form.slug }}
+      {% if form.slug.errors %}
+        <div class="form-error">{{ form.slug.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Gender Section</label>
+      {{ form.gender }}
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">
+        Girls → shows in Girls Collection · Boys → shows in Boys Collection
+      </div>
+      {% if form.gender.errors %}
+        <div class="form-error">{{ form.gender.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Category Image</label>
+      {{ form.image }}
+      {% if form.image.errors %}
+        <div class="form-error">{{ form.image.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      {{ form.description }}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Display Order
+        <span style="font-size:11px;color:var(--text-muted);font-weight:400;">— lower number shows first</span>
+      </label>
+      {{ form.order }}
+    </div>
+
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:14px;cursor:pointer;">
+      {{ form.is_active }}
+      <span style="color:var(--text-secondary);">Active — show on website</span>
+    </label>
+
     <div style="display:flex;gap:10px;">
       <button type="submit" class="btn btn-gold">{{ action }} Category</button>
       <a href="{% url 'admin_categories' %}" class="btn btn-dark">Cancel</a>
     </div>
   </form>
 </div>
+
 <script>
+// Auto generate slug from name
 document.querySelector('[name=name]')?.addEventListener('input', function() {
   const slug = document.querySelector('[name=slug]');
-  if (slug && !slug.dataset.manual) slug.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  if (slug && !slug.dataset.manual) {
+    slug.value = this.value.toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
 });
-document.querySelector('[name=slug]')?.addEventListener('input', function() { this.dataset.manual='1'; });
+document.querySelector('[name=slug]')?.addEventListener('input', function() {
+  this.dataset.manual = '1';
+});
 </script>
 {% endblock %}

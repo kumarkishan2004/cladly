@@ -131,12 +131,13 @@ class ProductForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name', 'slug', 'image', 'description', 'is_active', 'order']
+        fields = ['name', 'slug', 'image', 'description', 'is_active', 'order', 'gender']
         widgets = {
             'name': forms.TextInput(attrs={'class': FORM_CTRL}),
             'slug': forms.TextInput(attrs={'class': FORM_CTRL}),
             'description': forms.Textarea(attrs={'rows': 3, 'class': FORM_CTRL}),
             'order': forms.NumberInput(attrs={'class': FORM_CTRL}),
+            'gender': forms.Select(attrs={'class': FORM_CTRL}),
         }
 
 

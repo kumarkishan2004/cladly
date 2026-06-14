@@ -55,11 +55,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 # ─────────────────────────────────────────────
 
 class Category(models.Model):
+    GENDER_CHOICES = [
+        ('all', 'All'),
+        ('girls', 'Girls'),
+        ('boys', 'Boys'),
+    ]
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to='categories/', null=True, blank=True)
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
+    gender = models.CharField(max_length=10, choices=[('all','All'),('girls','Girls'),('boys','Boys')], default='girls')
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
