@@ -11,6 +11,7 @@ from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 from datetime import timedelta, date
 import json
+from .payment_utils import create_razorpay_order, verify_razorpay_payment
 from .email_utils import send_welcome_email, send_welcome_back_email, send_password_reset_email
 from .password_reset_tokens import generate_reset_token, verify_reset_token, delete_reset_token
 from .otp_utils import (
@@ -726,6 +727,7 @@ def checkout(request):
 
 @login_required
 @require_POST
+
 def place_order(request):
     cart_items = get_cart_items(request)
     if not cart_items.exists():
@@ -759,8 +761,6 @@ def place_order(request):
         delivery_mobile=address.mobile,
         delivery_address=address.address_line,
         delivery_college=address.college_name,
-        delivery_hostel=address.hostel_name,
-        delivery_room=address.room_number,
         delivery_city=address.city,
         delivery_pincode=address.pincode,
         payment_method=payment_method,
@@ -782,7 +782,6 @@ def place_order(request):
             price=item.product.selling_price,
             original_price=item.product.original_price,
         )
-        # Reduce stock
         item.product.stock_quantity = max(0, item.product.stock_quantity - item.quantity)
         item.product.update_stock_status()
 
@@ -792,22 +791,116 @@ def place_order(request):
         coupon.save()
         request.session.pop('coupon_id', None)
 
-    # Clear cart
-    cart_items.delete()
-
     # Status history
-    OrderStatusHistory.objects.create(order=order, status='placed', note='Order placed successfully.')
-
-    # Notification
-    Notification.objects.create(
-        user=request.user,
-        title='Order Placed!',
-        message=f'Your order {order.order_id} has been placed. Expected delivery: tomorrow.',
-        notif_type='order',
-        link=f'/orders/{order.order_id}/',
+    OrderStatusHistory.objects.create(
+        order=order,
+        status='placed',
+        note='Order placed successfully.'
     )
 
-    return redirect('order_success', order_id=order.order_id)
+    # ── COD — clear cart immediately ──
+    if payment_method == 'cod':
+        cart_items.delete()
+        Notification.objects.create(
+            user=request.user,
+            title='Order Placed!',
+            message=f'Your order {order.order_id} has been placed successfully.',
+            notif_type='order',
+            link=f'/orders/{order.order_id}/',
+        )
+        return redirect('order_success', order_id=order.order_id)
+
+    # ── UPI / Online — go to Razorpay ──
+    else:
+        # Don't clear cart yet — clear after payment verified
+        return redirect('initiate_payment', order_id=order.order_id)
+
+
+@login_required
+def initiate_payment(request, order_id):
+    order = get_object_or_404(Order, order_id=order_id, user=request.user)
+
+    # Create Razorpay order
+    try:
+        razorpay_order = create_razorpay_order(order.grand_total, order.order_id)
+        order.razorpay_order_id = razorpay_order['id']
+        order.save()
+    except Exception as e:
+        messages.error(request, 'Payment gateway error. Please try again.')
+        return redirect('checkout')
+
+    return render(request, 'store/orders/payment.html', {
+        'order': order,
+        'razorpay_order_id': razorpay_order['id'],
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+        'amount': int(float(order.grand_total) * 100),  # in paise
+        'user_name': request.user.full_name,
+        'user_email': request.user.email,
+        'user_mobile': request.user.mobile or '',
+    })
+
+
+@require_POST
+def verify_payment(request):
+    razorpay_order_id = request.POST.get('razorpay_order_id')
+    razorpay_payment_id = request.POST.get('razorpay_payment_id')
+    razorpay_signature = request.POST.get('razorpay_signature')
+    order_id = request.POST.get('order_id')
+
+    order = get_object_or_404(Order, order_id=order_id)
+
+    # Verify signature
+    is_valid = verify_razorpay_payment(
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature
+    )
+
+    if is_valid:
+        # Payment successful
+        order.payment_status = True
+        order.razorpay_payment_id = razorpay_payment_id
+        order.razorpay_signature = razorpay_signature
+        order.save()
+
+        # Now clear cart
+        if order.user:
+            Cart.objects.filter(user=order.user).delete()
+
+        # Status history
+        OrderStatusHistory.objects.create(
+            order=order,
+            status='confirmed',
+            note=f'Payment received. Payment ID: {razorpay_payment_id}'
+        )
+        order.status = 'confirmed'
+        order.save()
+
+        # Notification
+        if order.user:
+            Notification.objects.create(
+                user=order.user,
+                title='Payment Successful!',
+                message=f'Payment for order {order.order_id} received successfully.',
+                notif_type='order',
+                link=f'/orders/{order.order_id}/',
+            )
+
+        return redirect('order_success', order_id=order.order_id)
+
+    else:
+        # Payment failed or tampered
+        order.status = 'cancelled'
+        order.save()
+        messages.error(request, 'Payment verification failed. Please contact support.')
+        return redirect('payment_failed', order_id=order.order_id)
+
+
+@login_required
+def payment_failed(request, order_id):
+    order = get_object_or_404(Order, order_id=order_id, user=request.user)
+    return render(request, 'store/orders/payment_failed.html', {'order': order})
+
 
 
 @login_required

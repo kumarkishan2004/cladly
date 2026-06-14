@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Complete Payment — Cladly{% endblock %}
+
+{% block content %}
+<div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:40px 16px;">
+  <div style="width:100%;max-width:480px;">
+
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--gold);">Complete Payment</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Secure payment powered by Razorpay</div>
+    </div>
+
+    <!-- Order Summary -->
+    <div style="background:var(--black-card);border:1px solid var(--border-gold);border-radius:var(--radius-lg);padding:20px;margin-bottom:20px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+        <span style="color:var(--text-muted);">Order ID</span>
+        <span style="color:var(--gold);font-weight:600;">{{ order.order_id }}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+        <span style="color:var(--text-muted);">Items</span>
+        <span>{{ order.items.count }} item{{ order.items.count|pluralize }}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;">
+        <span style="font-weight:600;">Total Amount</span>
+        <span style="font-size:1.4rem;font-weight:700;color:var(--gold);">₹{{ order.grand_total|floatformat:0 }}</span>
+      </div>
+    </div>
+
+    <!-- Pay Button -->
+    <button id="pay-btn" class="btn btn-gold btn-full btn-lg" style="font-size:1rem;">
+      🔒 Pay ₹{{ order.grand_total|floatformat:0 }} Securely
+    </button>
+
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted);">
+      Supports UPI · Cards · Net Banking · Wallets
+    </div>
+
+    <!-- Hidden form for verification -->
+    <form id="payment-form" method="post" action="{% url 'verify_payment' %}">
+      {% csrf_token %}
+      <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+      <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+      <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+      <input type="hidden" name="order_id" value="{{ order.order_id }}">
+    </form>
+
+    <div style="text-align:center;margin-top:16px;">
+      <a href="{% url 'my_orders' %}" style="font-size:13px;color:var(--text-muted);">← Cancel and go back</a>
+    </div>
+  </div>
+</div>
+
+<!-- Razorpay SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  const options = {
+    key: '{{ razorpay_key_id }}',
+    amount: '{{ amount }}',
+    currency: 'INR',
+    name: 'Cladly',
+    description: 'Order {{ order.order_id }}',
+    order_id: '{{ razorpay_order_id }}',
+    prefill: {
+      name: '{{ user_name }}',
+      email: '{{ user_email }}',
+      contact: '{{ user_mobile }}',
+    },
+    theme: {
+      color: '#C9A84C',  // Cladly gold
+    },
+    handler: function(response) {
+      // Payment successful — fill hidden form and submit
+      document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+      document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+      document.getElementById('razorpay_signature').value = response.razorpay_signature;
+      document.getElementById('payment-form').submit();
+    },
+    modal: {
+      ondismiss: function() {
+        document.getElementById('pay-btn').disabled = false;
+        document.getElementById('pay-btn').textContent = '🔒 Pay ₹{{ order.grand_total|floatformat:0 }} Securely';
+      }
+    }
+  };
+
+  document.getElementById('pay-btn').addEventListener('click', function() {
+    this.disabled = true;
+    this.textContent = 'Opening payment...';
+    const rzp = new Razorpay(options);
+    rzp.open();
+  });
+
+  // Auto open payment on page load
+  window.onload = function() {
+    setTimeout(() => {
+      document.getElementById('pay-btn').click();
+    }, 800);
+  };
+</script>
+{% endblock %}
