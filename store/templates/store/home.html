@@ -59,8 +59,114 @@
 {% endif %}
 {% endwith %}
 
-<!-- ── CATEGORIES GRID ── -->
-{% if categories %}
+<!-- ── GIRLS COLLECTION ── -->
+{% if girls_categories %}
+<section class="categories-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">✨ For Her</div>
+      <h2 class="section-title">Girls Collection</h2>
+      <p class="section-subtitle">Handpicked jewellery & accessories for every occasion</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <!-- Decorative banner -->
+    <div style="background:linear-gradient(135deg,#1a0a0a,#2a1010);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius-xl);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-family:var(--font-display);font-size:1.2rem;color:var(--gold);">Crafted for the Modern Woman</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Earrings · Necklaces · Bangles · Rings & more</div>
+      </div>
+      <a href="{% url 'product_list' %}" class="btn btn-outline btn-sm">View All →</a>
+    </div>
+
+    <div class="categories-grid">
+      {% for cat in girls_categories %}
+        <a href="{% url 'category_products' cat.slug %}" class="category-card">
+          <div class="cat-image-wrap" style="border-color:rgba(201,168,76,0.15);">
+            {% if cat.image %}
+              <img src="{{ cat.image.url }}" alt="{{ cat.name }}" loading="lazy">
+            {% else %}
+              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,#1a0808,#0a0a0a);">
+                {% if cat.name == 'Earrings' %}💎
+                {% elif cat.name == 'Ear Studs' %}✨
+                {% elif cat.name == 'Jhumkas' %}🪬
+                {% elif cat.name == 'Necklaces' %}📿
+                {% elif cat.name == 'Pendants' %}💫
+                {% elif cat.name == 'Rings' %}💍
+                {% elif cat.name == 'Bangles' %}🔮
+                {% elif cat.name == 'Bracelets' %}✨
+                {% elif cat.name == 'Hair Accessories' %}🌸
+                {% elif cat.name == 'Gift Sets' %}🎁
+                {% else %}✦{% endif %}
+              </div>
+            {% endif %}
+            <!-- Girls tag -->
+            <div style="position:absolute;bottom:6px;left:6px;background:rgba(201,68,76,0.85);color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:0.5px;">
+              GIRLS
+            </div>
+          </div>
+          <div class="cat-name">{{ cat.name }}</div>
+          <div class="cat-count">{{ cat.product_count }} items</div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── BOYS COLLECTION ── -->
+{% if boys_categories %}
+<section class="categories-section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow" style="color:#4A90D9;">⚡ For Him</div>
+      <h2 class="section-title">Boys Collection</h2>
+      <p class="section-subtitle">Bold accessories for the modern man</p>
+      <div class="section-divider" style="background:linear-gradient(90deg,#4A90D9,transparent);"></div>
+    </div>
+
+    <!-- Decorative banner -->
+    <div style="background:linear-gradient(135deg,#0a0a1a,#101020);border:1px solid rgba(74,144,217,0.2);border-radius:var(--radius-xl);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-family:var(--font-display);font-size:1.2rem;color:#4A90D9;">Style That Speaks Confidence</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Bracelets · Rings · Chains & more</div>
+      </div>
+      <a href="{% url 'product_list' %}" class="btn btn-sm" style="border:1px solid #4A90D9;color:#4A90D9;background:transparent;border-radius:var(--radius);">View All →</a>
+    </div>
+
+    <div class="categories-grid">
+      {% for cat in boys_categories %}
+        <a href="{% url 'category_products' cat.slug %}" class="category-card">
+          <div class="cat-image-wrap" style="border-color:rgba(74,144,217,0.15);">
+            {% if cat.image %}
+              <img src="{{ cat.image.url }}" alt="{{ cat.name }}" loading="lazy">
+            {% else %}
+              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,#080818,#0a0a0a);">
+                {% if cat.name == 'Bracelets' %}⛓️
+                {% elif cat.name == 'Rings' %}💍
+                {% elif cat.name == 'Chains' %}🔗
+                {% elif cat.name == 'Pendants' %}🏅
+                {% elif cat.name == 'Watches' %}⌚
+                {% elif cat.name == 'Cufflinks' %}✦
+                {% else %}⚡{% endif %}
+              </div>
+            {% endif %}
+            <!-- Boys tag -->
+            <div style="position:absolute;bottom:6px;left:6px;background:rgba(74,144,217,0.85);color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:0.5px;">
+              BOYS
+            </div>
+          </div>
+          <div class="cat-name">{{ cat.name }}</div>
+          <div class="cat-count">{{ cat.product_count }} items</div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── ALL CATEGORIES (fallback if no gender set) ── -->
+{% if not girls_categories and not boys_categories and categories %}
 <section class="categories-section">
   <div class="container">
     <div class="section-header">
@@ -75,17 +181,7 @@
             {% if cat.image %}
               <img src="{{ cat.image.url }}" alt="{{ cat.name }}" loading="lazy">
             {% else %}
-              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;">
-                {% if cat.name == 'Earrings' %}💎
-                {% elif cat.name == 'Jhumkas' %}🪬
-                {% elif cat.name == 'Necklaces' %}📿
-                {% elif cat.name == 'Rings' %}💍
-                {% elif cat.name == 'Bangles' %}🔮
-                {% elif cat.name == 'Bracelets' %}✨
-                {% elif cat.name == 'Hair Accessories' %}🌸
-                {% elif cat.name == 'Gift Sets' %}🎁
-                {% else %}✦{% endif %}
-              </div>
+              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;">✦</div>
             {% endif %}
           </div>
           <div class="cat-name">{{ cat.name }}</div>
