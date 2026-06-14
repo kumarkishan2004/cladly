@@ -54,7 +54,6 @@
         <div>📞 {{ order.delivery_mobile }}</div>
         <div>{{ order.delivery_address }}</div>
         {% if order.delivery_college %}<div>🎓 {{ order.delivery_college }}</div>{% endif %}
-        {% if order.delivery_hostel %}<div>🏠 {{ order.delivery_hostel }}{% if order.delivery_room %}, Room {{ order.delivery_room }}{% endif %}</div>{% endif %}
         <div>{{ order.delivery_city }} — {{ order.delivery_pincode }}</div>
       </div>
     </div>

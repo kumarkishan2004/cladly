@@ -121,9 +121,6 @@
           <div>📞 {{ order.delivery_mobile }}</div>
           <div>{{ order.delivery_address }}</div>
           {% if order.delivery_college %}<div>🎓 {{ order.delivery_college }}</div>{% endif %}
-          {% if order.delivery_hostel %}
-            <div>🏠 {{ order.delivery_hostel }}{% if order.delivery_room %}, Room {{ order.delivery_room }}{% endif %}</div>
-          {% endif %}
           <div>{{ order.delivery_city }} - {{ order.delivery_pincode }}</div>
         </div>
       </div>
@@ -156,11 +153,11 @@
 
     <!-- Actions -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      {% if order.status == 'placed' or order.status == 'confirmed' %}
-        <form method="post" action="{% url 'cancel_order' order.order_id %}" onsubmit="return confirm('Cancel this order?')">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-dark" style="border-color:var(--error);color:var(--error);">Cancel Order</button>
-        </form>
+      {% if order.status == 'placed' or order.status == 'confirmed' or order.status == 'packed' or order.status == 'out_for_delivery' %}
+        <a href="{% url 'cancel_order' order.order_id %}"
+          class="btn btn-dark" style="border-color:var(--error);color:var(--error);">
+          Cancel Order
+       </a>
       {% endif %}
       {% if order.status == 'delivered' %}
         <a href="{% url 'thank_you_card' order.order_id %}" class="btn btn-outline">Download Thank You Card 🎁</a>

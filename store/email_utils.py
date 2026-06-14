@@ -103,3 +103,32 @@ Instagram: @cladly fashion
         recipient_list=[user.email],
         fail_silently=False,
     )
+
+
+def send_order_cancelled_email(user, order):
+    subject = f"Order {order.order_id} Cancelled — Cladly"
+
+    message = f"""
+Hi {user.full_name},
+
+Your order has been cancelled successfully.
+
+Order ID   : {order.order_id}
+Amount     : ₹{order.grand_total}
+Cancelled  : {order.cancelled_at.strftime('%d %b %Y, %I:%M %p') if order.cancelled_at else 'Just now'}
+
+If you paid online, refund will be processed in 5-7 business days.
+
+Want to shop again?
+👉 http://cladly.in
+
+The Cladly Team 🖤
+"""
+
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        fail_silently=True,
+    )

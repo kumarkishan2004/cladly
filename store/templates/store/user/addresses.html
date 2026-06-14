@@ -14,7 +14,6 @@
         <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">
           {{ addr.address_line }}
           {% if addr.college_name %}<br>🎓 {{ addr.college_name }}{% endif %}
-          {% if addr.hostel_name %}<br>🏠 {{ addr.hostel_name }}{% if addr.room_number %}, Room {{ addr.room_number }}{% endif %}{% endif %}
           <br>{{ addr.city }}, {{ addr.state }} — {{ addr.pincode }}
         </div>
         <div style="display:flex;gap:8px;margin-top:12px;">

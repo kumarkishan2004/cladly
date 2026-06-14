@@ -829,25 +829,50 @@ def order_detail(request, order_id):
 @login_required
 def cancel_order(request, order_id):
     order = get_object_or_404(Order, order_id=order_id, user=request.user)
-    if order.status in ['placed', 'confirmed']:
+
+    if order.status not in ['placed', 'confirmed','packed','out_for_delivery']:
+        messages.error(request, f'Order cannot be cancelled at "{order.get_status_display()}" stage.')
+        return redirect('order_detail', order_id=order_id)
+
+    if request.method == 'POST':
+        reason = request.POST.get('cancel_reason', '').strip()
+
         order.status = 'cancelled'
+        order.cancel_reason = reason
+        order.cancelled_at = timezone.now()
         order.save()
+
         # Restore stock
         for item in order.items.all():
             if item.product:
                 item.product.stock_quantity += item.quantity
                 item.product.update_stock_status()
-        OrderStatusHistory.objects.create(order=order, status='cancelled', note='Cancelled by customer.')
+
+        # Status history
+        OrderStatusHistory.objects.create(
+            order=order,
+            status='cancelled',
+            note=f'Cancelled by customer. Reason: {reason if reason else "Not provided"}'
+        )
+
+        # Notification
         Notification.objects.create(
             user=request.user,
             title='Order Cancelled',
-            message=f'Your order {order.order_id} has been cancelled.',
+            message=f'Your order {order.order_id} has been cancelled successfully.',
             notif_type='order',
+            link=f'/orders/{order.order_id}/',
         )
-        messages.success(request, 'Order cancelled successfully.')
-    else:
-        messages.error(request, 'This order cannot be cancelled.')
-    return redirect('order_detail', order_id=order_id)
+
+        # Send cancellation email
+        from .email_utils import send_order_cancelled_email
+        send_order_cancelled_email(request.user, order)
+
+        messages.success(request, f'Order {order.order_id} cancelled successfully.')
+        return redirect('my_orders')
+
+    # GET — show cancel confirmation page
+    return render(request, 'store/orders/cancel_order.html', {'order': order})
 
 
 @login_required

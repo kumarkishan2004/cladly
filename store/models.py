@@ -294,8 +294,6 @@ class Order(models.Model):
     delivery_mobile = models.CharField(max_length=15)
     delivery_address = models.TextField()
     delivery_college = models.CharField(max_length=200, blank=True)
-    delivery_hostel = models.CharField(max_length=200, blank=True)
-    delivery_room = models.CharField(max_length=50, blank=True)
     delivery_city = models.CharField(max_length=100)
     delivery_pincode = models.CharField(max_length=10)
 
@@ -315,6 +313,8 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     expected_delivery = models.DateField(null=True, blank=True)
     notes = models.TextField(blank=True)
+    cancel_reason = models.TextField(blank=True)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ['-placed_at']
