@@ -1,5 +1,9 @@
 import os
 from pathlib import Path
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'cladly-secret-key-change-in-production-xyz123'
@@ -12,8 +16,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     'store',
+    'django.contrib.staticfiles',
+    
 ]
 
 MIDDLEWARE = [
@@ -71,8 +78,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'store' / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -108,3 +113,20 @@ CACHES = {
 RAZORPAY_KEY_ID = 'rzp_test_T1VGBthGJHr4J1'      #  key id
 RAZORPAY_KEY_SECRET = 'tcYvoTB70IirNiVN4Z5E6zrK' #  key secret
 RAZORPAY_CURRENCY = 'INR'
+
+
+# ── Cloudinary Settings ──
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dklhtatkx',    # from dashboard
+    'API_KEY': '167254978744954',          # from dashboard
+    'API_SECRET': 'BYFDgh8pcHdChncR8lPM0l-Xz6g',    # from dashboard
+}
+
+# Tell Django to use Cloudinary for media files
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Keep this same
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'

@@ -77,9 +77,7 @@ python manage.py migrate
 python manage.py seed_data
 ```
 
-Default admin credentials:
-- **Email**: `admin@cladly.com`
-- **Password**: `cladly@admin123`
+
 
 To use custom credentials:
 ```bash
@@ -213,7 +211,7 @@ Before deploying to production:
 
 ## 📱 Adding Product Images
 
-1. Login to admin panel at `/admin-panel/`
+1. Login to admin panel 
 2. Go to **Products → Add Product**
 3. Fill in product details
 4. Upload multiple images (first image becomes primary)
