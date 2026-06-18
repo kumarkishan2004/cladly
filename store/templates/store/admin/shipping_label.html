@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping Label — {{ order.order_id }}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .print-btn {
+      background: #C9A84C;
+      color: #000;
+      border: none;
+      padding: 12px 32px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .print-btn:hover { background: #E8C96A; }
+
+    /* ── LABEL ── */
+    .label {
+      width: 100mm;
+      min-height: 150mm;
+      background: #ffffff;
+      border: 2px solid #000;
+      border-radius: 4px;
+      padding: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      page-break-after: always;
+    }
+
+    /* Header */
+    .label-header {
+      background: #000;
+      color: #C9A84C;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .label-brand {
+      font-size: 20px;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 1px;
+    }
+    .label-type {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    /* Order ID Banner */
+    .label-order-id {
+      background: #C9A84C;
+      color: #000;
+      text-align: center;
+      padding: 6px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 3px;
+    }
+
+    /* Body */
+    .label-body { padding: 12px 14px; }
+
+    /* Section */
+    .label-section {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #ccc;
+    }
+    .label-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .section-content {
+      font-size: 12px;
+      line-height: 1.6;
+      color: #000;
+    }
+    .name {
+      font-size: 14px;
+      font-weight: 900;
+      color: #000;
+    }
+
+    /* Barcode area */
+    .barcode-area {
+      text-align: center;
+      padding: 8px 14px;
+      border-top: 2px solid #000;
+      background: #fafafa;
+    }
+    .barcode-lines {
+      display: flex;
+      justify-content: center;
+      gap: 1px;
+      margin-bottom: 4px;
+    }
+    .barcode-lines span {
+      display: inline-block;
+      height: 32px;
+      background: #000;
+    }
+    .barcode-text {
+      font-size: 10px;
+      letter-spacing: 3px;
+      font-weight: 700;
+    }
+
+    /* Payment badge */
+    .payment-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .cod { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+    .paid { background: #d4edda; color: #155724; border: 1px solid #28a745; }
+
+    /* Items */
+    .items-list { margin-top: 4px; }
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      padding: 2px 0;
+      border-bottom: 1px dotted #eee;
+    }
+    .item-name { flex: 1; color: #333; }
+    .item-qty { color: #666; margin: 0 8px; }
+    .item-price { font-weight: 700; }
+
+    /* Total */
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 900;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 2px solid #000;
+    }
+
+    /* Footer */
+    .label-footer {
+      background: #000;
+      color: #C9A84C;
+      text-align: center;
+      padding: 6px;
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .print-btn, .no-print { display: none !important; }
+      .label {
+        box-shadow: none;
+        border: 2px solid #000;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Buttons — hidden on print -->
+  <div class="no-print" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="print-btn" onclick="window.print()">
+      🖨️ Print Shipping Label
+    </button>
+    <a href="{% url 'admin_order_detail' order.order_id %}"
+       style="background:#333;color:#fff;border:none;padding:12px 24px;font-size:14px;font-weight:600;border-radius:8px;cursor:pointer;text-decoration:none;display:flex;align-items:center;">
+      ← Back to Order
+    </a>
+  </div>
+
+  <!-- ── SHIPPING LABEL ── -->
+  <div class="label">
+
+    <!-- Header -->
+    <div class="label-header">
+      <div class="label-brand">Cladly</div>
+      <div class="label-type">Shipping Label</div>
+    </div>
+
+    <!-- Order ID -->
+    <div class="label-order-id">{{ order.order_id }}</div>
+
+    <div class="label-body">
+
+      <!-- FROM -->
+      <div class="label-section">
+        <div class="section-title">📦 From </div>
+        <div class="section-content">
+          <div class="name">Cladly Fashion</div>
+          <div>Bhubaneswar-751024</div>
+          <div>✉ fashioncladly@gmail.com</div>
+        </div>
+      </div>
+
+      <!-- TO -->
+      <div class="label-section">
+        <div class="section-title">🏠 Deliver To (Customer)</div>
+        <div class="section-content">
+          <div class="name">{{ order.delivery_name }}</div>
+          <div>{{ order.delivery_address }}</div>
+          {% if order.delivery_college %}
+            <div>🎓 {{ order.delivery_college }}</div>
+          {% endif %}
+          <div>{{ order.delivery_city }} — {{ order.delivery_pincode }}</div>
+          <div>📞 {{ order.delivery_mobile }}</div>
+        </div>
+      </div>
+
+      <!-- Payment -->
+      <div class="label-section">
+        <div class="section-title">💳 Payment</div>
+        <div class="section-content" style="display:flex;align-items:center;justify-content:space-between;">
+          {% if order.payment_method == 'cod' %}
+            <span class="payment-badge cod">💵 Cash on Delivery</span>
+            <strong style="font-size:15px;">₹{{ order.grand_total|floatformat:0 }}</strong>
+          {% else %}
+            <span class="payment-badge paid">✓ Paid Online</span>
+            <strong style="font-size:15px;">₹{{ order.grand_total|floatformat:0 }}</strong>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Items -->
+      <div class="label-section">
+        <div class="section-title">🛍️ Items ({{ order.items.count }})</div>
+        <div class="items-list">
+          {% for item in order.items.all %}
+            <div class="item-row">
+              <span class="item-name">{{ item.product_name|truncatechars:25 }}</span>
+              <span class="item-qty">x{{ item.quantity }}</span>
+              <span class="item-price">₹{{ item.subtotal|floatformat:0 }}</span>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="total-row">
+          <span>Total Amount</span>
+          <span>₹{{ order.grand_total|floatformat:0 }}</span>
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div class="label-section" style="border-bottom:none;">
+        <div class="section-title">📅 Order Details</div>
+        <div class="section-content" style="font-size:11px;">
+          <div>Ordered: {{ order.placed_at|date:"d M Y, h:i A" }}</div>
+          {% if order.expected_delivery %}
+            <div>Expected: {{ order.expected_delivery|date:"d M Y" }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Barcode (fake visual) -->
+    <div class="barcode-area">
+      <div class="barcode-lines">
+        {% for i in "1234567890123456789012345678901234567890" %}
+          <span style="width:{% if forloop.counter|divisibleby:3 %}3{% elif forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}px;"></span>
+        {% endfor %}
+      </div>
+      <div class="barcode-text">{{ order.order_id }}</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="label-footer">
+      cladly.in — Premium Fashion Accessories — Handle with Care ✨
+    </div>
+
+  </div>
+
+</body>
+</html>

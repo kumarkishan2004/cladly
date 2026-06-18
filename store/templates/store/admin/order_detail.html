@@ -3,7 +3,17 @@
 {% block admin_content %}
 <div class="admin-header">
   <div class="admin-page-title">Order {{ order.order_id }}</div>
-  <a href="{% url 'admin_orders' %}" class="btn btn-dark btn-sm">← Back to Orders</a>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <a href="{% url 'admin_shipping_label' order.order_id %}"
+       class="btn btn-gold btn-sm" target="_blank">
+      📦 Shipping Label
+    </a>
+    <a href="{% url 'admin_invoice' order.order_id %}"
+       class="btn btn-outline btn-sm" target="_blank">
+      🧾 Invoice
+    </a>
+    <a href="{% url 'admin_orders' %}" class="btn btn-dark btn-sm">← Back</a>
+  </div>
 </div>
 
 <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;">
