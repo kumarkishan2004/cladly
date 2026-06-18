@@ -50,7 +50,7 @@ def get_cart_items(request):
 
 def calculate_cart_totals(cart_items, coupon=None):
     subtotal = sum(item.subtotal() for item in cart_items)
-    delivery = 0 if subtotal >= 499 else 49
+    delivery = 0 if subtotal >= 299 else 30
     discount = coupon.get_discount_amount(subtotal) if coupon else 0
     grand_total = subtotal + delivery - discount
     return {
@@ -1276,6 +1276,18 @@ def admin_order_detail(request, order_id):
         'order': order,
         'status_choices': Order.STATUS_CHOICES,
     })
+
+@user_passes_test(is_admin, login_url='/login/')
+def admin_shipping_label(request, order_id):
+    order = get_object_or_404(Order, order_id=order_id)
+    return render(request, 'store/admin/shipping_label.html', {'order': order})
+
+
+@user_passes_test(is_admin, login_url='/login/')
+def admin_invoice(request, order_id):
+    order = get_object_or_404(Order, order_id=order_id)
+    return render(request, 'store/admin/invoice.html', {'order': order})
+
 
 
 @user_passes_test(is_admin, login_url='/login/')
