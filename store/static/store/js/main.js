@@ -13,7 +13,37 @@ document.addEventListener('DOMContentLoaded', () => {
   initQtyControls();
   initPaymentSelect();
   initAddressSelect();
+  initThemeToggle();
 });
+
+// ─── Theme Toggle (Dark / Light) ───────────
+function initThemeToggle() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+
+  const iconDark = document.getElementById('theme-icon-dark');   // shown in light mode (sun icon already shown, click to go dark)
+  const iconLight = document.getElementById('theme-icon-light'); // shown in dark mode (moon icon, click to go light)
+
+  function updateIcons() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    iconDark.style.display = isLight ? 'inline' : 'none';
+    iconLight.style.display = isLight ? 'none' : 'inline';
+  }
+
+  updateIcons();
+
+  btn.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('cladly-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('cladly-theme', 'light');
+    }
+    updateIcons();
+  });
+}
 
 // ─── CSRF helper ───────────────────────────
 function getCsrf() {
