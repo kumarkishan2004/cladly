@@ -41,31 +41,40 @@
     </div>
 
     <div class="nav-actions">
+     <!-- These hide on mobile — already in bottom nav -->
       {% if user.is_authenticated %}
-        <a href="{% url 'wishlist' %}" class="nav-icon-btn" title="Wishlist">
-          ♡
-          {% if wishlist_count > 0 %}<span class="nav-badge wishlist-count-badge">{{ wishlist_count }}</span>{% endif %}
-        </a>
+         <a href="{% url 'wishlist' %}" class="nav-icon-btn nav-icon-desktop-only" title="Wishlist">
+           ♡
+           {% if wishlist_count > 0 %}<span class="nav-badge wishlist-count-badge">{{ wishlist_count }}</span>{% endif %}
+         </a>
       {% endif %}
-      <a href="{% url 'cart' %}" class="nav-icon-btn" title="Cart">
+      <a href="{% url 'cart' %}" class="nav-icon-btn nav-icon-desktop-only" title="Cart">
         🛍
-        {% if cart_count > 0 %}<span class="nav-badge cart-count-badge">{{ cart_count }}</span>{% endif %}
+         {% if cart_count > 0 %}<span class="nav-badge cart-count-badge">{{ cart_count }}</span>{% endif %}
       </a>
-      {% if user.is_authenticated %}
-        <a href="{% url 'profile' %}" class="nav-icon-btn" title="Profile">
-          {% if user.profile_image %}
-            <img src="{{ user.profile_image.url }}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gold);">
-          {% else %}
-            <span style="width:28px;height:28px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--black);font-weight:700;font-size:12px;">{{ user.full_name|first|upper }}</span>
-          {% endif %}
-        </a>
-        {% if user.is_staff %}
-          <a href="{% url 'admin_dashboard' %}" class="nav-icon-btn" title="Admin" style="font-size:14px;color:var(--gold);">⚙</a>
-        {% endif %}
-      {% else %}
-        <a href="{% url 'login' %}" class="btn btn-outline btn-sm" style="margin-left:4px;">Login</a>
+      <!-- Theme Toggle — visible everywhere -->
+      <button type="button" class="nav-icon-btn theme-toggle-btn" id="cladly-theme-toggle" aria-label="Toggle dark/light mode">
+        <span class="theme-icon-sun" style="display:none;">☀️</span>
+        <span class="theme-icon-moon">🌙</span>
+     </button>
+       <!-- Admin gear — keep visible everywhere, no duplicate in bottom nav -->
+      {% if user.is_staff %}
+       <a href="{% url 'admin_dashboard' %}" class="nav-icon-btn" title="Admin" style="font-size:16px;color:var(--gold);">⚙</a>
       {% endif %}
-    </div>
+
+     <!-- Profile avatar — hide on mobile too, exists in bottom nav -->
+     {% if user.is_authenticated %}
+       <a href="{% url 'profile' %}" class="nav-icon-btn nav-icon-desktop-only" title="Profile">
+      {% if user.profile_image %}
+        <img src="{{ user.profile_image.url }}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gold);">
+        {% else %}
+          <span style="width:28px;height:28px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--black);font-weight:700;font-size:12px;">{{ user.full_name|first|upper }}</span>
+        {% endif %}
+        </a>
+      {% else %}
+         <a href="{% url 'login' %}" class="btn btn-outline btn-sm nav-icon-desktop-only" style="margin-left:4px;">Login</a>
+        {% endif %}
+   </div>
   </div>
 </nav>
 
@@ -168,6 +177,43 @@
 </nav>
 
 <script src="{% static 'store/js/main.js' %}"></script>
+<script>
+  // Theme toggle — self-contained, runs independently of main.js
+  (function() {
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      var sun = document.querySelector('.theme-icon-sun');
+      var moon = document.querySelector('.theme-icon-moon');
+      if (sun && moon) {
+        sun.style.display = theme === 'light' ? 'inline' : 'none';
+        moon.style.display = theme === 'light' ? 'none' : 'inline';
+      }
+    }
+
+    // Apply saved theme on load
+    var saved = localStorage.getItem('cladly-theme') || 'dark';
+    applyTheme(saved);
+
+    // Wire up the button once DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('cladly-theme-toggle');
+      if (!btn) {
+        console.warn('Cladly: theme toggle button not found in DOM');
+        return;
+      }
+      btn.addEventListener('click', function() {
+        var current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        var next = current === 'light' ? 'dark' : 'light';
+        localStorage.setItem('cladly-theme', next);
+        applyTheme(next);
+      });
+    });
+  })();
+</script>
 {% block extra_js %}{% endblock %}
 </body>
 </html>
