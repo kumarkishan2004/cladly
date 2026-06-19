@@ -94,7 +94,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'fashioncladly@gmail.com'
-EMAIL_HOST_PASSWORD = 'wqkn akxv fpxs atgg'
+EMAIL_HOST_PASSWORD = 'iqrs sbnf tquf vaaz'
 DEFAULT_FROM_EMAIL = 'Cladly <fashioncladly@gmail.com>'
 
 # Session
