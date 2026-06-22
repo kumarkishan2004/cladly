@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Cladly{% endblock %}
+{% block meta_desc %}Fashion that carries meaning, confidence, and individuality.{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  .about-hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    text-align: center;
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(201,168,76,0.08), transparent);
+  }
+  .about-hero canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+  .about-hero-content { position: relative; z-index: 1; padding: 0 20px; }
+  .about-hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .about-hero-sub {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .about-section { padding: 70px 20px; max-width: 1100px; margin: 0 auto; }
+  .about-section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .about-flex-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  .about-glass-card {
+    background: var(--black-card);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    max-width: 480px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .about-3d-box { width: 240px; height: 240px; flex-shrink: 0; }
+
+  .about-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  @media (max-width: 768px) { .about-grid-3 { grid-template-columns: 1fr; } }
+
+  .about-grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 768px) { .about-grid-5 { grid-template-columns: repeat(2, 1fr); } }
+
+  .about-card {
+    background: var(--black-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  .about-card:hover {
+    border-color: var(--gold);
+    box-shadow: var(--shadow-gold);
+    transform: translateY(-5px);
+  }
+  .about-card h3 {
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  .about-card p { color: var(--text-muted); font-size: 13px; }
+
+  .about-team-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 16px;
+    border: 2px solid var(--gold);
+  }
+
+  .about-stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 50px;
+    text-align: center;
+  }
+  .about-counter {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .about-counter-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="about-hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="about-hero-content">
+    <div class="section-eyebrow">Our Story</div>
+    <h1 class="about-hero-title">About Cladly</h1>
+    <p class="about-hero-sub">Fashion that carries meaning, confidence, and individuality.</p>
+  </div>
+</section>
+
+<!-- Who We Are -->
+<section class="about-section">
+  <h2 class="about-section-title">Who We Are</h2>
+  <div class="about-flex-row">
+    <div class="about-glass-card">
+      <p>Cladly is a fashion and lifestyle brand redefining luxury for the modern era. We blend timeless artistry with cutting-edge innovation, creating pieces that embody individuality and confidence.</p>
+    </div>
+    <div id="about3D" class="about-3d-box"></div>
+  </div>
+</section>
+
+<!-- Vision -->
+<section class="about-section">
+  <h2 class="about-section-title">Our Vision</h2>
+  <div class="about-flex-row">
+    <div class="about-glass-card">
+      <p>We envision a world where fashion is more than style—it's a statement of integrity, creativity, and sustainability. Cladly strives to inspire confidence and individuality in every customer.</p>
+    </div>
+    <div id="vision3D" class="about-3d-box"></div>
+  </div>
+</section>
+
+<!-- Mission -->
+<section class="about-section">
+  <h2 class="about-section-title">Our Mission</h2>
+  <div class="about-grid-3">
+    <div class="about-card">
+      <h3>Quality</h3>
+      <p>Uncompromising standards in every product.</p>
+    </div>
+    <div class="about-card">
+      <h3>Innovation</h3>
+      <p>Blending tradition with modern technology.</p>
+    </div>
+    <div class="about-card">
+      <h3>Customer Satisfaction</h3>
+      <p>Delivering experiences that delight and inspire.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="about-section">
+  <h2 class="about-section-title">Meet Our Team</h2>
+  <div class="about-grid-3">
+    <div class="about-card">
+      <img src="{% static 'store/images/founder.jpg' %}" class="about-team-avatar" alt="Founder">
+      <h3>Founder & CEO</h3>
+      <p>Visionary leader shaping Cladly's future.</p>
+    </div>
+    <div class="about-card">
+      <img src="{% static 'store/images/cofounder.jpg' %}" class="about-team-avatar" alt="Co-Founder">
+      <h3>Co-Founder</h3>
+      <p>Driving innovation and growth.</p>
+    </div>
+    <div class="about-card">
+      <img src="{% static 'store/images/designer.jpg' %}" class="about-team-avatar" alt="Designer">
+      <h3>Product Designer</h3>
+      <p>Crafting timeless luxury pieces.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="about-section">
+  <h2 class="about-section-title">Our Impact</h2>
+  <div class="about-stats-row">
+    <div>
+      <div class="about-counter" id="customers">0</div>
+      <div class="about-counter-label">Customers</div>
+    </div>
+    <div>
+      <div class="about-counter" id="products">0</div>
+      <div class="about-counter-label">Products</div>
+    </div>
+    <div>
+      <div class="about-counter" id="team">0</div>
+      <div class="about-counter-label">Team Members</div>
+    </div>
+    <div>
+      <div class="about-counter" id="cities">0</div>
+      <div class="about-counter-label">Cities</div>
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section class="about-section">
+  <h2 class="about-section-title">Our Values</h2>
+  <div class="about-grid-5">
+    <div class="about-card"><h3 style="font-size:1rem;">Integrity</h3></div>
+    <div class="about-card"><h3 style="font-size:1rem;">Excellence</h3></div>
+    <div class="about-card"><h3 style="font-size:1rem;">Creativity</h3></div>
+    <div class="about-card"><h3 style="font-size:1rem;">Sustainability</h3></div>
+    <div class="about-card"><h3 style="font-size:1rem;">Trust</h3></div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  gsap.fromTo("#customers", {innerText:0}, {innerText:1000, duration:3, snap:{innerText:1}});
+  gsap.fromTo("#products", {innerText:0}, {innerText:500, duration:3, snap:{innerText:1}});
+  gsap.fromTo("#team", {innerText:0}, {innerText:50, duration:3, snap:{innerText:1}});
+  gsap.fromTo("#cities", {innerText:0}, {innerText:20, duration:3, snap:{innerText:1}});
+
+  function init3D(id) {
+    const container = document.getElementById(id);
+    if (!container) return;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({alpha:true});
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    const geometry = new THREE.TorusKnotGeometry(1,0.3,100,16);
+    const material = new THREE.MeshStandardMaterial({color:0xC9A84C, metalness:1, roughness:0.3});
+    const knot = new THREE.Mesh(geometry, material);
+    scene.add(knot);
+
+    const light = new THREE.PointLight(0xffffff,1);
+    light.position.set(5,5,5);
+    scene.add(light);
+
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      knot.rotation.x += 0.01;
+      knot.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+  }
+  init3D("about3D");
+  init3D("vision3D");
+</script>
+{% endblock %}
