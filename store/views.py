@@ -11,6 +11,8 @@ from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 from datetime import timedelta, date
 import json
+import random
+import string
 from .payment_utils import create_razorpay_order, verify_razorpay_payment
 from .email_utils import send_welcome_email, send_welcome_back_email, send_password_reset_email
 from .password_reset_tokens import generate_reset_token, verify_reset_token, delete_reset_token
@@ -28,6 +30,90 @@ from .forms import (
     ProfileEditForm, AddressForm, ReviewForm, ProductForm, CategoryForm,
     CouponForm, BannerForm
 )
+
+#-------------------------------------------
+#Referal
+#-----------------------------------------
+
+
+
+def _generate_referral_coupon(referrer):
+    """Create a unique one-time coupon for the referrer as a reward."""
+    code = 'REF' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    coupon = Coupon.objects.create(
+        code=code,
+        description=f'Referral reward for {referrer.full_name}',
+        discount_type='flat',
+        discount_value=50,
+        minimum_order_value=299,
+        max_uses=1,
+        start_date=timezone.now(),
+        expiry_date=timezone.now() + timedelta(days=15),
+        is_active=True,
+    )
+    return coupon
+
+
+def _process_referral_reward(order):
+    """Give the referrer a reward coupon when their referred friend places their FIRST order."""
+    if order.referral_reward_given:
+        return
+    if not order.user or not order.user.referred_by:
+        return
+
+    referrer = order.user.referred_by
+
+    # Only reward on the referred user's FIRST order
+    previous_orders = Order.objects.filter(user=order.user).exclude(id=order.id).count()
+    if previous_orders > 0:
+        return
+
+    coupon = _generate_referral_coupon(referrer)
+
+    # Track credit value too (for profile display)
+    referrer.referral_credits += coupon.discount_value
+    referrer.save()
+
+    Notification.objects.create(
+        user=referrer,
+        title='Referral Reward! 🎉',
+        message=f'{order.user.full_name} placed their first order using your referral code! '
+                 f'You earned a ₹{coupon.discount_value} coupon: {coupon.code}',
+        notif_type='offer',
+        link='/profile/',
+    )
+
+    order.referral_reward_given = True
+    order.save(update_fields=['referral_reward_given'])
+
+    # Send reward email
+    try:
+        from django.core.mail import send_mail
+        from django.conf import settings as dj_settings
+        send_mail(
+            subject='You earned a referral reward! 🎉 — Cladly',
+            message=f"""
+Hi {referrer.full_name},
+
+Great news! {order.user.full_name} just placed their first order using your referral code.
+
+As a thank you, here's your reward coupon:
+
+    {coupon.code}
+
+Use it on your next order for ₹{coupon.discount_value} off (minimum order ₹{coupon.minimum_order_value}).
+Valid for 15 days.
+
+Keep sharing your referral code — earn more rewards with every friend who orders!
+
+The Cladly Team 🖤
+""",
+            from_email=dj_settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[referrer.email],
+            fail_silently=True,
+        )
+    except Exception:
+        pass
 
 
 # ─────────────────────────────────────────────
@@ -808,6 +894,8 @@ def place_order(request):
             notif_type='order',
             link=f'/orders/{order.order_id}/',
         )
+        _process_referral_reward(order)
+
         return redirect('order_success', order_id=order.order_id)
 
     # ── UPI / Online — go to Razorpay ──
@@ -986,11 +1074,23 @@ def thank_you_card(request, order_id):
 def profile(request):
     orders_count = Order.objects.filter(user=request.user).count()
     wishlist_count = Wishlist.objects.filter(user=request.user).count()
+
+    referral_count = User.objects.filter(referred_by=request.user).count()
+    successful_referrals = Order.objects.filter(
+        user__referred_by=request.user, referral_reward_given=True
+    ).count()
+    my_referral_coupons = Coupon.objects.filter(
+        description__icontains=request.user.full_name,
+        code__startswith='REF'
+    ).order_by('-created_at')
+
     return render(request, 'store/user/profile.html', {
         'orders_count': orders_count,
         'wishlist_count': wishlist_count,
+        'referral_count': referral_count,
+        'successful_referrals': successful_referrals,
+        'my_referral_coupons': my_referral_coupons,
     })
-
 
 @login_required
 def edit_profile(request):
