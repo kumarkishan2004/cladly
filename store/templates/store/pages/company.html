@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block title %}About Cladly{% endblock %}
-{% block meta_desc %}Fashion that carries meaning, confidence, and individuality.{% endblock %}
 
 {% block extra_css %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -69,17 +68,15 @@
 
   .about-grid-3 {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
   }
-  @media (max-width: 768px) { .about-grid-3 { grid-template-columns: 1fr; } }
 
   .about-grid-5 {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 16px;
   }
-  @media (max-width: 768px) { .about-grid-5 { grid-template-columns: repeat(2, 1fr); } }
 
   .about-card {
     background: var(--black-card);
@@ -100,12 +97,19 @@
     font-size: 1.2rem;
     margin-bottom: 10px;
   }
+  .about-card h5 {
+    font-family: var(--font-display);
+     color: var(--gold); 
+     font-size: 1.2rem; 
+     margin-bottom: 10px;
+ }
+
   .about-card p { color: var(--text-muted); font-size: 13px; }
 
   .about-team-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+    width: 250px;
+    height: 300px;
+    border-radius: 30%;
     object-fit: cover;
     margin: 0 auto 16px;
     border: 2px solid var(--gold);
@@ -130,6 +134,13 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-top: 4px;
+  }
+
+  @media (max-width: 480px) {
+    .about-section { padding: 40px 16px; }
+    .about-flex-row { gap: 20px; }
+    .about-3d-box { width: 180px; height: 180px; }
+    .about-stats-row { gap: 30px; }
   }
 </style>
 {% endblock %}
@@ -192,8 +203,9 @@
   <h2 class="about-section-title">Meet Our Team</h2>
   <div class="about-grid-3">
     <div class="about-card">
-      <img src="{% static 'store/images/founder.jpg' %}" class="about-team-avatar" alt="Founder">
+      <img src="{% static 'store/images/founder.jpeg' %}" class="about-team-avatar" alt="Founder">
       <h3>Founder & CEO</h3>
+      <h5>Kumar Kishan</h5>
       <p>Visionary leader shaping Cladly's future.</p>
     </div>
     <div class="about-card">
@@ -236,11 +248,11 @@
 <section class="about-section">
   <h2 class="about-section-title">Our Values</h2>
   <div class="about-grid-5">
-    <div class="about-card"><h3 style="font-size:1rem;">Integrity</h3></div>
-    <div class="about-card"><h3 style="font-size:1rem;">Excellence</h3></div>
-    <div class="about-card"><h3 style="font-size:1rem;">Creativity</h3></div>
-    <div class="about-card"><h3 style="font-size:1rem;">Sustainability</h3></div>
-    <div class="about-card"><h3 style="font-size:1rem;">Trust</h3></div>
+    <div class="about-card"><h3 style="font-size:0.9rem;">Integrity</h3></div>
+    <div class="about-card"><h3 style="font-size:0.9rem;">Excellence</h3></div>
+    <div class="about-card"><h3 style="font-size:0.9rem;">Creativity</h3></div>
+    <div class="about-card"><h3 style="font-size:0.9rem;">Sustainability</h3></div>
+    <div class="about-card"><h3 style="font-size:0.9rem;">Trust</h3></div>
   </div>
 </section>
 
@@ -258,7 +270,7 @@
     if (!container) return;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({alpha:true});
+    const renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
 
@@ -270,6 +282,9 @@
     const light = new THREE.PointLight(0xffffff,1);
     light.position.set(5,5,5);
     scene.add(light);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
 
     camera.position.z = 5;
 

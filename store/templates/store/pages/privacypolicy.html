@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy — Cladly{% endblock %}
+
+{% block extra_css %}
+<style>
+  .privacy-wrap {
+    line-height: 1.8;
+    padding: 40px 20px 80px;
+  }
+
+  .privacy-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px;
+    background: var(--black-card);
+    border: 2px solid var(--border-gold);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-gold);
+    animation: privacyFadeIn 1s ease-in-out;
+  }
+
+  .privacy-container h1 {
+    text-align: center;
+    color: var(--gold);
+    margin-bottom: 10px;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+  }
+
+  .privacy-tagline {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 30px;
+    letter-spacing: 0.5px;
+    font-style: italic;
+  }
+
+  .privacy-section {
+    margin-bottom: 22px;
+    padding: 20px;
+    border-left: 4px solid var(--gold);
+    background: rgba(201,168,76,0.04);
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+  }
+  .privacy-section:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-gold);
+  }
+
+  .privacy-section h2 {
+    color: var(--gold);
+    margin-bottom: 10px;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+  }
+
+  .privacy-section p {
+    color: var(--text-secondary);
+    text-align: justify;
+    font-size: 14px;
+  }
+
+  .privacy-section ul { padding-left: 20px; }
+  .privacy-section li {
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .privacy-section a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: 0.3s ease;
+  }
+  .privacy-section a:hover {
+    color: var(--gold-light);
+    text-decoration: underline;
+  }
+
+  .privacy-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .privacy-reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes privacyFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .privacy-container { padding: 24px; }
+    .privacy-container h1 { font-size: 1.6rem; }
+    .privacy-section h2 { font-size: 1.1rem; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="privacy-wrap">
+  <div class="privacy-container">
+    <h1>Privacy Policy</h1>
+    <p class="privacy-tagline">— Protecting your privacy is our policy —</p>
+
+    <section class="privacy-section privacy-reveal">
+      <h2>1. Introduction</h2>
+      <p>Welcome to Cladly. We value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our website and services.</p>
+    </section>
+
+    <section class="privacy-section privacy-reveal">
+      <h2>2. Information We Collect</h2>
+      <ul>
+        <li>Name and contact details</li>
+        <li>Email address and phone number</li>
+        <li>Shipping and billing address</li>
+        <li>Payment-related information</li>
+      </ul>
+    </section>
+
+    <section class="privacy-section privacy-reveal">
+      <h2>3. How We Use Your Information</h2>
+      <ul>
+        <li>To process and deliver orders</li>
+        <li>To improve our products and services</li>
+        <li>To provide customer support</li>
+        <li>To send important updates and notifications</li>
+        <li>To maintain website security</li>
+      </ul>
+    </section>
+
+    <section class="privacy-section privacy-reveal">
+      <h2>4. Data Security</h2>
+      <p>We implement appropriate security measures to protect your personal information from unauthorized access, disclosure, alteration, or destruction.</p>
+    </section>
+
+    <section class="privacy-section privacy-reveal">
+      <h2>5. Cookies</h2>
+      <p>Our website may use cookies to enhance user experience, analyze website traffic, and improve functionality.</p>
+    </section>
+
+    <section class="privacy-section privacy-reveal">
+      <h2>6. Your Rights</h2>
+      <p>You may request access, correction, or deletion of your personal information by contacting us.</p>
+    </section>
+
+    <section class="privacy-section privacy-reveal">
+      <h2>7. Contact Us</h2>
+      <p>If you have any questions regarding this Privacy Policy, please contact us at:</p>
+      <p><strong>Email:</strong> fashioncladly@gmail.com</p>
+      <p><strong>Phone:</strong> +91 XXXXX XXXXX</p>
+    </section>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function revealPrivacySections() {
+  document.querySelectorAll('.privacy-reveal').forEach(section => {
+    const windowHeight = window.innerHeight;
+    const elementTop = section.getBoundingClientRect().top;
+    const visiblePoint = 100;
+    if (elementTop < windowHeight - visiblePoint) {
+      section.classList.add('active');
+    }
+  });
+}
+window.addEventListener('scroll', revealPrivacySections);
+window.addEventListener('load', revealPrivacySections);
+</script>
+{% endblock %}

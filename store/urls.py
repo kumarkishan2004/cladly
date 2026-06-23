@@ -90,4 +90,11 @@ urlpatterns = [
     path('admin-panel/banners/<int:pk>/delete/', views.admin_delete_banner, name='admin_delete_banner'),
     path('admin-panel/customers/', views.admin_customers, name='admin_customers'),
     path('admin-panel/reviews/', views.admin_reviews, name='admin_reviews'),
+
+
+    path('company/', views.company, name='company'),
+    path('careers/', views.careers, name='careers'),
+    path('contact/', views.contact, name='contact'),
+    path('contact/submit/', views.contact_submit, name='contact_submit'),
+    path('privacypolicy/', views.privacypolicy, name='privacypolicy'),
 ]

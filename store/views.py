@@ -1414,3 +1414,58 @@ def admin_reviews(request):
         messages.success(request, f'Review {action}d.')
         return redirect('admin_reviews')
     return render(request, 'store/admin/reviews.html', {'reviews': reviews})
+
+@require_POST
+def contact_submit(request):
+    name = request.POST.get('name', '').strip()
+    email = request.POST.get('email', '').strip()
+    phone = request.POST.get('phone', '').strip()
+    subject = request.POST.get('subject', '').strip()
+    message = request.POST.get('message', '').strip()
+
+    if not all([name, email, subject, message]):
+        return JsonResponse({'success': False, 'error': 'Please fill in all required fields.'})
+
+    try:
+        from django.core.mail import send_mail
+        from django.conf import settings
+
+        full_message = f"""
+New Contact Form Submission — Cladly
+
+Name: {name}
+Email: {email}
+Phone: {phone or 'Not provided'}
+Subject: {subject}
+
+Message:
+{message}
+"""
+        send_mail(
+            subject=f"Contact Form: {subject}",
+            message=full_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[settings.DEFAULT_FROM_EMAIL],
+            fail_silently=False,
+        )
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': 'Could not send message. Please email us directly.'})
+
+
+def contact(request):
+    return render(request, 'store/pages/contact.html')
+
+
+def company(request):
+    return render(request, 'store/pages/company.html')
+
+def careers(request):
+    return render(request, 'store/pages/careers.html')
+
+def contact(request):
+    return render(request,'store/pages/contact.html')
+
+def privacypolicy(request):
+    return render(request,'store/pages/privacypolicy.html')
+
