@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us — Cladly{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  .contact-wrap { font-family: Arial, Helvetica, sans-serif; }
+
+  .contact-hero {
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    background:
+      linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.9)),
+      url("https://images.unsplash.com/photo-1617038220319-276d3cfab638");
+    background-size: cover;
+    background-position: center;
+  }
+  .contact-hero h1 {
+    font-family: var(--font-display);
+    font-size: 42px;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .contact-hero p {
+    margin-top: 16px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  /* Contact Section */
+  .contact-area {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 20px;
+    padding: 40px 5%;
+  }
+
+  .contact-info-box,
+  .contact-form-box {
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    background: var(--black-card);
+  }
+
+  .contact-wrap h2 {
+    text-align: center;
+    color: var(--gold);
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    margin-bottom: 22px;
+  }
+
+  .contact-info-row {
+    display: flex;
+    gap: 15px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .contact-info-row:last-child { border-bottom: none; }
+  .contact-info-row i {
+    color: var(--gold);
+    font-size: 20px;
+    width: 22px;
+    margin-top: 2px;
+  }
+  .contact-info-row h3 {
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .contact-info-row p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  .contact-insta-btn {
+    padding: 9px 16px;
+    margin-top: 10px;
+    background: none;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s ease;
+  }
+  .contact-insta-btn:hover { background: var(--gold); color: var(--black); }
+
+  /* Form */
+  .contact-form-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .contact-form-box label {
+    font-size: 13px;
+    margin-top: 8px;
+    color: var(--text-secondary);
+  }
+  .contact-form-box input,
+  .contact-form-box textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 12px;
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .contact-form-box input:focus,
+  .contact-form-box textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+  .contact-form-box textarea { height: 120px; resize: vertical; }
+
+  .contact-send-btn {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    font-weight: 700;
+    height: 46px;
+    border-radius: var(--radius);
+    margin-top: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s ease;
+  }
+  .contact-send-btn:hover { background: var(--gold-light); }
+  .contact-send-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .contact-form-msg {
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    margin-top: 4px;
+    display: none;
+  }
+  .contact-form-msg.success {
+    background: rgba(80,184,120,0.1);
+    border: 1px solid var(--success);
+    color: var(--success);
+    display: block;
+  }
+  .contact-form-msg.error {
+    background: rgba(224,80,80,0.1);
+    border: 1px solid var(--error);
+    color: var(--error);
+    display: block;
+  }
+
+  /* Instagram band */
+  .contact-instagram {
+    margin: 10px 5% 50px;
+    padding: 28px;
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .contact-insta-icon i { color: var(--gold); font-size: 38px; }
+  .contact-instagram h2 { text-align: left; margin: 0 0 5px; font-size: 1.2rem; }
+  .contact-instagram p { font-size: 14px; color: var(--text-secondary); }
+
+  @media (max-width: 768px) {
+    .contact-area { grid-template-columns: 1fr; padding: 24px 16px; }
+    .contact-hero { height: 180px; }
+    .contact-hero h1 { font-size: 30px; }
+    .contact-hero p { font-size: 13px; }
+    .contact-instagram { flex-direction: column; gap: 15px; text-align: center; }
+    .contact-info-box, .contact-form-box { padding: 18px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-wrap">
+
+  <section class="contact-hero">
+    <h1>CONTACT US</h1>
+    <p>
+      We'd love to hear from you.<br>
+      For orders, collaborations, custom styling,<br>
+      or any queries, reach out anytime.
+    </p>
+  </section>
+
+  <section class="contact-area">
+
+    <div class="contact-info-box">
+      <h2>GET IN TOUCH</h2>
+
+      <div class="contact-info-row">
+        <i class="fa-solid fa-location-dot"></i>
+        <div>
+          <h3>ADDRESS</h3>
+          <p>Cladly Fashion<br>Bhubaneswar, Odisha<br>PIN: 751024</p>
+        </div>
+      </div>
+
+      <div class="contact-info-row">
+        <i class="fa-solid fa-envelope"></i>
+        <div>
+          <h3>EMAIL</h3>
+          <p>fashioncladly@gmail.com</p>
+        </div>
+      </div>
+
+      <div class="contact-info-row">
+        <i class="fa-brands fa-instagram"></i>
+        <div>
+          <h3>INSTAGRAM</h3>
+          <p>@cladlyfashion</p>
+          <a href="https://instagram.com/cladlyfashion" target="_blank" style="text-decoration:none;">
+            <button type="button" class="contact-insta-btn">
+              <i class="fa-brands fa-instagram"></i> VIEW INSTAGRAM →
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-info-row">
+        <i class="fa-solid fa-clock"></i>
+        <div>
+          <h3>BUSINESS HOURS</h3>
+          <p>Monday – Saturday<br>10:00 AM – 8:00 PM<br><br>Sunday<br>Closed</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-box">
+      <h2>SEND US A MESSAGE</h2>
+
+      <form id="contact-form" method="post" action="{% url 'contact_submit' %}">
+        {% csrf_token %}
+
+        <label>Full Name *</label>
+        <input type="text" name="name" placeholder="Enter your full name" required>
+
+        <label>Email Address *</label>
+        <input type="email" name="email" placeholder="Enter your email address" required>
+
+        <label>Phone Number</label>
+        <input type="text" name="phone" placeholder="Enter your phone number">
+
+        <label>Subject *</label>
+        <input type="text" name="subject" placeholder="Enter subject" required>
+
+        <label>Your Message *</label>
+        <textarea name="message" placeholder="Type your message here..." required></textarea>
+
+        <div id="contact-form-msg" class="contact-form-msg"></div>
+
+        <button type="submit" class="contact-send-btn" id="contact-submit-btn">
+          SEND MESSAGE →
+        </button>
+      </form>
+    </div>
+
+  </section>
+
+  <section class="contact-instagram">
+    <div class="contact-insta-icon">
+      <i class="fa-brands fa-instagram"></i>
+    </div>
+    <div>
+      <h2>FOLLOW OUR JOURNEY</h2>
+      <p>Stay updated with our latest collections,<br>style tips & behind the scenes.</p>
+    </div>
+    <a href="https://instagram.com/cladlyfashion" target="_blank" style="text-decoration:none;">
+      <button type="button" class="contact-insta-btn">VIEW INSTAGRAM →</button>
+    </a>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById('contact-submit-btn');
+  const msgBox = document.getElementById('contact-form-msg');
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  msgBox.className = 'contact-form-msg';
+  msgBox.textContent = '';
+
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      msgBox.className = 'contact-form-msg success';
+      msgBox.textContent = "Message sent! We'll get back to you soon. 🖤";
+      form.reset();
+    } else {
+      msgBox.className = 'contact-form-msg error';
+      msgBox.textContent = data.error || 'Something went wrong. Please try again.';
+    }
+  })
+  .catch(() => {
+    msgBox.className = 'contact-form-msg error';
+    msgBox.textContent = 'Network error. Please try again.';
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = 'SEND MESSAGE →';
+  });
+});
+</script>
+{% endblock %}
