@@ -322,6 +322,7 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     expected_delivery = models.DateField(null=True, blank=True)
     notes = models.TextField(blank=True)
+    referral_reward_given = models.BooleanField(default=False)
     cancel_reason = models.TextField(blank=True)
     cancelled_at = models.DateTimeField(null=True, blank=True)
 
