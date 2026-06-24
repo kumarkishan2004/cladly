@@ -1,0 +1,904 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delivery Information — Cladly Fashion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:        #080808;
+      --deep:         #0f0f0f;
+      --card:         #141414;
+      --gold-bright:  #D4AF37;
+      --gold-mid:     #B8960C;
+      --gold-muted:   #8A6F2E;
+      --gold-dim:     #3d2f0a;
+      --gold-glow:    rgba(212,175,55,0.12);
+      --gold-line:    rgba(212,175,55,0.25);
+      --text-body:    #C9A84C;
+      --text-muted:   #7a6030;
+      --radius:       2px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text-body);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.8;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(8,8,8,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gold-line);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+      height: 64px;
+    }
+
+    .nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      letter-spacing: 0.12em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--gold-bright); }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 5vw, 4rem) clamp(3rem, 6vw, 5rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212,175,55,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-mid);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--gold-bright);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-mid);
+    }
+
+    .hero-sub {
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1.9;
+    }
+
+    .gold-rule {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+      margin: 0 auto;
+    }
+
+    /* ── LAYOUT ── */
+    .page-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 clamp(1.5rem, 5vw, 3rem) 6rem;
+    }
+
+    /* ── QUICK STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1px;
+      background: var(--gold-line);
+      border: 1px solid var(--gold-line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 4rem;
+    }
+
+    .stat-card {
+      background: var(--card);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .stat-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .stat-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      line-height: 1;
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── SECTION ── */
+    .section {
+      margin-bottom: 3.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gold-dim);
+    }
+
+    .section-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      color: var(--gold-muted);
+      letter-spacing: 0.1em;
+      min-width: 2rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 3vw, 1.75rem);
+      font-weight: 400;
+      color: var(--gold-bright);
+      letter-spacing: 0.05em;
+    }
+
+    .section p {
+      color: var(--text-body);
+      margin-bottom: 1rem;
+      font-size: 0.88rem;
+    }
+
+    .section p:last-child { margin-bottom: 0; }
+
+    /* ── TABLE ── */
+    .delivery-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.83rem;
+    }
+
+    .delivery-table thead tr {
+      border-bottom: 1px solid var(--gold-mid);
+    }
+
+    .delivery-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold-mid);
+      font-weight: 500;
+    }
+
+    .delivery-table td {
+      padding: 0.85rem 1rem;
+      color: var(--text-body);
+      border-bottom: 1px solid var(--gold-dim);
+    }
+
+    .delivery-table tbody tr:hover td {
+      background: var(--gold-glow);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border: 1px solid currentColor;
+      border-radius: 20px;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .badge-free { color: var(--gold-bright); border-color: var(--gold-mid); }
+    .badge-express { color: #c7a84c; }
+    .badge-international { color: var(--text-muted); }
+
+    /* ── LIST ── */
+    .styled-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin: 0.75rem 0 1rem;
+    }
+
+    .styled-list li {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      font-size: 0.88rem;
+      color: var(--text-body);
+    }
+
+    .styled-list li::before {
+      content: '◆';
+      color: var(--gold-mid);
+      font-size: 0.45rem;
+      margin-top: 0.55rem;
+      flex-shrink: 0;
+    }
+
+    /* ── HIGHLIGHT BOX ── */
+    .highlight-box {
+      background: var(--gold-glow);
+      border: 1px solid var(--gold-dim);
+      border-left: 3px solid var(--gold-bright);
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius);
+      margin: 1.25rem 0;
+      font-size: 0.85rem;
+    }
+
+    .highlight-box strong {
+      color: var(--gold-bright);
+      font-weight: 500;
+    }
+
+    /* ── ACCORDION ── */
+    .accordion {
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .accordion-item {
+      border-bottom: 1px solid var(--gold-dim);
+    }
+
+    .accordion-item:last-child { border-bottom: none; }
+
+    .accordion-btn {
+      width: 100%;
+      background: var(--card);
+      border: none;
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      color: var(--gold-bright);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .accordion-btn:hover { background: rgba(212,175,55,0.06); }
+
+    .accordion-btn .chevron {
+      transition: transform 0.3s;
+      color: var(--gold-mid);
+      font-size: 0.75rem;
+    }
+
+    .accordion-btn.open .chevron { transform: rotate(180deg); }
+
+    .accordion-body {
+      display: none;
+      padding: 1rem 1.25rem 1.25rem;
+      background: var(--deep);
+      font-size: 0.85rem;
+      color: var(--text-body);
+      line-height: 1.8;
+    }
+
+    .accordion-body.open { display: block; }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1px;
+      background: var(--gold-line);
+      border: 1px solid var(--gold-line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 1.5rem;
+    }
+
+    .contact-card {
+      background: var(--card);
+      padding: 1.75rem;
+    }
+
+    .contact-card h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--gold-bright);
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-card p, .contact-card a {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .contact-card a:hover { color: var(--gold-bright); }
+
+    /* ── TC SECTION ── */
+    .tc-section {
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 3.5rem;
+    }
+
+    .tc-header {
+      background: var(--gold-glow);
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--gold-dim);
+    }
+
+    .tc-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 300;
+      color: var(--gold-bright);
+      letter-spacing: 0.06em;
+    }
+
+    .tc-header p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    .tc-body { padding: 2rem; }
+
+    .tc-clause {
+      margin-bottom: 2rem;
+    }
+
+    .tc-clause:last-child { margin-bottom: 0; }
+
+    .tc-clause h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--gold-mid);
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.04em;
+    }
+
+    .tc-clause p, .tc-clause li {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.85;
+    }
+
+    .tc-clause ul {
+      list-style: none;
+      margin: 0.5rem 0;
+    }
+
+    .tc-clause ul li::before {
+      content: '— ';
+      color: var(--gold-dim);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--gold-line);
+      padding: 2.5rem clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      color: var(--gold-bright);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .delivery-table th:nth-child(3),
+      .delivery-table td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <header class="hero">
+    <p class="hero-eyebrow">Cladly Fashion · Delivery Centre</p>
+    <h1>Delivered with <em>Precision</em><br>Wrapped in Elegance</h1>
+    <p class="hero-sub">
+      Every Cladly order is packaged with care and dispatched with urgency.
+      Below you'll find everything you need to know about how we bring
+      fashion to your door.
+    </p>
+    <div class="gold-rule"></div>
+  </header>
+
+  <main class="page-wrap">
+
+    <!-- QUICK STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">✦</span>
+        <span class="stat-value">2–4</span>
+        <span class="stat-label">Days Standard</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">⚡</span>
+        <span class="stat-value">24h</span>
+        <span class="stat-label">Express Option</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🌍</span>
+        <span class="stat-value">80+</span>
+        <span class="stat-label">Countries Served</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">◈</span>
+        <span class="stat-value">FREE</span>
+        <span class="stat-label">On Orders ₹1999+</span>
+      </div>
+    </div>
+
+    <!-- SECTION 1: DELIVERY OPTIONS -->
+    <section class="section" id="delivery-options">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2 class="section-title">Delivery Options</h2>
+      </div>
+      <p>
+        Cladly Fashion offers a range of delivery services tailored to suit your schedule and requirements.
+        Choose the option that works best for you at checkout.
+      </p>
+
+      <table class="delivery-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Estimated Time</th>
+            <th>Coverage</th>
+            <th>Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Standard Delivery</strong></td>
+            <td>2–4 Business Days</td>
+            <td>Pan India</td>
+            <td><span class="badge badge-free">Free above ₹1,999</span><br><small>₹99 otherwise</small></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Express Delivery</strong></td>
+            <td>Next Business Day</td>
+            <td>Select Cities</td>
+            <td><span class="badge badge-express">₹299</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Same-Day Delivery</strong></td>
+            <td>Within 6–8 Hours</td>
+            <td>Metro Cities Only</td>
+            <td>₹499</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">International Shipping</strong></td>
+            <td>7–14 Business Days</td>
+            <td>80+ Countries</td>
+            <td><span class="badge badge-international">From ₹999</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Priority International</strong></td>
+            <td>3–5 Business Days</td>
+            <td>Select Countries</td>
+            <td>From ₹1,999</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>Cladly Gold Members</strong> enjoy complimentary express delivery on every order, regardless of order value.
+        <a href="{% url 'membership' %}" style="color:var(--gold-bright); margin-left:0.5rem">Learn about membership →</a>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ORDER PROCESSING -->
+    <section class="section" id="processing">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <h2 class="section-title">Order Processing</h2>
+      </div>
+      <p>
+        Orders placed on Cladly Fashion are processed on business days (Monday to Saturday, excluding public holidays).
+        Processing typically takes 1 business day before dispatch.
+      </p>
+      <ul class="styled-list">
+        <li>Orders placed before <strong>12:00 PM IST</strong> on a business day are processed the same day.</li>
+        <li>Orders placed after 12:00 PM or on weekends are processed the following business day.</li>
+        <li>During sales events or festive seasons, processing may take up to <strong>2–3 business days</strong>.</li>
+        <li>Custom, altered, or made-to-order items require an additional <strong>3–5 business days</strong> before dispatch.</li>
+        <li>A dispatch confirmation email with your tracking link is sent as soon as your order ships.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 3: TRACKING -->
+    <section class="section" id="tracking">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <h2 class="section-title">Tracking Your Order</h2>
+      </div>
+      <p>
+        Once dispatched, you will receive an SMS and email containing your tracking number and a link to
+        monitor your shipment in real time.
+      </p>
+      <ul class="styled-list">
+        <li>Track your order at any time via <strong>My Orders</strong> in your Cladly account dashboard.</li>
+        <li>Real-time GPS tracking is available for Express and Same-Day deliveries.</li>
+        <li>If your tracking link shows no movement for more than <strong>48 hours</strong>, please contact our support team.</li>
+        <li>International tracking updates may be delayed by up to 24 hours at customs checkpoints.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 4: PACKAGING -->
+    <section class="section" id="packaging">
+      <div class="section-header">
+        <span class="section-number">04</span>
+        <h2 class="section-title">Our Packaging</h2>
+      </div>
+      <p>
+        At Cladly, packaging is an extension of the product. Each order is carefully folded, wrapped in
+        signature tissue paper, and sealed in our premium black-and-gold branded box.
+      </p>
+      <ul class="styled-list">
+        <li>All packaging materials are <strong>100% recyclable</strong> and sustainably sourced.</li>
+        <li>Fragile accessories are bubble-wrapped and placed in reinforced secondary packaging.</li>
+        <li>Gift orders include a complimentary ribbon and a personalised message card.</li>
+        <li>Cladly does not use single-use plastics in any stage of its packaging process.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 5: INTERNATIONAL -->
+    <section class="section" id="international">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <h2 class="section-title">International Deliveries</h2>
+      </div>
+      <p>
+        Cladly delivers to over 80 countries worldwide. International orders are dispatched from our
+        fulfilment centre in Mumbai, India, and are handled by our trusted global logistics partners.
+      </p>
+
+      <div class="highlight-box">
+        <strong>Customs & Duties:</strong> International shipments may be subject to import duties,
+        taxes, and customs clearance fees levied by the destination country. These charges are the
+        sole responsibility of the recipient and are not included in Cladly's prices or shipping fees.
+      </div>
+
+      <ul class="styled-list">
+        <li>Cladly declares accurate commercial values on all customs documentation.</li>
+        <li>We cannot mark international shipments as "gifts" to reduce customs liability.</li>
+        <li>Delivery timelines may vary due to customs delays — these are beyond Cladly's control.</li>
+        <li>Certain products (e.g., leather goods) may be restricted in specific countries — check local regulations before ordering.</li>
+        <li>International orders are not eligible for Same-Day or Next-Day delivery services.</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="section-header">
+        <span class="section-number">06</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">
+            Can I change my delivery address after placing an order?
+            <span class="chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            You can update your delivery address within 30 minutes of placing your order by contacting our support team.
+            Once the order is processed and dispatched, address changes are no longer possible and Cladly cannot be held
+            responsible for delivery failure due to an incorrect address.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">
+            What happens if I'm not home during delivery?
+            <span class="chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            Our courier partner will attempt delivery up to 3 times on consecutive business days. If delivery is unsuccessful
+            after 3 attempts, the parcel will be returned to our fulfilment centre. You may request a re-delivery (additional
+            shipping fee applies) or a full refund of the product value.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">
+            My order arrived damaged — what should I do?
+            <span class="chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            Please do not discard the original packaging. Photograph the damage and contact us within 48 hours of receipt via
+            support@cladly.com or our WhatsApp helpline. We will arrange a replacement or full refund upon investigation.
+            Damage claims raised after 48 hours may not be accepted.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">
+            Do you deliver to PO Boxes or APO/FPO addresses?
+            <span class="chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            Currently, Cladly does not ship to PO Boxes or APO/FPO addresses. A complete residential or commercial
+            address with a PIN code and an active contact number is required for successful delivery.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">
+            Can I schedule a specific delivery time slot?
+            <span class="chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            Time-slot scheduling is available for Same-Day Delivery orders in select metro cities. After placing your order,
+            our courier partner will send an SMS with a link to choose your preferred 2-hour delivery window, subject to availability.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+      <div class="section-header">
+        <span class="section-number">07</span>
+        <h2 class="section-title">Delivery Support</h2>
+      </div>
+      <p>Our delivery support team is available 7 days a week to assist you.</p>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <h4>Email Support</h4>
+          <p>Response within 4 business hours</p>
+          <a href="mailto:fashioncladly@gmail.com">fashioncladly@gmail.com</a>
+        </div>
+        <div class="contact-card">
+          <h4>WhatsApp</h4>
+          <p>Mon–Sat, 10 AM – 9 PM IST</p>
+          <a href="https://wa.me/919777937534/919668519309">+91 97779 37534 +91 96685 19309</a>
+        </div>
+        <div class="contact-card">
+          <h4>Live Chat</h4>
+          <p>Available on the website</p>
+          <a href="{% url 'chat' %}">Start a chat →</a>
+        </div>
+        <div class="contact-card">
+          <h4>Phone</h4>
+          <p>Mon–Sat, 10 AM – 6 PM IST</p>
+          <a href="tel:+919777937534  +918895818838">+91 97779 37534 +91 88958 18838</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TERMS & CONDITIONS -->
+    <div class="tc-section" id="terms">
+      <div class="tc-header">
+        <h2>Delivery Terms &amp; Conditions</h2>
+        <p>Last updated: June 2026 &nbsp;|&nbsp; Effective for all orders placed on or after 1 January 2026</p>
+      </div>
+      <div class="tc-body">
+
+        <div class="tc-clause">
+          <h3>1. Acceptance of Terms</h3>
+          <p>
+            By placing an order on the Cladly Fashion website, mobile application, or any authorised sales channel,
+            you ("Customer") agree to be bound by these Delivery Terms and Conditions in their entirety. Cladly Fashion
+            ("Cladly", "we", "us", or "our") reserves the right to amend these terms at any time without prior notice.
+            Continued use of our services constitutes acceptance of the current terms.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>2. Delivery Obligations</h3>
+          <p>
+            Cladly will make reasonable efforts to deliver orders within the estimated timeframes published at the
+            time of purchase. These are estimates only and do not constitute a guaranteed delivery date. Cladly shall
+            not be liable for any direct, indirect, incidental, or consequential loss arising from delivery delays, including:
+          </p>
+          <ul>
+            <li>Delays caused by courier partner operations</li>
+            <li>Natural disasters, strikes, or other force majeure events</li>
+            <li>Delays resulting from incorrect or incomplete delivery information provided by the Customer</li>
+            <li>Customs clearance delays for international shipments</li>
+            <li>Delays during peak retail seasons or promotional sale periods</li>
+          </ul>
+        </div>
+
+        <div class="tc-clause">
+          <h3>3. Customer Responsibilities</h3>
+          <p>
+            The Customer is responsible for providing a complete, accurate, and accessible delivery address including
+            a valid PIN/postal code, building name or number, street, city, and state. Cladly will not be responsible
+            for non-delivery or misdelivery arising from inaccurate information. The Customer must also ensure that
+            an authorised person is available to receive the delivery and, where applicable, to provide a signature.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>4. Risk of Loss &amp; Title Transfer</h3>
+          <p>
+            Risk of loss and title for items purchased from Cladly pass to the Customer upon delivery to the confirmed
+            delivery address. Cladly is not responsible for loss, theft, or damage after the delivery is confirmed by
+            the courier partner's tracking system as "Delivered."
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>5. Failed Deliveries &amp; Returns to Origin</h3>
+          <p>
+            If an order cannot be delivered after the maximum number of attempts and is returned to our warehouse,
+            Cladly will contact the Customer within 3 business days. The Customer may request a re-delivery (subject to
+            an additional shipping fee) or a refund of the product price, excluding original shipping fees. Refunds
+            will be processed within 7–10 business days of receiving the returned order at our facility.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>6. Damaged or Missing Items</h3>
+          <p>
+            Claims for damaged, defective, or missing items must be raised within 48 hours of the delivery timestamp
+            confirmed by our courier partner. Claims must be submitted via email to delivery@cladly.com with photographic
+            evidence of the damage and the original packaging. Cladly's liability is limited to either a replacement of
+            the same item (subject to availability) or a full refund of the item value.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>7. International Customs, Duties &amp; Taxes</h3>
+          <p>
+            For international deliveries, the Customer is solely responsible for all customs duties, import taxes,
+            VAT, brokerage fees, and any other charges imposed by the destination country's authorities. Failure to
+            pay such charges may result in the parcel being held, returned, or destroyed by customs — for which
+            Cladly will not offer a refund. The Customer is advised to check the import regulations of their country
+            before placing an order.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>8. Restricted Delivery Zones</h3>
+          <p>
+            Cladly reserves the right to refuse delivery to certain geographical areas that are deemed inaccessible,
+            unsafe, or unsupported by our logistics network. In such cases, the Customer will be notified and offered
+            a full refund. Cladly's determination of restricted zones is final and binding.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>9. Promotional &amp; Free Shipping Offers</h3>
+          <p>
+            Free shipping thresholds and promotional delivery offers are applied automatically at checkout and are
+            subject to change without notice. Promotional offers cannot be applied retroactively to placed orders.
+            Cladly reserves the right to withdraw or modify free shipping offers at any time.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>10. Limitation of Liability</h3>
+          <p>
+            To the fullest extent permitted by applicable law, Cladly's total liability in connection with delivery
+            shall not exceed the purchase price of the specific order in question. Cladly expressly excludes liability
+            for any loss of profit, goodwill, business opportunity, or indirect loss of any kind arising from delivery
+            failures or delays.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>11. Governing Law &amp; Disputes</h3>
+          <p>
+            These Delivery Terms and Conditions are governed by the laws of India. Any disputes arising from or in
+            connection with delivery of Cladly orders shall be subject to the exclusive jurisdiction of the courts
+            in Mumbai, Maharashtra. For consumer disputes, Cladly is also subject to the Consumer Protection Act, 2019.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>12. Contact &amp; Grievance Redressal</h3>
+          <p>
+            For any concerns relating to delivery or these terms, please contact our Nodal Officer at
+            <a href="mailto:fashioncladly@gmail.com" style="color:var(--gold-bright)">fashioncladly@gmail.com</a>.
+            We aim to resolve all grievances within 7 business days of receipt of a formal complaint.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function toggleAccordion(btn) {
+      const body = btn.nextElementSibling;
+      const isOpen = body.classList.contains('open');
+      // close all
+      document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
+      document.querySelectorAll('.accordion-btn').forEach(b => b.classList.remove('open'));
+      // open clicked if it was closed
+      if (!isOpen) {
+        body.classList.add('open');
+        btn.classList.add('open');
+      }
+    }
+  </script>
+
+</body>
+</html>
