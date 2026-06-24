@@ -1,0 +1,893 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Returns & Refunds — Cladly Fashion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:       #080808;
+      --deep:        #0f0f0f;
+      --card:        #121212;
+      --gold-bright: #D4AF37;
+      --gold-mid:    #B8960C;
+      --gold-muted:  #8A6F2E;
+      --gold-dim:    #3d2f0a;
+      --gold-glow:   rgba(212,175,55,0.10);
+      --gold-line:   rgba(212,175,55,0.22);
+      --text-body:   #C9A84C;
+      --text-muted:  #7a6030;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text-body);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      text-align: center;
+      padding: clamp(3.5rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem) clamp(2.5rem, 5vw, 4rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 65% 55% at 50% 0%, rgba(212,175,55,0.09) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-size: 0.62rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold-mid);
+      margin-bottom: 1.1rem;
+    }
+
+    .page-hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 7vw, 5.5rem);
+      font-weight: 300;
+      color: var(--gold-bright);
+      letter-spacing: 0.04em;
+      line-height: 1.05;
+      margin-bottom: 1.25rem;
+    }
+
+    .page-hero h1 em {
+      font-style: italic;
+      color: var(--gold-mid);
+    }
+
+    .page-hero-sub {
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      line-height: 1.9;
+    }
+
+    .gold-rule {
+      width: 56px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+      margin: 0 auto;
+    }
+
+    /* ── WRAP ── */
+    .page-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 clamp(1.5rem, 5vw, 3rem) 5rem;
+    }
+
+    /* ── QUICK STATS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1px;
+      background: var(--gold-line);
+      border: 1px solid var(--gold-line);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 4rem;
+    }
+
+    .stat {
+      background: var(--card);
+      padding: 1.75rem 1.25rem;
+      text-align: center;
+    }
+
+    .stat-icon { font-size: 1.3rem; margin-bottom: 0.5rem; display: block; }
+
+    .stat-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-lbl {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 3.25rem; }
+
+    .sec-head {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+      padding-bottom: 0.9rem;
+      border-bottom: 1px solid var(--gold-dim);
+    }
+
+    .sec-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.72rem;
+      color: var(--gold-muted);
+      letter-spacing: 0.1em;
+      min-width: 2rem;
+    }
+
+    .sec-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.25rem, 2.8vw, 1.65rem);
+      font-weight: 400;
+      color: var(--gold-bright);
+      letter-spacing: 0.05em;
+    }
+
+    .section p {
+      font-size: 0.87rem;
+      color: var(--text-body);
+      margin-bottom: 0.9rem;
+    }
+
+    .section p:last-child { margin-bottom: 0; }
+
+    /* ── LIST ── */
+    .fancy-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin: 0.7rem 0 1rem;
+    }
+
+    .fancy-list li {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      font-size: 0.86rem;
+      color: var(--text-body);
+    }
+
+    .fancy-list li::before {
+      content: '◆';
+      color: var(--gold-mid);
+      font-size: 0.42rem;
+      margin-top: 0.55rem;
+      flex-shrink: 0;
+    }
+
+    /* ── STEPS ── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1.25rem 0;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      left: 1.35rem;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--gold-mid), var(--gold-dim));
+    }
+
+    .step {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      padding: 0 0 1.75rem 0;
+      position: relative;
+    }
+
+    .step:last-child { padding-bottom: 0; }
+
+    .step-num {
+      width: 2.7rem;
+      height: 2.7rem;
+      border-radius: 50%;
+      border: 1px solid var(--gold-mid);
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--gold-bright);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-body h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      color: var(--gold-bright);
+      margin-bottom: 0.3rem;
+      margin-top: 0.45rem;
+    }
+
+    .step-body p {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* ── HIGHLIGHT BOX ── */
+    .hbox {
+      background: var(--gold-glow);
+      border: 1px solid var(--gold-dim);
+      border-left: 3px solid var(--gold-bright);
+      padding: 1.1rem 1.4rem;
+      border-radius: 2px;
+      margin: 1.2rem 0;
+      font-size: 0.84rem;
+      color: var(--text-body);
+    }
+
+    .hbox strong { color: var(--gold-bright); font-weight: 500; }
+
+    /* ── WARNING BOX ── */
+    .wbox {
+      background: rgba(180, 60, 20, 0.07);
+      border: 1px solid rgba(180, 60, 20, 0.3);
+      border-left: 3px solid #c0522a;
+      padding: 1.1rem 1.4rem;
+      border-radius: 2px;
+      margin: 1.2rem 0;
+      font-size: 0.84rem;
+      color: #b07050;
+    }
+
+    .wbox strong { color: #d4704a; font-weight: 500; }
+
+    /* ── TABLE ── */
+    .return-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-size: 0.82rem;
+    }
+
+    .return-table thead tr {
+      border-bottom: 1px solid var(--gold-mid);
+    }
+
+    .return-table th {
+      text-align: left;
+      padding: 0.7rem 1rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-mid);
+      font-weight: 500;
+    }
+
+    .return-table td {
+      padding: 0.8rem 1rem;
+      color: var(--text-body);
+      border-bottom: 1px solid var(--gold-dim);
+      vertical-align: top;
+    }
+
+    .return-table tbody tr:hover td { background: var(--gold-glow); }
+
+    .pill {
+      display: inline-block;
+      padding: 0.18rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid currentColor;
+    }
+
+    .pill-yes  { color: var(--gold-bright); }
+    .pill-no   { color: #c0522a; }
+    .pill-cond { color: var(--gold-muted); }
+
+    /* ── ACCORDION ── */
+    .accordion { border: 1px solid var(--gold-dim); border-radius: 2px; overflow: hidden; margin-top: 1rem; }
+
+    .acc-item { border-bottom: 1px solid var(--gold-dim); }
+    .acc-item:last-child { border-bottom: none; }
+
+    .acc-btn {
+      width: 100%; background: var(--card); border: none;
+      padding: 1rem 1.25rem;
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer;
+      color: var(--gold-bright);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.05em;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .acc-btn:hover { background: rgba(212,175,55,0.06); }
+
+    .acc-btn .chev { transition: transform 0.3s; color: var(--gold-mid); font-size: 0.72rem; }
+    .acc-btn.open .chev { transform: rotate(180deg); }
+
+    .acc-body {
+      display: none;
+      padding: 1rem 1.25rem 1.25rem;
+      background: var(--deep);
+      font-size: 0.83rem;
+      color: var(--text-body);
+      line-height: 1.8;
+    }
+
+    .acc-body.open { display: block; }
+
+    /* ── T&C BLOCK ── */
+    .tc-block {
+      border: 1px solid var(--gold-dim);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 3.5rem;
+    }
+
+    .tc-head {
+      background: var(--gold-glow);
+      padding: 1.4rem 2rem;
+      border-bottom: 1px solid var(--gold-dim);
+    }
+
+    .tc-head h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 3vw, 1.85rem);
+      font-weight: 300;
+      color: var(--gold-bright);
+      letter-spacing: 0.06em;
+    }
+
+    .tc-head p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .tc-body { padding: 2rem; }
+
+    .tc-clause { margin-bottom: 1.85rem; }
+    .tc-clause:last-child { margin-bottom: 0; }
+
+    .tc-clause h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.08rem;
+      color: var(--gold-mid);
+      margin-bottom: 0.55rem;
+      letter-spacing: 0.04em;
+    }
+
+    .tc-clause p, .tc-clause li {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.85;
+    }
+
+    .tc-clause ul { list-style: none; margin: 0.5rem 0; }
+    .tc-clause ul li::before { content: '— '; color: var(--gold-dim); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .return-table th:last-child,
+      .return-table td:last-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <p class="eyebrow">Cladly Fashion · Returns & Refunds</p>
+    <h1>Returns Made<br><em>Simple &amp; Fair</em></h1>
+    <p class="page-hero-sub">
+      Your satisfaction is our standard. If something isn't right, we make it easy
+      to return, exchange, or get a full refund — no hassle, no compromise.
+    </p>
+    <div class="gold-rule"></div>
+  </div>
+
+  <main class="page-wrap">
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat">
+        <span class="stat-icon">↩</span>
+        <span class="stat-val">7</span>
+        <span class="stat-lbl">Day Return Window</span>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">⚡</span>
+        <span class="stat-val">5–7</span>
+        <span class="stat-lbl">Days Refund Time</span>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">✦</span>
+        <span class="stat-val">FREE</span>
+        <span class="stat-lbl">Return Pickup</span>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">◈</span>
+        <span class="stat-val">100%</span>
+        <span class="stat-lbl">Refund Guaranteed</span>
+      </div>
+    </div>
+
+    <!-- SECTION 1: OVERVIEW -->
+    <section class="section" id="overview">
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <h2 class="sec-title">Return Policy Overview</h2>
+      </div>
+      <p>
+        At Cladly Fashion, we stand behind every piece we sell. If for any reason you are not completely
+        satisfied with your purchase, you may return eligible items within <strong style="color:var(--gold-bright)">7 days</strong>
+        of the delivery date for a full refund, exchange, or store credit.
+      </p>
+      <p>
+        All returns are subject to the conditions outlined below. Items must be in their original, unworn,
+        unwashed, and undamaged condition with all original tags, labels, and packaging intact.
+      </p>
+      <div class="hbox">
+        <strong>Cladly Gold Members</strong> enjoy an extended <strong>15-day return window</strong> and priority
+        processing on all return requests, with refunds credited within 48 hours of warehouse receipt.
+      </div>
+    </section>
+
+    <!-- SECTION 2: ELIGIBLE ITEMS -->
+    <section class="section" id="eligibility">
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <h2 class="sec-title">What Can Be Returned</h2>
+      </div>
+      <p>The table below outlines the return eligibility for each product category sold on Cladly.</p>
+
+      <table class="return-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Returnable</th>
+            <th>Exchange Only</th>
+            <th>Condition Required</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Clothing (Tops, Dresses, Kurtas)</strong></td>
+            <td><span class="pill pill-yes">Yes</span></td>
+            <td>—</td>
+            <td>Unworn, tags attached</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Bottoms (Trousers, Skirts, Jeans)</strong></td>
+            <td><span class="pill pill-yes">Yes</span></td>
+            <td>—</td>
+            <td>Unworn, tags attached</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Footwear</strong></td>
+            <td><span class="pill pill-yes">Yes</span></td>
+            <td>—</td>
+            <td>Unworn, original box intact</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Bags &amp; Handbags</strong></td>
+            <td><span class="pill pill-yes">Yes</span></td>
+            <td>—</td>
+            <td>Unused, dust bag included</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Jewellery &amp; Accessories</strong></td>
+            <td><span class="pill pill-cond">Conditional</span></td>
+            <td>—</td>
+            <td>Sealed, unused, original pouch</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Innerwear &amp; Swimwear</strong></td>
+            <td><span class="pill pill-no">No</span></td>
+            <td>—</td>
+            <td>Hygiene — non-returnable</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Sale / Clearance Items</strong></td>
+            <td><span class="pill pill-no">No</span></td>
+            <td><span class="pill pill-cond">Sometimes</span></td>
+            <td>See product listing</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Custom / Altered / Made-to-Order</strong></td>
+            <td><span class="pill pill-no">No</span></td>
+            <td>—</td>
+            <td>Non-returnable unless defective</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold-bright)">Gift Cards</strong></td>
+            <td><span class="pill pill-no">No</span></td>
+            <td>—</td>
+            <td>Non-returnable, non-refundable</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="wbox">
+        <strong>Please Note:</strong> Items that show signs of wear, washing, alteration, perfume, deodorant,
+        or damage caused by the Customer will not be accepted for return and will be dispatched back at the
+        Customer's expense.
+      </div>
+    </section>
+
+    <!-- SECTION 3: HOW TO RETURN -->
+    <section class="section" id="how-to-return">
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <h2 class="sec-title">How to Initiate a Return</h2>
+      </div>
+      <p>Returning an order with Cladly is a straightforward 4-step process.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Log In &amp; Request</h4>
+            <p>Go to <em>My Orders</em> in your Cladly account, select the order, and click "Request Return". Choose the item(s) and reason for return.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Schedule Pickup</h4>
+            <p>Select a convenient date and time for free doorstep pickup. Our courier partner will collect the parcel within 2 business days.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Pack the Item</h4>
+            <p>Place the item in its original packaging with all tags attached. Attach the prepaid return label sent to your email. Seal the package securely.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Receive Refund or Exchange</h4>
+            <p>Once our team inspects the returned item and approves it (1–2 business days), your refund or exchange is processed within 5–7 business days.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hbox">
+        <strong>No account?</strong> Email <a href="mailto:fashioncladly@gmail.com" style="color:var(--gold-bright)">fashioncladly@gmail.com</a>
+        with your order number and reason for return to initiate the process manually.
+      </div>
+    </section>
+
+    <!-- SECTION 4: REFUNDS -->
+    <section class="section" id="refunds">
+      <div class="sec-head">
+        <span class="sec-num">04</span>
+        <h2 class="sec-title">Refunds</h2>
+      </div>
+      <p>
+        Once your returned item is received and inspected at our warehouse, we will notify you by email
+        of the approval or rejection of your refund request.
+      </p>
+      <ul class="fancy-list">
+        <li>Approved refunds are credited to the <strong>original payment method</strong> within 5–7 business days.</li>
+        <li>UPI and wallet payments are refunded within <strong>2–3 business days</strong>.</li>
+        <li>Credit / debit card refunds may take an additional 3–5 days depending on your bank's processing time.</li>
+        <li>Cash on Delivery (COD) refunds are issued as <strong>Cladly Store Credit</strong> or direct bank transfer (NEFT).</li>
+        <li>Original shipping fees are non-refundable unless the return is due to a Cladly error (wrong item, defective product).</li>
+        <li>Partial refunds may be granted where items are returned in a condition different from original.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 5: EXCHANGES -->
+    <section class="section" id="exchanges">
+      <div class="sec-head">
+        <span class="sec-num">05</span>
+        <h2 class="sec-title">Exchanges</h2>
+      </div>
+      <p>
+        Cladly offers free size and colour exchanges for all eligible clothing and footwear, subject to stock availability.
+        If your preferred size or colour is unavailable, you will be offered a full refund or store credit.
+      </p>
+      <ul class="fancy-list">
+        <li>Exchange requests must be raised within <strong>7 days</strong> of delivery (15 days for Gold Members).</li>
+        <li>Each order is eligible for a maximum of <strong>one exchange</strong>. Subsequent exchanges are not permitted.</li>
+        <li>The replacement item is dispatched after the original item is picked up and verified.</li>
+        <li>Price differences in exchanges (e.g. for a different product) must be settled at the time of the request.</li>
+        <li>International orders are not eligible for direct exchange — a refund will be issued instead.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 6: DEFECTIVE / WRONG ITEMS -->
+    <section class="section" id="defective">
+      <div class="sec-head">
+        <span class="sec-num">06</span>
+        <h2 class="sec-title">Defective or Wrong Items</h2>
+      </div>
+      <p>
+        If you receive an item that is defective, damaged in transit, or different from what you ordered,
+        Cladly will cover the full cost of return and prioritise your replacement or refund.
+      </p>
+      <div class="hbox">
+        <strong>Report within 48 hours</strong> of delivery by emailing
+        <a href="mailto:fashioncladly@gmail.com" style="color:var(--gold-bright)">fashioncladly@gmail.com</a>
+        with your order number and clear photographs of the defect or incorrect item. Claims raised after
+        48 hours may not qualify for a complimentary return.
+      </div>
+      <ul class="fancy-list">
+        <li>Cladly will arrange an immediate free reverse pickup for defective or wrong items.</li>
+        <li>A replacement will be dispatched on the same day the return is picked up, if stock is available.</li>
+        <li>If the item is out of stock, a <strong>100% refund</strong> including original shipping fees will be issued.</li>
+        <li>Manufacturing defects discovered after 48 hours but within 15 days are also eligible — subject to assessment.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 7: NON-RETURNABLE -->
+    <section class="section" id="non-returnable">
+      <div class="sec-head">
+        <span class="sec-num">07</span>
+        <h2 class="sec-title">Non-Returnable Items</h2>
+      </div>
+      <p>The following items are strictly non-returnable and non-refundable under any circumstances, except in the case of a proven manufacturing defect:</p>
+      <ul class="fancy-list">
+        <li>Innerwear, lingerie, and swimwear (for hygiene reasons)</li>
+        <li>Custom-made, altered, or personalised items</li>
+        <li>Items marked "Final Sale" or "Non-Returnable" on the product page</li>
+        <li>Clearance or outlet merchandise unless defective</li>
+        <li>Items without original tags, labels, or packaging</li>
+        <li>Items that have been worn, washed, or altered by the Customer</li>
+        <li>Gift cards and Cladly store credits</li>
+        <li>Fragrance and beauty products once opened</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 8: FAQ -->
+    <section class="section" id="faq">
+      <div class="sec-head">
+        <span class="sec-num">08</span>
+        <h2 class="sec-title">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="accordion">
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)">
+            Can I return a gift I received from someone else?
+            <span class="chev">▼</span>
+          </button>
+          <div class="acc-body">
+            Yes. Gift recipients may return items within 30 days of the original delivery date.
+            Please contact returns@cladly.com with the order number from the packing slip. Refunds
+            for gifted items are issued as Cladly Store Credit only, not to the original payment method.
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)">
+            What if I miss the 30-day return window?
+            <span class="chev">▼</span>
+          </button>
+          <div class="acc-body">
+            Returns outside the 30-day window are not accepted as a standard policy. However, if you
+            have extenuating circumstances, please reach out to our support team — we handle such
+            requests on a case-by-case basis at our sole discretion.
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)">
+            I lost the original packaging — can I still return?
+            <span class="chev">▼</span>
+          </button>
+          <div class="acc-body">
+            Items must be returned in their original packaging wherever possible. If the original box or
+            bag is unavailable, please use a plain, protective alternative. However, if the item's hang
+            tags or authenticity labels are missing, the return will be declined.
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)">
+            How do I return an international order?
+            <span class="chev">▼</span>
+          </button>
+          <div class="acc-body">
+            International customers must self-ship returns to our Mumbai fulfilment centre. The return
+            shipping cost is borne by the Customer unless the item is defective. Please email
+            returns@cladly.com for the return address and instructions. Refunds for international returns
+            exclude original shipping costs and any customs duties paid.
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)">
+            My refund hasn't arrived — what should I do?
+            <span class="chev">▼</span>
+          </button>
+          <div class="acc-body">
+            If your refund has been approved but has not reflected after 10 business days, first check
+            with your bank or payment provider — processing times vary. If the issue persists, contact
+            us at returns@cladly.com with your return ID and we will investigate within 24 hours.
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)">
+            Can I return multiple items from the same order separately?
+            <span class="chev">▼</span>
+          </button>
+          <div class="acc-body">
+            Yes, you can initiate separate return requests for individual items within the same order,
+            as long as each item meets the eligibility criteria. Each item's 30-day return window is
+            counted from the delivery date of that specific order.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- T&C BLOCK -->
+    <div class="tc-block" id="terms">
+      <div class="tc-head">
+        <h2>Returns &amp; Refunds — Terms &amp; Conditions</h2>
+        <p>Last updated: June 2026 &nbsp;|&nbsp; Effective for all orders placed on or after 1 January 2026</p>
+      </div>
+      <div class="tc-body">
+
+        <div class="tc-clause">
+          <h3>1. Acceptance of These Terms</h3>
+          <p>
+            By placing an order on the Cladly Fashion platform, you ("Customer") agree to be bound by
+            these Returns and Refunds Terms and Conditions. Cladly Fashion ("Cladly", "we", "us") reserves
+            the right to amend, suspend, or withdraw this policy at any time. The version published at the
+            time of your order shall govern that transaction.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>2. Eligibility for Returns</h3>
+          <p>A return will only be accepted if all of the following conditions are met:</p>
+          <ul>
+            <li>The return request is raised within 30 calendar days of the confirmed delivery date</li>
+            <li>The item is in its original, unworn, unwashed, and unaltered condition</li>
+            <li>All original tags, labels, dust bags, and packaging are intact and included</li>
+            <li>The item is not listed in the Non-Returnable Items category</li>
+            <li>The return request is submitted through Cladly's official returns portal or support email</li>
+          </ul>
+        </div>
+
+        <div class="tc-clause">
+          <h3>3. Inspection &amp; Approval</h3>
+          <p>
+            All returned items are subject to quality inspection upon receipt at Cladly's fulfilment centre.
+            Cladly reserves the sole right to approve or reject a return based on the item's condition.
+            Items that fail inspection will be returned to the Customer at their expense and no refund will
+            be issued. Inspection results are typically communicated within 1–2 business days of receipt.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>4. Refund Processing</h3>
+          <p>
+            Upon approval of a return, refunds will be credited to the original payment method within
+            5–7 business days. Cladly is not responsible for delays caused by the Customer's financial
+            institution. Shipping charges are non-refundable except in cases of Cladly error. COD orders
+            will be refunded via bank transfer (NEFT) or Cladly Store Credit at the Customer's discretion.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>5. Store Credit</h3>
+          <p>
+            Customers who opt for Cladly Store Credit in lieu of a cash refund will receive 105% of the
+            refund value as Store Credit (a 5% bonus). Store Credits are non-transferable, have no cash
+            value, and expire 12 months from the date of issuance. They may not be used in conjunction
+            with certain promotional offers unless explicitly stated.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>6. Fraudulent Returns</h3>
+          <p>
+            Cladly employs return monitoring systems to detect fraudulent activity, including but not limited
+            to returning items not purchased from Cladly, returning used or counterfeit goods, and abuse of
+            return policies. Any Customer found engaging in fraudulent return behaviour will have their
+            account suspended, returns rejected, and may be reported to relevant authorities.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>7. Limitation of Liability</h3>
+          <p>
+            Cladly's maximum liability in connection with any return or refund claim shall not exceed the
+            purchase price of the item(s) in question. Cladly expressly disclaims liability for any indirect,
+            incidental, or consequential loss, including loss of enjoyment or opportunity, arising from a
+            return or refund dispute.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>8. Consumer Rights</h3>
+          <p>
+            Nothing in these Terms limits or excludes the statutory rights of Customers under the Consumer
+            Protection Act, 2019 (India) or any other applicable consumer protection legislation. In case of
+            conflict between this policy and applicable law, the law shall prevail.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>9. Governing Law &amp; Jurisdiction</h3>
+          <p>
+            These Terms are governed by the laws of the Republic of India. Disputes arising from return or
+            refund claims shall be subject to the exclusive jurisdiction of the competent courts in Mumbai,
+            Maharashtra. Customers may also avail themselves of the Online Dispute Resolution (ODR) mechanism
+            under the Consumer Protection (E-Commerce) Rules, 2020.
+          </p>
+        </div>
+
+        <div class="tc-clause">
+          <h3>10. Contact for Returns</h3>
+          <p>
+            For all return, exchange, and refund enquiries, please contact us at
+            <a href="mailto:fashioncladly@gmail.com" style="color:var(--gold-bright)">fashioncladly@gmail.com</a>
+            or call our helpline at
+            <a href="tel:+918895818838" style="color:var(--gold-bright)">+91 88958 18838</a>
+            (Mon–Sat, 10 AM – 6 PM IST). Our Returns Nodal Officer will respond within 2 business days.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function toggleAcc(btn) {
+      const body = btn.nextElementSibling;
+      const isOpen = body.classList.contains('open');
+      document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+      document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
+      if (!isOpen) {
+        body.classList.add('open');
+        btn.classList.add('open');
+      }
+    }
+  </script>
+
+</body>
+</html>
