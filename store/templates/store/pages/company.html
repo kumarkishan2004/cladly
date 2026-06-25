@@ -8,7 +8,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   .about-hero {
-    height: 100vh;
+    min-height: 70vh;
+    padding: 60px 20px 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -22,7 +23,7 @@
     top: 0; left: 0;
     width: 100%; height: 100%;
   }
-  .about-hero-content { position: relative; z-index: 1; padding: 0 20px; }
+  .about-hero-content { position: relative; z-index: 1; padding: 0 20px; max-width: 720px; }
   .about-hero-title {
     font-family: var(--font-display);
     font-size: clamp(2.4rem, 6vw, 4rem);
@@ -32,99 +33,248 @@
   .about-hero-sub {
     font-size: 17px;
     color: var(--text-secondary);
-    max-width: 500px;
+    max-width: 560px;
     margin: 0 auto;
+    line-height: 1.7;
+  }
+  .about-hero-scroll {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    z-index: 1;
+    animation: aboutBounce 2s infinite;
+  }
+  @keyframes aboutBounce {
+    0%, 100% { transform: translate(-50%, 0); opacity: 0.5; }
+    50% { transform: translate(-50%, 8px); opacity: 1; }
   }
 
-  .about-section { padding: 70px 20px; max-width: 1100px; margin: 0 auto; }
+  .about-section { padding: 80px 20px; max-width: 1150px; margin: 0 auto; }
+  .about-section-eyebrow {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
   .about-section-title {
     font-family: var(--font-display);
-    font-size: clamp(1.8rem, 4vw, 2.4rem);
-    color: var(--gold);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    color: var(--text-primary);
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 18px;
+  }
+  .about-section-sub {
+    text-align: center;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0 auto 48px;
+    font-size: 15px;
+    line-height: 1.8;
   }
 
+  /* Who we are / Vision / Mission split rows */
   .about-flex-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-    gap: 40px;
+    gap: 50px;
   }
-
-  .about-glass-card {
-    background: var(--black-card);
-    border: 1px solid var(--border-gold);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    max-width: 480px;
+  .about-flex-row.reverse { flex-direction: row-reverse; }
+  .about-flex-text { flex: 1; min-width: 280px; }
+  .about-flex-text .about-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .about-flex-text h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+  .about-flex-text p {
     color: var(--text-secondary);
-    line-height: 1.8;
+    line-height: 1.85;
     font-size: 15px;
+    margin-bottom: 14px;
   }
+  .about-3d-box { width: 280px; height: 280px; flex-shrink: 0; margin: 0 auto; }
 
-  .about-3d-box { width: 240px; height: 240px; flex-shrink: 0; }
-
+  /* What we offer grid */
   .about-grid-3 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
   }
-
   .about-grid-5 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 16px;
   }
-
   .about-card {
     background: var(--black-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    padding: 28px 20px;
+    padding: 32px 24px;
     text-align: center;
     transition: all 0.3s ease;
   }
   .about-card:hover {
     border-color: var(--gold);
     box-shadow: var(--shadow-gold);
-    transform: translateY(-5px);
+    transform: translateY(-6px);
   }
+  .about-card .about-icon { font-size: 32px; margin-bottom: 16px; display: block; }
   .about-card h3 {
     font-family: var(--font-display);
     color: var(--text-primary);
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     margin-bottom: 10px;
   }
-  .about-card h5 {
+  .about-card p { color: var(--text-muted); font-size: 13px; line-height: 1.7; }
+
+  /* Timeline */
+  .about-timeline {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+    padding-left: 28px;
+    border-left: 2px solid var(--border-gold);
+  }
+  .about-timeline-item {
+    position: relative;
+    padding-bottom: 36px;
+  }
+  .about-timeline-item:last-child { padding-bottom: 0; }
+  .about-timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 4px var(--black-soft), 0 0 12px rgba(201,168,76,0.5);
+  }
+  .about-timeline-year {
     font-family: var(--font-display);
-     color: var(--gold); 
-     font-size: 1.2rem; 
-     margin-bottom: 10px;
- }
-
-  .about-card p { color: var(--text-muted); font-size: 13px; }
-
-  .about-team-avatar {
-    width: 250px;
-    height: 300px;
-    border-radius: 30%;
-    object-fit: cover;
-    margin: 0 auto 16px;
-    border: 2px solid var(--gold);
+    color: var(--gold);
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+  }
+  .about-timeline-item p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
   }
 
+  /* Team */
+  .about-team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 32px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .about-team-card {
+    background: var(--black-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.4s ease;
+    text-align: center;
+    position: relative;
+  }
+  .about-team-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .about-team-card:hover {
+    border-color: var(--border-gold);
+    box-shadow: var(--shadow-gold);
+    transform: translateY(-8px);
+  }
+  .about-team-card:hover::before { opacity: 1; }
+
+  .about-team-photo-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--surface);
+    position: relative;
+  }
+  .about-team-photo-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.55), transparent);
+  }
+  .about-team-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .about-team-card:hover .about-team-photo-wrap img {
+    transform: scale(1.06);
+  }
+
+  .about-team-info { padding: 24px 22px 26px; }
+  .about-team-info h3 {
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+  }
+  .about-team-role {
+    display: inline-block;
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    width: 100%;
+  }
+  .about-team-info p {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+
+  /* Stats */
   .about-stats-row {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 50px;
+    gap: 60px;
     text-align: center;
   }
   .about-counter {
     font-family: var(--font-display);
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     color: var(--gold);
     font-weight: 700;
   }
@@ -133,14 +283,38 @@
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-top: 4px;
+    margin-top: 6px;
   }
 
+  /* CTA */
+  .about-cta {
+    text-align: center;
+    background: linear-gradient(135deg, var(--black-card), var(--surface));
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-xl);
+    padding: 56px 30px;
+  }
+  .about-cta h2 {
+    font-family: var(--font-display);
+    color: var(--gold);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 14px;
+  }
+  .about-cta p {
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto 24px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 768px) {
+    .about-flex-row, .about-flex-row.reverse { flex-direction: column; }
+    .about-3d-box { width: 220px; height: 220px; }
+  }
   @media (max-width: 480px) {
-    .about-section { padding: 40px 16px; }
-    .about-flex-row { gap: 20px; }
-    .about-3d-box { width: 180px; height: 180px; }
-    .about-stats-row { gap: 30px; }
+    .about-hero { height: 80vh; }
+    .about-section { padding: 50px 16px; }
+    .about-stats-row { gap: 32px; }
   }
 </style>
 {% endblock %}
@@ -152,86 +326,205 @@
   <canvas id="heroCanvas"></canvas>
   <div class="about-hero-content">
     <div class="section-eyebrow">Our Story</div>
-    <h1 class="about-hero-title">About Cladly</h1>
-    <p class="about-hero-sub">Fashion that carries meaning, confidence, and individuality.</p>
+    <h1 class="about-hero-title">Crafted With Purpose</h1>
+    <p class="about-hero-sub">Cladly began with a simple belief — that every woman and every man deserves accessories that feel as bold and individual as they are. This is the story of how that belief became a brand.</p>
   </div>
+  <div class="about-hero-scroll">Scroll to explore ↓</div>
 </section>
 
 <!-- Who We Are -->
 <section class="about-section">
-  <h2 class="about-section-title">Who We Are</h2>
   <div class="about-flex-row">
-    <div class="about-glass-card">
-      <p>Cladly is a fashion and lifestyle brand redefining luxury for the modern era. We blend timeless artistry with cutting-edge innovation, creating pieces that embody individuality and confidence.</p>
+    <div class="about-flex-text">
+      <span class="about-tag">Who We Are</span>
+      <h2>A brand built by people who actually wear what they sell</h2>
+      <p>Cladly is a fashion and lifestyle brand redefining everyday luxury for a generation that refuses to choose between style and substance. We started in college dorm rooms and group chats — frustrated by accessories that looked cheap, broke fast, or cost more than a month's allowance.</p>
+      <p>So we built something different: pieces designed with the same care as luxury houses, priced for the people who actually wear them every day — students, young professionals, and anyone who believes good style shouldn't be a luxury reserved for a few.</p>
     </div>
     <div id="about3D" class="about-3d-box"></div>
   </div>
 </section>
 
 <!-- Vision -->
-<section class="about-section">
-  <h2 class="about-section-title">Our Vision</h2>
-  <div class="about-flex-row">
-    <div class="about-glass-card">
-      <p>We envision a world where fashion is more than style—it's a statement of integrity, creativity, and sustainability. Cladly strives to inspire confidence and individuality in every customer.</p>
+<section class="about-section" style="background:var(--black-soft);">
+  <div class="about-flex-row reverse">
+    <div class="about-flex-text">
+      <span class="about-tag">Our Vision</span>
+      <h2>Fashion that says something, without saying too much</h2>
+      <p>We envision a world where accessories aren't an afterthought — where a pair of earrings or a bracelet can carry as much intention as the outfit it completes. Cladly exists to make that kind of thoughtful styling accessible, not exclusive.</p>
+      <p>We're building toward a future where quality, sustainability, and individuality aren't trade-offs against affordability — they're simply how we do business, every single day.</p>
     </div>
     <div id="vision3D" class="about-3d-box"></div>
   </div>
 </section>
 
-<!-- Mission -->
+<!-- What We Offer -->
 <section class="about-section">
-  <h2 class="about-section-title">Our Mission</h2>
+  <div class="about-section-eyebrow">What We Offer</div>
+  <h2 class="about-section-title">More than just accessories</h2>
+  <p class="about-section-sub">Every Cladly order is built around three things we never compromise on — quality you can feel, prices that make sense, and delivery that actually shows up on time.</p>
   <div class="about-grid-3">
     <div class="about-card">
+      <span class="about-icon">💎</span>
+      <h3>Curated Collections</h3>
+      <p>Earrings, rings, bangles, jhumkas and more — handpicked each season, never mass-dumped trend pieces.</p>
+    </div>
+    <div class="about-card">
+      <span class="about-icon">🚀</span>
+      <h3>Campus-Speed Delivery</h3>
+      <p>Same-day delivery to hostels and campuses in select cities, because last-minute outfit emergencies are real.</p>
+    </div>
+    <div class="about-card">
+      <span class="about-icon">🎁</span>
+      <h3>Premium Packaging</h3>
+      <p>Every order arrives in signature black & gold packaging — because unboxing should feel like a moment.</p>
+    </div>
+    <div class="about-card">
+      <span class="about-icon">↩️</span>
+      <h3>Easy Returns</h3>
+      <p>Changed your mind? No interrogation, no hassle — just a simple, honest return process.</p>
+    </div>
+    <div class="about-card">
+      <span class="about-icon">🤝</span>
+      <h3>Refer & Earn</h3>
+      <p>Share Cladly with your friends and both of you walk away with real savings on your next order.</p>
+    </div>
+    <div class="about-card">
+      <span class="about-icon">💬</span>
+      <h3>Real Human Support</h3>
+      <p>No chatbot loops. Reach out on Instagram or email and get an actual reply from our team.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Our Journey -->
+<section class="about-section" style="background:var(--black-soft);">
+  <div class="about-section-eyebrow">Our Journey</div>
+  <h2 class="about-section-title">How we got here</h2>
+  <div class="about-timeline">
+    <div class="about-timeline-item">
+      <div class="about-timeline-year">The Idea</div>
+      <p>Cladly started as a frustration turned plan — too many accessory brands were either overpriced luxury or flimsy fast-fashion. We wanted to build the option that didn't exist yet.</p>
+    </div>
+    <div class="about-timeline-item">
+      <div class="about-timeline-year">First Collection</div>
+      <p>We launched with a small, carefully chosen catalog — earrings, jhumkas, and bangles — tested first on friends, then on campus.</p>
+    </div>
+    <div class="about-timeline-item">
+      <div class="about-timeline-year">Going Digital</div>
+      <p>We built our own platform from scratch, designed around how our customers actually shop — fast, mobile-first, and visually driven.</p>
+    </div>
+    <div class="about-timeline-item">
+      <div class="about-timeline-year">Today</div>
+      <p>We're growing one referral, one campus, one order at a time — staying true to the same promise we started with: real quality, honest prices.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Mission Pillars -->
+<section class="about-section">
+  <div class="about-section-eyebrow">Our Mission</div>
+  <h2 class="about-section-title">What we stand on, every single order</h2>
+  <div class="about-grid-3">
+    <div class="about-card">
+      <span class="about-icon">⚡</span>
       <h3>Quality</h3>
-      <p>Uncompromising standards in every product.</p>
+      <p>Uncompromising standards in materials, finish, and durability — in every single product we ship.</p>
     </div>
     <div class="about-card">
+      <span class="about-icon">💡</span>
       <h3>Innovation</h3>
-      <p>Blending tradition with modern technology.</p>
+      <p>Blending timeless design with modern technology — from how we curate to how we deliver.</p>
     </div>
     <div class="about-card">
+      <span class="about-icon">❤️</span>
       <h3>Customer Satisfaction</h3>
-      <p>Delivering experiences that delight and inspire.</p>
+      <p>Every decision, from pricing to packaging, is filtered through one question — would we want this experience?</p>
     </div>
   </div>
 </section>
 
 <!-- Team -->
-<section class="about-section">
+<section class="about-section" style="background:var(--black-soft);">
+  <div class="about-section-eyebrow">The People Behind Cladly</div>
   <h2 class="about-section-title">Meet Our Team</h2>
-  <div class="about-grid-3">
-    <div class="about-card">
-      <img src="{% static 'store/images/founder.jpeg' %}" class="about-team-avatar" alt="Founder">
-      <h3>Founder & CEO</h3>
-      <h5>Kumar Kishan</h5>
-      <p>Visionary leader shaping Cladly's future.</p>
+  <p class="about-section-sub">A small team that wears, tests, and obsesses over every single piece before it reaches you.</p>
+  <div class="about-team-grid">
+    <div class="about-team-card">
+      <div class="about-team-photo-wrap">
+        <img src="{% static '#' %}" alt="founder">
+      </div>
+      <div class="about-team-info">
+        <h3>Yet To Be Announced</h3>
+        <div class="about-team-role">Founder & CEO</div>
+        <p>The visionary behind Cladly — shaping the brand's direction, product strategy, and long-term growth.</p>
+      </div>
     </div>
-    <div class="about-card">
-      <img src="{% static 'store/images/cofounder.jpg' %}" class="about-team-avatar" alt="Co-Founder">
-      <h3>Co-Founder</h3>
-      <p>Driving innovation and growth.</p>
+
+    <div class="about-team-card">
+      <div class="about-team-photo-wrap">
+        <img src="{% static 'store/images/itishree.jpeg' %}" alt="####">
+      </div>
+      <div class="about-team-info">
+        <h3>Itishree Swain</h3>
+        <div class="about-team-role">Frontend Developer & Social Media Manager</div>
+        <p>Blending innovative web design with impactful social media storytelling, dedicated to crafting memorable digital experiences that elevate the brand and connect with audiences worldwide.</p>
+      </div>
     </div>
-    <div class="about-card">
-      <img src="{% static 'store/images/designer.jpg' %}" class="about-team-avatar" alt="Designer">
-      <h3>Product Designer</h3>
-      <p>Crafting timeless luxury pieces.</p>
+
+
+    <div class="about-team-card">
+      <div class="about-team-photo-wrap">
+        <img src="{% static 'store/images/pallabi.jpeg' %}" alt="Designer">
+      </div>
+      <div class="about-team-info">
+        <h3>Pallabi Mitra</h3>
+        <div class="about-team-role">Frontend Developer & Content Writer</div>
+        <p>Creates engaging websites and meaningful content that enhance user experience and strengthen the brand's digital presence.</p>
+      </div>
     </div>
+
+    <div class="about-team-card">
+      <div class="about-team-photo-wrap">
+        <img src="{% static 'store/images/ashutosh.jpeg' %}" alt="Designer">
+      </div>
+      <div class="about-team-info">
+        <h3>Ashutosh Sahoo</h3>
+        <div class="about-team-role">Frontend Developer & Catalog Executive</div>
+        <p>Combines frontend development skills with catalog management expertise to create engaging digital experiences and maintain well-structured product information across platforms.</p>
+      </div>
+    </div>
+
+      <div class="about-team-card">
+      <div class="about-team-photo-wrap">
+        <img src="{% static 'store/images/.jpeg' %}" alt="Designer">
+      </div>
+      <div class="about-team-info">
+        <h3>Ashutosh Sahoo</h3>
+        <div class="about-team-role">Frontend Developer & Catalog Executive</div>
+        <p>Combines frontend development skills with catalog management expertise to create engaging digital experiences and maintain well-structured product information across platforms.</p>
+      </div>
+    </div>
+
+
+
+
+
   </div>
 </section>
 
 <!-- Stats -->
 <section class="about-section">
-  <h2 class="about-section-title">Our Impact</h2>
+  <div class="about-section-eyebrow">Our Impact</div>
+  <h2 class="about-section-title">Cladly, in numbers</h2>
   <div class="about-stats-row">
     <div>
       <div class="about-counter" id="customers">0</div>
-      <div class="about-counter-label">Customers</div>
+      <div class="about-counter-label">Happy Customers</div>
     </div>
     <div>
       <div class="about-counter" id="products">0</div>
-      <div class="about-counter-label">Products</div>
+      <div class="about-counter-label">Products Sold</div>
     </div>
     <div>
       <div class="about-counter" id="team">0</div>
@@ -239,20 +532,30 @@
     </div>
     <div>
       <div class="about-counter" id="cities">0</div>
-      <div class="about-counter-label">Cities</div>
+      <div class="about-counter-label">Cities Reached</div>
     </div>
   </div>
 </section>
 
 <!-- Values -->
-<section class="about-section">
-  <h2 class="about-section-title">Our Values</h2>
+<section class="about-section" style="background:var(--black-soft);">
+  <div class="about-section-eyebrow">What We Believe</div>
+  <h2 class="about-section-title">Our Core Values</h2>
   <div class="about-grid-5">
-    <div class="about-card"><h3 style="font-size:0.9rem;">Integrity</h3></div>
-    <div class="about-card"><h3 style="font-size:0.9rem;">Excellence</h3></div>
-    <div class="about-card"><h3 style="font-size:0.9rem;">Creativity</h3></div>
-    <div class="about-card"><h3 style="font-size:0.9rem;">Sustainability</h3></div>
-    <div class="about-card"><h3 style="font-size:0.9rem;">Trust</h3></div>
+    <div class="about-card"><span class="about-icon">🛡️</span><h3 style="font-size:0.95rem;">Integrity</h3></div>
+    <div class="about-card"><span class="about-icon">⭐</span><h3 style="font-size:0.95rem;">Excellence</h3></div>
+    <div class="about-card"><span class="about-icon">🎨</span><h3 style="font-size:0.95rem;">Creativity</h3></div>
+    <div class="about-card"><span class="about-icon">🌍</span><h3 style="font-size:0.95rem;">Sustainability</h3></div>
+    <div class="about-card"><span class="about-icon">🤝</span><h3 style="font-size:0.95rem;">Trust</h3></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="about-section">
+  <div class="about-cta">
+    <h2>Ready to find your next favorite piece?</h2>
+    <p>Browse our latest collections and discover accessories made for the way you actually live and dress.</p>
+    <a href="{% url 'product_list' %}" class="btn btn-gold">Shop the Collection →</a>
   </div>
 </section>
 
@@ -260,10 +563,10 @@
 
 {% block extra_js %}
 <script>
-  gsap.fromTo("#customers", {innerText:0}, {innerText:1000, duration:3, snap:{innerText:1}});
-  gsap.fromTo("#products", {innerText:0}, {innerText:500, duration:3, snap:{innerText:1}});
-  gsap.fromTo("#team", {innerText:0}, {innerText:50, duration:3, snap:{innerText:1}});
-  gsap.fromTo("#cities", {innerText:0}, {innerText:20, duration:3, snap:{innerText:1}});
+  gsap.fromTo("#customers", {innerText:0}, {innerText:200, duration:3, snap:{innerText:1}});
+  gsap.fromTo("#products", {innerText:0}, {innerText:150, duration:3, snap:{innerText:1}});
+  gsap.fromTo("#team", {innerText:0}, {innerText:5, duration:3, snap:{innerText:1}});
+  gsap.fromTo("#cities", {innerText:0}, {innerText:10, duration:3, snap:{innerText:1}});
 
   function init3D(id) {
     const container = document.getElementById(id);

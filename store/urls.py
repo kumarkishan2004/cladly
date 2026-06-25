@@ -97,4 +97,7 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('contact/submit/', views.contact_submit, name='contact_submit'),
     path('privacypolicy/', views.privacypolicy, name='privacypolicy'),
+    path('returns/', views.returns, name='returns'),
+    path('deliveryinfo/', views.deliveryinfo, name='deliveryinfo'),
+
 ]

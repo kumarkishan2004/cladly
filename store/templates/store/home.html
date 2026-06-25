@@ -72,8 +72,7 @@
     <!-- Decorative banner -->
     <div style="background:linear-gradient(135deg,#1a0a0a,#2a1010);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius-xl);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <div>
-        <div style="font-family:var(--font-display);font-size:1.2rem;color:var(--gold);">Crafted for the Modern Woman</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Earrings · Necklaces · Bangles · Rings & more</div>
+        <div style="font-family:var(--font-display);font-size:1.2rem;color:var(--gold);">Crafted for the Woman</div>
       </div>
       <a href="{% url 'product_list' %}" class="btn btn-outline btn-sm">View All →</a>
     </div>
@@ -99,10 +98,7 @@
                 {% else %}✦{% endif %}
               </div>
             {% endif %}
-            <!-- Girls tag -->
-            <div style="position:absolute;bottom:6px;left:6px;background:rgba(201,68,76,0.85);color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:0.5px;">
-              GIRLS
-            </div>
+            
           </div>
           <div class="cat-name">{{ cat.name }}</div>
           <div class="cat-count">{{ cat.product_count }} items</div>
@@ -127,7 +123,6 @@
     <div style="background:linear-gradient(135deg,#0a0a1a,#101020);border:1px solid rgba(74,144,217,0.2);border-radius:var(--radius-xl);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <div>
         <div style="font-family:var(--font-display);font-size:1.2rem;color:#4A90D9;">Style That Speaks Confidence</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Bracelets · Rings · Chains & more</div>
       </div>
       <a href="{% url 'product_list' %}" class="btn btn-sm" style="border:1px solid #4A90D9;color:#4A90D9;background:transparent;border-radius:var(--radius);">View All →</a>
     </div>
@@ -149,10 +144,7 @@
                 {% else %}⚡{% endif %}
               </div>
             {% endif %}
-            <!-- Boys tag -->
-            <div style="position:absolute;bottom:6px;left:6px;background:rgba(74,144,217,0.85);color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:0.5px;">
-              BOYS
-            </div>
+            
           </div>
           <div class="cat-name">{{ cat.name }}</div>
           <div class="cat-count">{{ cat.product_count }} items</div>
