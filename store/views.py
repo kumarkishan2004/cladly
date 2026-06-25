@@ -55,19 +55,23 @@ def _generate_referral_coupon(referrer):
 
 
 def _process_referral_reward(order):
-    """Give the referrer a reward coupon when their referred friend places their FIRST order."""
+    """Give the referrer a reward coupon when their referred friend's FIRST order is delivered."""
     if order.referral_reward_given:
         return
     if not order.user or not order.user.referred_by:
         return
+    if order.status != 'delivered':
+        return
 
     referrer = order.user.referred_by
 
-    # Only reward on the referred user's FIRST order
-    previous_orders = Order.objects.filter(user=order.user).exclude(id=order.id).count()
-    if previous_orders > 0:
+    # Only reward on the referred user's FIRST ever delivered order
+    previous_delivered_orders = Order.objects.filter(
+        user=order.user, status='delivered'
+    ).exclude(id=order.id).count()
+    if previous_delivered_orders > 0:
         return
-
+    
     coupon = _generate_referral_coupon(referrer)
 
     # Track credit value too (for profile display)
@@ -664,7 +668,7 @@ def cart_view(request):
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id, is_active=True)
     qty = int(request.POST.get('quantity', 1))
-
+   
     if product.stock_status == 'out_of_stock':
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': False, 'message': 'Out of stock'})
@@ -894,7 +898,7 @@ def place_order(request):
             notif_type='order',
             link=f'/orders/{order.order_id}/',
         )
-        _process_referral_reward(order)
+
 
         return redirect('order_success', order_id=order.order_id)
 
@@ -1276,32 +1280,28 @@ def admin_products(request):
 
 @user_passes_test(is_admin, login_url='/login/')
 def admin_add_product(request):
-    form = ProductForm(request.POST or None)
+    form = ProductForm(request.POST or None, request.FILES or None)
     if request.method == 'POST' and form.is_valid():
         product = form.save()
         images = request.FILES.getlist('images')
         for i, img in enumerate(images):
             ProductImage.objects.create(product=product, image=img, is_primary=(i == 0), order=i)
-        messages.success(request, f'Product "{product.name}" added.')
+        messages.success(request, 'Product created.')
         return redirect('admin_products')
     return render(request, 'store/admin/product_form.html', {'form': form, 'action': 'Add'})
 
-
 @user_passes_test(is_admin, login_url='/login/')
-def admin_edit_product(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    form = ProductForm(request.POST or None, instance=product)
+def admin_edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    form = ProductForm(request.POST or None, request.FILES or None, instance=product)
     if request.method == 'POST' and form.is_valid():
-        product = form.save()
+        form.save()
         images = request.FILES.getlist('images')
         for i, img in enumerate(images):
             ProductImage.objects.create(product=product, image=img, order=product.images.count() + i)
-        messages.success(request, f'Product "{product.name}" updated.')
+        messages.success(request, 'Product updated.')
         return redirect('admin_products')
-    return render(request, 'store/admin/product_form.html', {
-        'form': form, 'product': product, 'action': 'Edit'
-    })
-
+    return render(request, 'store/admin/product_form.html', {'form': form, 'action': 'Edit', 'product': product})
 
 @user_passes_test(is_admin, login_url='/login/')
 def admin_delete_product(request, pk):
@@ -1409,9 +1409,13 @@ def admin_update_order_status(request, order_id):
                 notif_type='order',
                 link=f'/orders/{order.order_id}/',
             )
+
+        # Referral reward — only trigger once the order is actually delivered
+        if new_status == 'delivered':
+            _process_referral_reward(order)
+
         messages.success(request, f'Order status updated to {new_status}.')
     return redirect('admin_order_detail', order_id=order_id)
-
 
 @user_passes_test(is_admin, login_url='/login/')
 def admin_coupons(request):
@@ -1563,9 +1567,11 @@ def company(request):
 def careers(request):
     return render(request, 'store/pages/careers.html')
 
-def contact(request):
-    return render(request,'store/pages/contact.html')
+def deliveryinfo(request):
+    return render(request,'store/pages/deliveryinfo.html')
 
 def privacypolicy(request):
     return render(request,'store/pages/privacypolicy.html')
 
+def returns(request):
+    return render(request,'store/pages/returns.html')

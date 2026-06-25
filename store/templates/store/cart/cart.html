@@ -26,6 +26,7 @@
             <div class="cart-item-info">
               <a href="{% url 'product_detail' item.product.slug %}">
                 <div class="cart-item-name">{{ item.product.name }}</div>
+                <div class="cart-item-name">{{ item.product.name }}</div>
               </a>
               {% if item.product.category %}
                 <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">{{ item.product.category.name }}</div>

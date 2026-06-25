@@ -147,6 +147,8 @@ class Product(models.Model):
     def review_count(self):
         return self.reviews.filter(is_approved=True).count()
 
+    
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
@@ -249,13 +251,6 @@ class Cart(models.Model):
     class Meta:
         unique_together = [['user', 'product'], ['session_key', 'product']]
 
-    def __str__(self):
-        return f"Cart: {self.product.name} x{self.quantity}"
-
-    def subtotal(self):
-        return self.product.selling_price * self.quantity
-
-
 # ─────────────────────────────────────────────
 # WISHLIST
 # ─────────────────────────────────────────────
@@ -346,13 +341,6 @@ class OrderItem(models.Model):
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def subtotal(self):
-        return self.price * self.quantity
-
-    def __str__(self):
-        return f"{self.order.order_id} - {self.product_name}"
-
 
 class OrderStatusHistory(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='status_history')

@@ -173,3 +173,5 @@ class BannerForm(forms.ModelForm):
             'start_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': FORM_CTRL}),
             'end_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': FORM_CTRL}),
         }
+
+
