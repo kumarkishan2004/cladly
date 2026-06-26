@@ -302,7 +302,7 @@
         {% for item in order.items.all %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ item.product_name }}</td>
+            <td>{{ item.product_name }}{% if item.size_label %} — <em>{{ item.size_label }}</em>{% endif %}</td>
             <td>{{ item.quantity }}</td>
             <td>₹{{ item.price|floatformat:0 }}</td>
             <td>₹{{ item.subtotal|floatformat:0 }}</td>

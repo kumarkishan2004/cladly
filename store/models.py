@@ -148,6 +148,8 @@ class Product(models.Model):
         return self.reviews.filter(is_approved=True).count()
 
     
+    def has_size_variants(self):
+        return self.sizes.exists()
 
 
 class ProductImage(models.Model):
@@ -165,6 +167,23 @@ class ProductImage(models.Model):
             ProductImage.objects.filter(product=self.product, is_primary=True).update(is_primary=False)
         super().save(*args, **kwargs)
 
+
+class ProductSize(models.Model):
+    """Each size variant for a product. If a product has no sizes added,
+    it's treated as Free Size automatically using the product's own stock_quantity."""
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sizes')
+    size_label = models.CharField(max_length=50, help_text="e.g. S, M, L, 2.2, 2.4, 30, 32")
+    stock_quantity = models.IntegerField(default=0)
+    order = models.IntegerField(default=0, help_text="Controls display order, lowest first")
+
+    class Meta:
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return f"{self.product.name} - {self.size_label}"
+
+    def in_stock(self):
+        return self.stock_quantity > 0
 
 # ─────────────────────────────────────────────
 # ADDRESS
@@ -245,11 +264,19 @@ class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items', null=True, blank=True)
     session_key = models.CharField(max_length=100, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    size = models.ForeignKey(ProductSize, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = [['user', 'product'], ['session_key', 'product']]
+        unique_together = [['user', 'product', 'size'], ['session_key', 'product', 'size']]
+
+    def __str__(self):
+        size_part = f" ({self.size.size_label})" if self.size else ""
+        return f"Cart: {self.product.name}{size_part} x{self.quantity}"
+
+    def subtotal(self):
+        return self.product.selling_price * self.quantity
 
 # ─────────────────────────────────────────────
 # WISHLIST
@@ -338,9 +365,16 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     product_name = models.CharField(max_length=200)  # snapshot
     product_image = models.CharField(max_length=500, blank=True)  # snapshot
+    size_label = models.CharField(max_length=50, blank=True)  # snapshot of chosen size
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def subtotal(self):
+        return self.price * self.quantity
+
+    def __str__(self):
+        return f"{self.order.order_id} - {self.product_name}"
 
 class OrderStatusHistory(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='status_history')

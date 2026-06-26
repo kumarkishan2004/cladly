@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import User, Address, Review, Product, Category, Coupon, Banner, ProductImage
+from .models import User, Address, Review, Product, Category, Coupon, Banner, ProductImage,ProductSize
 
 FORM_CTRL = 'form-control'
 
@@ -126,6 +126,21 @@ class ProductForm(forms.ModelForm):
             'delivery_days': forms.NumberInput(attrs={'class': FORM_CTRL}),
             'category': forms.Select(attrs={'class': FORM_CTRL}),
         }
+
+ProductSizeFormSet = forms.inlineformset_factory(
+    Product,
+    ProductSize,
+    fields=['size_label', 'stock_quantity', 'order'],
+    extra=5,
+    can_delete=True,
+    widgets={
+        'size_label': forms.TextInput(attrs={'class': FORM_CTRL, 'placeholder': 'e.g. S, M, 2.2, 30'}),
+        'stock_quantity': forms.NumberInput(attrs={'class': FORM_CTRL, 'min': 0}),
+        'order': forms.NumberInput(attrs={'class': FORM_CTRL, 'min': 0}),
+    }
+)
+
+
 
 
 class CategoryForm(forms.ModelForm):

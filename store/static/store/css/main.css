@@ -1461,3 +1461,37 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 
 /* ── Selection ── */
 ::selection { background: rgba(201,168,76,0.2); color: var(--gold-light); }
+
+/* ── Size Selector (product detail page) ── */
+.size-pill {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 52px;
+  padding: 10px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface);
+}
+.size-pill.size-pill-selected {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.08);
+  color: var(--gold);
+}
+.size-pill-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+.size-pill small {
+  font-size: 9px;
+  color: var(--error);
+  font-weight: 400;
+  text-decoration: none;
+  margin-top: 2px;
+}

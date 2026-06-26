@@ -21,12 +21,12 @@ from .otp_utils import (
     delete_otp, increment_otp_attempts, get_otp_attempts, clear_otp_attempts
 )
 from .models import (
-    User, Category, Product, ProductImage, Address, Cart, Wishlist,
+    ProductSize, User, Category, Product, ProductImage, Address, Cart, Wishlist,
     Order, OrderItem, OrderStatusHistory, Coupon, Review, Banner,
     Notification, RecentlyViewed
 )
 from .forms import (
-    RegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm,
+    ProductSizeFormSet, RegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm,
     ProfileEditForm, AddressForm, ReviewForm, ProductForm, CategoryForm,
     CouponForm, BannerForm
 )
@@ -666,36 +666,34 @@ def cart_view(request):
 
 
 def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id, is_active=True)
-    qty = int(request.POST.get('quantity', 1))
-   
-    if product.stock_status == 'out_of_stock':
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'success': False, 'message': 'Out of stock'})
-        messages.error(request, 'This product is out of stock.')
-        return redirect(request.META.get('HTTP_REFERER', 'cart'))
+
+    product = get_object_or_404(Product, id=product_id)
+    quantity = int(request.POST.get('quantity', 1))
+    size_id = request.POST.get('size_id') or None
+    size_obj = ProductSize.objects.filter(id=size_id).first() if size_id else None
 
     if request.user.is_authenticated:
-        item, created = Cart.objects.get_or_create(user=request.user, product=product)
+        cart_item, created = Cart.objects.get_or_create(
+            user=request.user, product=product, size=size_obj,
+            defaults={'quantity': quantity}
+        )
     else:
         if not request.session.session_key:
             request.session.create()
-        item, created = Cart.objects.get_or_create(
-            session_key=request.session.session_key, product=product
+        cart_item, created = Cart.objects.get_or_create(
+            session_key=request.session.session_key, product=product, size=size_obj,
+            defaults={'quantity': quantity}
         )
 
     if not created:
-        item.quantity += qty
-    else:
-        item.quantity = qty
-    item.save()
+        cart_item.quantity += quantity
+        cart_item.save()
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        cart_count = get_cart_items(request).count()
-        return JsonResponse({'success': True, 'message': 'Added to cart!', 'cart_count': cart_count})
+        return JsonResponse({'success': True})
 
-    messages.success(request, f'"{product.name}" added to cart!')
-    return redirect(request.META.get('HTTP_REFERER', 'cart'))
+    return redirect('cart')
+
 
 
 def update_cart(request, item_id):
@@ -868,12 +866,22 @@ def place_order(request):
             product=item.product,
             product_name=item.product.name,
             product_image=img.image.url if img and img.image else '',
+            size_label=item.size.size_label if item.size else 'Free Size',
             quantity=item.quantity,
             price=item.product.selling_price,
             original_price=item.product.original_price,
-        )
-        item.product.stock_quantity = max(0, item.product.stock_quantity - item.quantity)
+             )
+
+            # Reduce stock from the specific size if one was chosen, else from product total
+        if item.size:
+            item.size.stock_quantity = max(0, item.size.stock_quantity - item.quantity)
+            item.size.save()
+            item.product.stock_quantity = sum(s.stock_quantity for s in item.product.sizes.all())
+        else:
+            item.product.stock_quantity = max(0, item.product.stock_quantity - item.quantity)
+    
         item.product.update_stock_status()
+
 
     # Increment coupon usage
     if coupon:
@@ -1281,27 +1289,55 @@ def admin_products(request):
 @user_passes_test(is_admin, login_url='/login/')
 def admin_add_product(request):
     form = ProductForm(request.POST or None, request.FILES or None)
+    size_formset = ProductSizeFormSet(request.POST or None, prefix='sizes')
+
     if request.method == 'POST' and form.is_valid():
         product = form.save()
         images = request.FILES.getlist('images')
         for i, img in enumerate(images):
             ProductImage.objects.create(product=product, image=img, is_primary=(i == 0), order=i)
+
+        size_formset.instance = product
+        if size_formset.is_valid():
+            size_formset.save()
+
+        # Keep main stock_quantity in sync as the sum of all sizes, only if sizes were added
+        if product.sizes.exists():
+            product.stock_quantity = sum(s.stock_quantity for s in product.sizes.all())
+            product.update_stock_status()
+
         messages.success(request, 'Product created.')
         return redirect('admin_products')
-    return render(request, 'store/admin/product_form.html', {'form': form, 'action': 'Add'})
+
+    return render(request, 'store/admin/product_form.html', {
+        'form': form, 'size_formset': size_formset, 'action': 'Add'
+    })
 
 @user_passes_test(is_admin, login_url='/login/')
 def admin_edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     form = ProductForm(request.POST or None, request.FILES or None, instance=product)
+    size_formset = ProductSizeFormSet(request.POST or None, instance=product, prefix='sizes')
+
     if request.method == 'POST' and form.is_valid():
         form.save()
         images = request.FILES.getlist('images')
         for i, img in enumerate(images):
             ProductImage.objects.create(product=product, image=img, order=product.images.count() + i)
+
+        if size_formset.is_valid():
+            size_formset.save()
+
+        if product.sizes.exists():
+            product.stock_quantity = sum(s.stock_quantity for s in product.sizes.all())
+            product.update_stock_status()
+
         messages.success(request, 'Product updated.')
         return redirect('admin_products')
-    return render(request, 'store/admin/product_form.html', {'form': form, 'action': 'Edit', 'product': product})
+
+    return render(request, 'store/admin/product_form.html', {
+        'form': form, 'size_formset': size_formset, 'action': 'Edit', 'product': product
+    })
 
 @user_passes_test(is_admin, login_url='/login/')
 def admin_delete_product(request, pk):

@@ -95,20 +95,44 @@
         </div>
       </div>
 
+      <!-- Size Selector -->
+      {% if product.has_size_variants %}
+        <div class="form-group" style="margin-bottom:18px;">
+          <label class="form-label" style="display:block;margin-bottom:10px;font-weight:600;">Select Size</label>
+          <div id="size-pills-wrap" style="display:flex;gap:10px;flex-wrap:wrap;">
+            {% for size in product.sizes.all %}
+              <div class="size-pill {% if not size.in_stock %}size-pill-disabled{% endif %}"
+                   data-size-id="{{ size.id }}">
+                <span>{{ size.size_label }}</span>
+                {% if not size.in_stock %}<small>Out of stock</small>{% endif %}
+              </div>
+            {% endfor %}
+          </div>
+          <div id="size-error" style="display:none;color:var(--error);font-size:12px;margin-top:8px;">
+            Please select a size first.
+          </div>
+        </div>
+      {% else %}
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+          Size: <strong style="color:var(--gold);">Free Size</strong>
+        </div>
+      {% endif %}
+
       <!-- Action Buttons -->
       <div class="detail-buttons">
         {% if product.stock_status != 'out_of_stock' %}
           <button class="btn btn-gold"
-                  data-add-cart="{{ product.id }}"
-                  data-qty="1">
+                  id="add-to-cart-btn"
+                  data-product-id="{{ product.id }}"
+                  data-has-sizes="{% if product.has_size_variants %}1{% else %}0{% endif %}">
             🛍 Add to Cart
           </button>
-          <a href="{% url 'cart' %}" class="btn btn-outline"
-             onclick="
-               fetch('/cart/add/{{ product.id }}/',{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest','X-CSRFToken':'{{ csrf_token }}'},body:new URLSearchParams({quantity:1,csrfmiddlewaretoken:'{{ csrf_token }}'})})
-             ">
+          <button class="btn btn-outline"
+                  id="buy-now-btn"
+                  data-product-id="{{ product.id }}"
+                  data-has-sizes="{% if product.has_size_variants %}1{% else %}0{% endif %}">
             Buy Now
-          </a>
+          </button>
         {% else %}
           <button class="btn btn-dark" disabled style="opacity:0.5;">Out of Stock</button>
         {% endif %}

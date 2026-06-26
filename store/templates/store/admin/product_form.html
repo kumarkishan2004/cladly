@@ -82,6 +82,43 @@
     {% if form.errors %}
       <div class="alert alert-error" style="margin-top:12px;">Please fix the errors above.</div>
     {% endif %}
+    
+    <!-- Sizes -->
+<div class="form-group" style="margin-top:8px;">
+  <label class="form-label">
+    Sizes & Stock
+    <span style="font-size:11px;color:var(--text-muted);font-weight:400;">— leave all blank for Free Size only</span>
+  </label>
+
+  {{ size_formset.management_form }}
+
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+    {% for size_form in size_formset %}
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;align-items:end;background:var(--surface);padding:10px;border-radius:var(--radius-sm);">
+        {{ size_form.id }}
+        <div>
+          {% if forloop.first %}<label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">Size Label</label>{% endif %}
+          {{ size_form.size_label }}
+        </div>
+        <div>
+          {% if forloop.first %}<label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">Stock</label>{% endif %}
+          {{ size_form.stock_quantity }}
+        </div>
+        <div>
+          {% if forloop.first %}<label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">Order</label>{% endif %}
+          {{ size_form.order }}
+        </div>
+        <div>
+          {% if size_form.instance.pk %}
+            <label style="font-size:11px;color:var(--error);display:flex;align-items:center;gap:4px;white-space:nowrap;">
+              {{ size_form.DELETE }} Remove
+            </label>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 
     <div style="display:flex;gap:10px;margin-top:20px;">
       <button type="submit" class="btn btn-gold">{{ action }} Product</button>
