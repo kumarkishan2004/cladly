@@ -1,0 +1,1520 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2026-06-14T12:38:45.519Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "4",
+    "object_repr": "CLD49F9C40F",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2026-06-14T12:39:47.991Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "3",
+    "object_repr": "CLD9702924E",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "1whwi060hnqpd3cm5g4nja0o9pk78orf",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSHA8Cgu3fsNBIZBqgaS0q6M_65NutDtPefcFwtxW2vYBi1hzuzMgJ1-txTxQW0H-R7brXPsbV3mxHeFH3Twa8_0vBzu30GNo35rXZwTCkUGlTAZaXCyBLp4r2wkXyySxUmZAlCydl4QkJRKYaSSPXj2_gDkZTgU:1wYLSA:GBg60a0zwQJnJ1yWyfSAQyH3VfDy3ZQqNxmknhgt90c",
+    "expire_date": "2026-07-13T10:19:02.045Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "25g1tpnbpn1ox0svglnmmiv2rit13dkr",
+  "fields": {
+    "session_data": "e30:1wcorR:SKy14amMWb-RUItqtDk8Jx3gGWWPrxkr_WCgfgYWVzw",
+    "expire_date": "2026-07-25T18:31:37.039Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "5i9hadv0gxh8p6bfogiy7qe5bnssyvid",
+  "fields": {
+    "session_data": "e30:1wY3Ro:lBignMHl2gHAgk2T-9GBkqm5H2Fxuo55PAU5brG94Pk",
+    "expire_date": "2026-07-12T15:05:28.366Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "63542fkyohe2nynkf8mn8ic9oddw66bt",
+  "fields": {
+    "session_data": ".eJxVjL0OwyAQg9-FuUI9_tWxe58BHXCUtBVIIZmqvnuJlCHx4MGf7S_zuC7Fr51mPyV2Y8AuxyxgfFPdQHphfTYeW13mKfCtwnfa-aMl-tz37umgYC9jLTQEBK2BknTWXGXO2riA1oCIVg4zaLJSoEAMJacERESdI5KVltjvD7wTNyg:1wYNzv:KPfr1XbD1XW0Un_Lx4qKzt6U0iP0aCZ1g8L6vppv4ug",
+    "expire_date": "2026-07-13T13:02:03.583Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "7l3d6ekye9esj2m9x49o71bk294mt1az",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWnoOC2tS_ecgcx0OoIaSCisjHdXEha6_e-9_zI9bevQb7Us_SjmYsCcfjem_CjTDuRO0222eZ7WZWS7K_ag1XazlOf1cP8OBqrDt0bnfVGNlFJIAbF4aZF8ZnXCjQogeGkgRIcARCygTAp4jiFqq8G8P-V6OAw:1wYPRQ:-b_qmEsb_2iHH_O74B46rswbcQlwi31PkicewtSvIh4",
+    "expire_date": "2026-07-13T14:34:32.706Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "8354dfgikzfe3pe9kirc3e0uyu4xvz2f",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWnoOC2tS_ecgcx0OoIaSCisjHdXEha6_e-9_zI9bevQb7Us_SjmYsCcfjem_CjTDuRO0222eZ7WZWS7K_ag1XazlOf1cP8OBqrDt0bnfVGNlFJIAbF4aZF8ZnXCjQogeGkgRIcARCygTAp4jiFqq8G8P-V6OAw:1wYPM1:1m40gMrMRiSvLGnIEa0wcJIuQ0270_pbGx-IMUDjPto",
+    "expire_date": "2026-07-13T14:28:57.070Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "auxcu6lc4p7dxlcp1aju9tnm8l0l47d9",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnr2PGHkj5nsHbjXRJAiRQnFeLuyFIKaN_MvLfKeOxTPipveS7qqqy6_G6E45OXBsoDl_uqx3XZt5l0U_RJqx7Wwq_b6f4dTFinVkMnwRhmL95jNOB7YStdh0x9jF6AHFASDuA4ESYLCJJcoILeRFKfL-trODM:1wYP5s:pm8tMy_n54joZIsoPCKnCtj70YzDjq2A-5ak9_izzcE",
+    "expire_date": "2026-07-13T14:12:16.764Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "bs0i6wqtp2r9il5g7lozeeyoom1l251z",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWnoOC2tS_ecgcx0OoIaSCisjHdXEha6_e-9_zI9bevQb7Us_SjmYsCcfjem_CjTDuRO0222eZ7WZWS7K_ag1XazlOf1cP8OBqrDt0bnfVGNlFJIAbF4aZF8ZnXCjQogeGkgRIcARCygTAp4jiFqq8G8P-V6OAw:1wYOl7:XeKQswYzwxXVunYefUonmQTSm_JKaXd4Pf0IDpXu0Yc",
+    "expire_date": "2026-07-13T13:50:49.195Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "culprhuelcueq4n78mwq8x03ij0olqp4",
+  "fields": {
+    "session_data": ".eJxVjEsOAiEQBe_C2hCQn7h07xlI003LqIFkmFkZ766TzEK3r6reSyRYl5rWUeY0kTgLKw6_WwZ8lLYBukO7dYm9LfOU5abInQ557VSel939O6gw6rdWXmcygdid0DsdPLMuynD0gIEzKggUGNEiQAQmZ8FYc2RXvC4xR_H-AANFOPw:1wc92x:Pp2Xq4c2_994RNTUtukR_zZfAH2IBzu2d6bzKLBhc4k",
+    "expire_date": "2026-07-23T21:52:43.125Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fmwrajrhqlsl62omw011igq6blt3llqr",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnr2PGHkj5nsHbjXRJAiRQnFeLuyFIKaN_MvLfKeOxTPipveS7qqqy6_G6E45OXBsoDl_uqx3XZt5l0U_RJqx7Wwq_b6f4dTFinVkMnwRhmL95jNOB7YStdh0x9jF6AHFASDuA4ESYLCJJcoILeRFKfL-trODM:1wYPn8:ND9TcC6_mL2DCKXWtFk7gsi6XbonNY2dt16gypzyJOo",
+    "expire_date": "2026-07-13T14:56:58.034Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "hgosaxn09vwqyv0o626dk74t2xfe9c1y",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWnoOC2tS_ecgcx0OoIaSCisjHdXEha6_e-9_zI9bevQb7Us_SjmYsCcfjem_CjTDuRO0222eZ7WZWS7K_ag1XazlOf1cP8OBqrDt0bnfVGNlFJIAbF4aZF8ZnXCjQogeGkgRIcARCygTAp4jiFqq8G8P-V6OAw:1wYOu0:M0wDPcFZQ9_AfLv2VUDQNG3-lD1hfDhLO_ScaiaJS7c",
+    "expire_date": "2026-07-13T14:00:00.375Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "q2008r9yjyk7p4of06lyrvzew5guab6m",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnr2PGHkj5nsHbjXRJAiRQnFeLuyFIKaN_MvLfKeOxTPipveS7qqqy6_G6E45OXBsoDl_uqx3XZt5l0U_RJqx7Wwq_b6f4dTFinVkMnwRhmL95jNOB7YStdh0x9jF6AHFASDuA4ESYLCJJcoILeRFKfL-trODM:1wYOgv:_FOgx-v69XqKR4Svq9S3Tdg3H0MBCiN9GtQFlNf8Cfg",
+    "expire_date": "2026-07-13T13:46:29.163Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qfexdgj8tmfjrio6y62qsovrm5ax2vu1",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWnoOC2tS_ecgcx0OoIaSCisjHdXEha6_e-9_zI9bevQb7Us_SjmYsCcfjem_CjTDuRO0222eZ7WZWS7K_ag1XazlOf1cP8OBqrDt0bnfVGNlFJIAbF4aZF8ZnXCjQogeGkgRIcARCygTAp4jiFqq8G8P-V6OAw:1wYPUu:vJW9ejWG97F4ytUBnLUqpPEpE-Wx4xZrPnD_sRBuDkc",
+    "expire_date": "2026-07-13T14:38:08.621Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qmoq2em7pbdujuxrvz57dvdl2f1fhr98",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWnoOC2tS_ecgcx0OoIaSCisjHdXEha6_e-9_zI9bevQb7Us_SjmYsCcfjem_CjTDuRO0222eZ7WZWS7K_ag1XazlOf1cP8OBqrDt0bnfVGNlFJIAbF4aZF8ZnXCjQogeGkgRIcARCygTAp4jiFqq8G8P-V6OAw:1wYOoe:C09CCKHt7KXoJJL716NfaOFartIe3kebKrRcflUqQ5s",
+    "expire_date": "2026-07-13T13:54:28.428Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "uu5hhpr7umc6unyy5jqok829yutm2umw",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnr2PGHkj5nsHbjXRJAiRQnFeLuyFIKaN_MvLfKeOxTPipveS7qqqy6_G6E45OXBsoDl_uqx3XZt5l0U_RJqx7Wwq_b6f4dTFinVkMnwRhmL95jNOB7YStdh0x9jF6AHFASDuA4ESYLCJJcoILeRFKfL-trODM:1wYNTG:_HbZBDCorzAbW-kloJKw7J4ZDryUyxRonUvhAfeDZNA",
+    "expire_date": "2026-07-13T12:28:18.242Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "wyybwzueag0x36m1zm9hkt8j5q5sa7n2",
+  "fields": {
+    "session_data": ".eJxVjMsOgjAQRf-la9OAzIO6dM83NO3MIKiBhMLK-O9KwkK395xzXy6mbR3iVmyJo7qLq93pd8tJHjbtQO9pus1e5mldxux3xR-0-G5We14P9-9gSGX41g0gWe65pUYCqCibKWglYlYH7IW0QYIzB-Y2kDJkY0KsMJAlQPf-APVNN9c:1wcorg:zFf5hqvyb4_w7qwu7AdPkhIsdFmmKz2fPGvPZiio_tE",
+    "expire_date": "2026-07-25T18:31:52.384Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xywq96lx7pp2mr7cnadou4m5t1qw8ugj",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWnoOC2tS_ecgcx0OoIaSCisjHdXEha6_e-9_zI9bevQb7Us_SjmYsCcfjem_CjTDuRO0222eZ7WZWS7K_ag1XazlOf1cP8OBqrDt0bnfVGNlFJIAbF4aZF8ZnXCjQogeGkgRIcARCygTAp4jiFqq8G8P-V6OAw:1wYPFQ:Y1YzEk64dgEFdUj223Ct4LLqzJwRdrHRfLbYu9mvowM",
+    "expire_date": "2026-07-13T14:22:08.973Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "z7xd51f6tpy0nqhl8kfif2zhh8km6k9r",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-fyjpOYO19npxADlSnFSIu0OkFNC-mXkvlmBbW9pGXdKE7MwUO_1uGcqj9h3gHfpt5mXu6zJlviv8oINfZ6zPy-H-HTQY7VsLYQL6XISjgFFG7SAo5yxFHb23pmQkqUgHytXYAlJbSVUIBGOMD5K9P8xzN08:1waXQW:VipXw99Z-yl_Nn1Bk3xBxI47NmgsGggupvxgGsHi2Yo",
+    "expire_date": "2026-07-19T11:30:24.309Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "zfo1d799bmcfduiahd8sirpcog1t92gz",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-fyjpOYO19npxADlSnFSIu0OkFNC-mXkvlmBbW9pGXdKE7MwUO_1uGcqj9h3gHfpt5mXu6zJlviv8oINfZ6zPy-H-HTQY7VsLYQL6XISjgFFG7SAo5yxFHb23pmQkqUgHytXYAlJbSVUIBGOMD5K9P8xzN08:1wcJiF:8UnNANLnvoeGKcwTZUtilRawhtOjZ8cgKUwOYSu0b-o",
+    "expire_date": "2026-07-24T09:16:03.145Z"
+  }
+},
+{
+  "model": "store.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$2IH81www62CB2Q9rhcKRRr$qbudziw/zO7cnGCWVOq6OloGkIMVoOPfPRrgEfDSuSE=",
+    "last_login": "2026-06-14T08:11:36.171Z",
+    "is_superuser": true,
+    "full_name": "Cladly Admin",
+    "email": "fashioncladly@gmail.com",
+    "mobile": null,
+    "is_active": true,
+    "is_staff": true,
+    "date_joined": "2026-06-12T06:32:35.389Z",
+    "profile_image": "",
+    "referral_code": "43E1E7C1E9",
+    "referred_by": null,
+    "referral_credits": "0.00",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "store.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$JoyECjEUn37SCIZhfZ4Ea6$G8Ds4/Gk37K2DYlFBtmlv0BvrIVEGD2/b9VZ+v5/RXU=",
+    "last_login": "2026-06-23T21:00:54.857Z",
+    "is_superuser": false,
+    "full_name": "kishan kumar Sahoo",
+    "email": "kishankumarsahoo450@gmail.com",
+    "mobile": "9777937534",
+    "is_active": true,
+    "is_staff": false,
+    "date_joined": "2026-06-12T06:57:43.795Z",
+    "profile_image": "media/profiles/myphoto_iegup4",
+    "referral_code": "4CFF401C17",
+    "referred_by": null,
+    "referral_credits": "100.00",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "store.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$LZWfTKz4TXeFYNw9JRCwEO$6XsTt8asZoznHKZavYjkrQUmIDu/5t/fz5MKCrgW93w=",
+    "last_login": "2026-06-13T14:56:53.794Z",
+    "is_superuser": false,
+    "full_name": "kumar kishan",
+    "email": "kishankumarsahoo200@gmail.com",
+    "mobile": "9827580649",
+    "is_active": true,
+    "is_staff": false,
+    "date_joined": "2026-06-13T10:15:39.882Z",
+    "profile_image": "",
+    "referral_code": "0556661A52",
+    "referred_by": null,
+    "referral_credits": "0.00",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "store.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$CwwGflBFojou8zZhcEkqQr$2b7BVodu3AvLDPNHPa0/xt9mMs2ay1E0aBvuwNFa87I=",
+    "last_login": "2026-06-23T21:36:09.852Z",
+    "is_superuser": false,
+    "full_name": "tapu",
+    "email": "2570105@kiit.ac.in",
+    "mobile": "7749885601",
+    "is_active": true,
+    "is_staff": false,
+    "date_joined": "2026-06-23T21:36:09.519Z",
+    "profile_image": "",
+    "referral_code": "92201DCF24",
+    "referred_by": 2,
+    "referral_credits": "0.00",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "store.category",
+  "pk": 1,
+  "fields": {
+    "name": "Earrings",
+    "slug": "earrings",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 0,
+    "created_at": "2026-06-12T06:32:35.780Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 2,
+  "fields": {
+    "name": "Ear Studs",
+    "slug": "ear-studs",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 1,
+    "created_at": "2026-06-12T06:32:35.786Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 3,
+  "fields": {
+    "name": "Jhumkas",
+    "slug": "jhumkas",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 2,
+    "created_at": "2026-06-12T06:32:35.791Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 4,
+  "fields": {
+    "name": "Pendants",
+    "slug": "pendants",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 3,
+    "created_at": "2026-06-12T06:32:35.795Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 5,
+  "fields": {
+    "name": "Necklaces",
+    "slug": "necklaces",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 4,
+    "created_at": "2026-06-12T06:32:35.799Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 6,
+  "fields": {
+    "name": "Bangles",
+    "slug": "bangles",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 5,
+    "created_at": "2026-06-12T06:32:35.805Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 7,
+  "fields": {
+    "name": "Bracelets",
+    "slug": "bracelets",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "boys",
+    "order": 6,
+    "created_at": "2026-06-12T06:32:35.810Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 8,
+  "fields": {
+    "name": "Rings",
+    "slug": "rings",
+    "image": "media/categories/ring_lrpo0q",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 1,
+    "created_at": "2026-06-12T06:32:35.815Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 9,
+  "fields": {
+    "name": "Hair Accessories",
+    "slug": "hair-accessories",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 8,
+    "created_at": "2026-06-12T06:32:35.820Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 10,
+  "fields": {
+    "name": "Combo Sets",
+    "slug": "combo-sets",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 9,
+    "created_at": "2026-06-12T06:32:35.825Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 11,
+  "fields": {
+    "name": "Gift Sets",
+    "slug": "gift-sets",
+    "image": "",
+    "description": "",
+    "is_active": true,
+    "gender": "girls",
+    "order": 10,
+    "created_at": "2026-06-12T06:32:35.830Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 13,
+  "fields": {
+    "name": "Shirts",
+    "slug": "shirts",
+    "image": "",
+    "description": "men shirts",
+    "is_active": true,
+    "gender": "boys",
+    "order": 1,
+    "created_at": "2026-06-14T10:05:16.227Z"
+  }
+},
+{
+  "model": "store.product",
+  "pk": 3,
+  "fields": {
+    "name": "earring 001",
+    "slug": "earring-001",
+    "category": 1,
+    "description": "about products",
+    "material": "stone earrings",
+    "color": "pearl golden",
+    "original_price": "199.00",
+    "selling_price": "50.00",
+    "local_market_price": "60.00",
+    "styling_tips": "pair with ethnic dress",
+    "stock_quantity": 100,
+    "stock_status": "in_stock",
+    "is_active": true,
+    "is_new_arrival": false,
+    "is_best_seller": false,
+    "is_featured": false,
+    "delivery_days": 3,
+    "tags": "earring,festival",
+    "created_at": "2026-06-16T15:24:00.799Z",
+    "updated_at": "2026-06-17T15:47:34.642Z"
+  }
+},
+{
+  "model": "store.product",
+  "pk": 4,
+  "fields": {
+    "name": "Shirts",
+    "slug": "shirts",
+    "category": 13,
+    "description": "shirts for men,best for summer",
+    "material": "cotton lenin",
+    "color": "blue",
+    "original_price": "1299.00",
+    "selling_price": "699.00",
+    "local_market_price": "899.00",
+    "styling_tips": "",
+    "stock_quantity": 20,
+    "stock_status": "in_stock",
+    "is_active": true,
+    "is_new_arrival": false,
+    "is_best_seller": false,
+    "is_featured": false,
+    "delivery_days": 1,
+    "tags": "lenin shirts",
+    "created_at": "2026-06-24T13:57:00.002Z",
+    "updated_at": "2026-06-24T13:57:00.002Z"
+  }
+},
+{
+  "model": "store.productimage",
+  "pk": 3,
+  "fields": {
+    "product": 3,
+    "image": "media/products/earring_of0h1q",
+    "alt_text": "",
+    "is_primary": true,
+    "order": 0
+  }
+},
+{
+  "model": "store.productimage",
+  "pk": 4,
+  "fields": {
+    "product": 4,
+    "image": "media/products/images_ice-blue_linen_jcqzb7",
+    "alt_text": "",
+    "is_primary": true,
+    "order": 0
+  }
+},
+{
+  "model": "store.productimage",
+  "pk": 5,
+  "fields": {
+    "product": 4,
+    "image": "media/products/Ice-Blue-Linen-Shirt_mxib0x",
+    "alt_text": "",
+    "is_primary": false,
+    "order": 1
+  }
+},
+{
+  "model": "store.address",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "name": "kishan kumar Sahoo",
+    "mobile": "9777937534",
+    "address_line": "kiit university,bhubaneswar",
+    "college_name": "KIIT UNIVERSITY",
+    "hostel_name": "",
+    "room_number": "2570105",
+    "city": "bhubaneswar",
+    "state": "Odisha",
+    "pincode": "751003",
+    "is_default": false,
+    "created_at": "2026-06-12T07:03:06.840Z"
+  }
+},
+{
+  "model": "store.address",
+  "pk": 2,
+  "fields": {
+    "user": 4,
+    "name": "tapu",
+    "mobile": "7749885601",
+    "address_line": "kiit univwesity",
+    "college_name": "kiit",
+    "hostel_name": "",
+    "room_number": "",
+    "city": "bhubaneswar",
+    "state": "odisha",
+    "pincode": "751029",
+    "is_default": false,
+    "created_at": "2026-06-23T21:38:04.437Z"
+  }
+},
+{
+  "model": "store.coupon",
+  "pk": 1,
+  "fields": {
+    "code": "WELCOME50",
+    "description": "₹50 off on first order",
+    "discount_type": "flat",
+    "discount_value": "50.00",
+    "minimum_order_value": "299.00",
+    "max_uses": 1000,
+    "used_count": 0,
+    "start_date": "2026-06-12T06:32:35.833Z",
+    "expiry_date": "2027-06-12T06:32:35.833Z",
+    "is_active": true,
+    "for_new_users_only": true,
+    "created_at": "2026-06-12T06:32:35.835Z"
+  }
+},
+{
+  "model": "store.coupon",
+  "pk": 2,
+  "fields": {
+    "code": "CAMPUS20",
+    "description": "20% off for campus students",
+    "discount_type": "percent",
+    "discount_value": "20.00",
+    "minimum_order_value": "199.00",
+    "max_uses": 500,
+    "used_count": 0,
+    "start_date": "2026-06-12T06:32:35.833Z",
+    "expiry_date": "2027-06-12T06:32:35.833Z",
+    "is_active": true,
+    "for_new_users_only": false,
+    "created_at": "2026-06-12T06:32:35.839Z"
+  }
+},
+{
+  "model": "store.coupon",
+  "pk": 3,
+  "fields": {
+    "code": "CLADLY10",
+    "description": "10% off on all orders",
+    "discount_type": "percent",
+    "discount_value": "10.00",
+    "minimum_order_value": "0.00",
+    "max_uses": 9999,
+    "used_count": 1,
+    "start_date": "2026-06-12T06:32:35.833Z",
+    "expiry_date": "2027-06-12T06:32:35.833Z",
+    "is_active": true,
+    "for_new_users_only": false,
+    "created_at": "2026-06-12T06:32:35.845Z"
+  }
+},
+{
+  "model": "store.coupon",
+  "pk": 4,
+  "fields": {
+    "code": "FESTIVE100",
+    "description": "₹100 off on festive collection",
+    "discount_type": "flat",
+    "discount_value": "100.00",
+    "minimum_order_value": "499.00",
+    "max_uses": 200,
+    "used_count": 1,
+    "start_date": "2026-06-12T06:32:35.833Z",
+    "expiry_date": "2027-06-12T06:32:35.833Z",
+    "is_active": true,
+    "for_new_users_only": false,
+    "created_at": "2026-06-12T06:32:35.850Z"
+  }
+},
+{
+  "model": "store.coupon",
+  "pk": 5,
+  "fields": {
+    "code": "REF7UXVG5",
+    "description": "Referral reward for kishan kumar Sahoo",
+    "discount_type": "flat",
+    "discount_value": "100.00",
+    "minimum_order_value": "299.00",
+    "max_uses": 1,
+    "used_count": 1,
+    "start_date": "2026-06-23T21:38:04.476Z",
+    "expiry_date": "2026-08-22T21:38:04.476Z",
+    "is_active": true,
+    "for_new_users_only": false,
+    "created_at": "2026-06-23T21:38:04.476Z"
+  }
+},
+{
+  "model": "store.order",
+  "pk": 1,
+  "fields": {
+    "order_id": "CLD4D7E0E91",
+    "user": 2,
+    "address": 1,
+    "delivery_name": "kishan kumar Sahoo",
+    "delivery_mobile": "9777937534",
+    "delivery_address": "kiit university,bhubaneswar",
+    "delivery_college": "KIIT UNIVERSITY",
+    "delivery_city": "bhubaneswar",
+    "delivery_pincode": "751003",
+    "subtotal": "198.00",
+    "delivery_charge": "49.00",
+    "discount_amount": "19.80",
+    "grand_total": "227.20",
+    "coupon": 3,
+    "coupon_code": "CLADLY10",
+    "payment_method": "upi",
+    "payment_status": false,
+    "payment_transaction_id": "",
+    "razorpay_order_id": "",
+    "razorpay_payment_id": "",
+    "razorpay_signature": "",
+    "status": "delivered",
+    "placed_at": "2026-06-12T07:03:06.852Z",
+    "updated_at": "2026-06-12T10:12:34.020Z",
+    "expected_delivery": "2026-06-13",
+    "notes": "",
+    "referral_reward_given": false,
+    "cancel_reason": "",
+    "cancelled_at": null
+  }
+},
+{
+  "model": "store.order",
+  "pk": 2,
+  "fields": {
+    "order_id": "CLDC6B30A7E",
+    "user": 2,
+    "address": 1,
+    "delivery_name": "kishan kumar Sahoo",
+    "delivery_mobile": "9777937534",
+    "delivery_address": "kiit university,bhubaneswar",
+    "delivery_college": "KIIT UNIVERSITY",
+    "delivery_city": "bhubaneswar",
+    "delivery_pincode": "751003",
+    "subtotal": "594.00",
+    "delivery_charge": "0.00",
+    "discount_amount": "100.00",
+    "grand_total": "494.00",
+    "coupon": 4,
+    "coupon_code": "FESTIVE100",
+    "payment_method": "online",
+    "payment_status": false,
+    "payment_transaction_id": "",
+    "razorpay_order_id": "",
+    "razorpay_payment_id": "",
+    "razorpay_signature": "",
+    "status": "out_for_delivery",
+    "placed_at": "2026-06-12T10:20:11.309Z",
+    "updated_at": "2026-06-13T07:33:59.545Z",
+    "expected_delivery": "2026-06-13",
+    "notes": "",
+    "referral_reward_given": false,
+    "cancel_reason": "",
+    "cancelled_at": null
+  }
+},
+{
+  "model": "store.order",
+  "pk": 5,
+  "fields": {
+    "order_id": "CLDB2655B80",
+    "user": 2,
+    "address": 1,
+    "delivery_name": "kishan kumar Sahoo",
+    "delivery_mobile": "9777937534",
+    "delivery_address": "kiit university,bhubaneswar",
+    "delivery_college": "KIIT UNIVERSITY",
+    "delivery_city": "bhubaneswar",
+    "delivery_pincode": "751003",
+    "subtotal": "99.00",
+    "delivery_charge": "49.00",
+    "discount_amount": "0.00",
+    "grand_total": "148.00",
+    "coupon": null,
+    "coupon_code": "",
+    "payment_method": "upi",
+    "payment_status": true,
+    "payment_transaction_id": "",
+    "razorpay_order_id": "order_T1VddpX7FihkEh",
+    "razorpay_payment_id": "pay_T1ViAcyhe6pEbr",
+    "razorpay_signature": "6f767dcfc79e06e7322b9eb1bbcc74ea09673191fd0eee81a5c96dc6767983c1",
+    "status": "cancelled",
+    "placed_at": "2026-06-14T12:21:09.831Z",
+    "updated_at": "2026-06-14T12:30:02.625Z",
+    "expected_delivery": "2026-06-15",
+    "notes": "",
+    "referral_reward_given": false,
+    "cancel_reason": "Other",
+    "cancelled_at": "2026-06-14T12:30:02.625Z"
+  }
+},
+{
+  "model": "store.order",
+  "pk": 6,
+  "fields": {
+    "order_id": "CLDFDACA7D7",
+    "user": 2,
+    "address": 1,
+    "delivery_name": "kishan kumar Sahoo",
+    "delivery_mobile": "9777937534",
+    "delivery_address": "kiit university,bhubaneswar",
+    "delivery_college": "KIIT UNIVERSITY",
+    "delivery_city": "bhubaneswar",
+    "delivery_pincode": "751003",
+    "subtotal": "99.00",
+    "delivery_charge": "49.00",
+    "discount_amount": "0.00",
+    "grand_total": "148.00",
+    "coupon": null,
+    "coupon_code": "",
+    "payment_method": "upi",
+    "payment_status": false,
+    "payment_transaction_id": "",
+    "razorpay_order_id": "order_T1VyaomYTp2A3b",
+    "razorpay_payment_id": "",
+    "razorpay_signature": "",
+    "status": "confirmed",
+    "placed_at": "2026-06-14T12:30:41.407Z",
+    "updated_at": "2026-06-14T12:41:00.890Z",
+    "expected_delivery": "2026-06-15",
+    "notes": "",
+    "referral_reward_given": false,
+    "cancel_reason": "",
+    "cancelled_at": null
+  }
+},
+{
+  "model": "store.order",
+  "pk": 7,
+  "fields": {
+    "order_id": "CLD6E6523C0",
+    "user": 2,
+    "address": 1,
+    "delivery_name": "kishan kumar Sahoo",
+    "delivery_mobile": "9777937534",
+    "delivery_address": "kiit university,bhubaneswar",
+    "delivery_college": "KIIT UNIVERSITY",
+    "delivery_city": "bhubaneswar",
+    "delivery_pincode": "751003",
+    "subtotal": "150.00",
+    "delivery_charge": "49.00",
+    "discount_amount": "0.00",
+    "grand_total": "199.00",
+    "coupon": null,
+    "coupon_code": "",
+    "payment_method": "upi",
+    "payment_status": true,
+    "payment_transaction_id": "",
+    "razorpay_order_id": "order_T2i6Z5INGL7DLe",
+    "razorpay_payment_id": "pay_T2i9xkfF3uM11k",
+    "razorpay_signature": "ba2d4bac786a520b8927216982ac2434f36be7c450f5feef72978d9572b0309d",
+    "status": "confirmed",
+    "placed_at": "2026-06-17T13:11:52.383Z",
+    "updated_at": "2026-06-17T13:15:31.551Z",
+    "expected_delivery": "2026-06-18",
+    "notes": "",
+    "referral_reward_given": false,
+    "cancel_reason": "",
+    "cancelled_at": null
+  }
+},
+{
+  "model": "store.order",
+  "pk": 8,
+  "fields": {
+    "order_id": "CLD39127E48",
+    "user": 4,
+    "address": 2,
+    "delivery_name": "tapu",
+    "delivery_mobile": "7749885601",
+    "delivery_address": "kiit univwesity",
+    "delivery_college": "kiit",
+    "delivery_city": "bhubaneswar",
+    "delivery_pincode": "751029",
+    "subtotal": "250.00",
+    "delivery_charge": "30.00",
+    "discount_amount": "0.00",
+    "grand_total": "280.00",
+    "coupon": null,
+    "coupon_code": "",
+    "payment_method": "cod",
+    "payment_status": false,
+    "payment_transaction_id": "",
+    "razorpay_order_id": "",
+    "razorpay_payment_id": "",
+    "razorpay_signature": "",
+    "status": "placed",
+    "placed_at": "2026-06-23T21:38:04.445Z",
+    "updated_at": "2026-06-23T21:38:04.445Z",
+    "expected_delivery": "2026-06-25",
+    "notes": "",
+    "referral_reward_given": true,
+    "cancel_reason": "",
+    "cancelled_at": null
+  }
+},
+{
+  "model": "store.order",
+  "pk": 9,
+  "fields": {
+    "order_id": "CLD8B96C982",
+    "user": 2,
+    "address": 1,
+    "delivery_name": "kishan kumar Sahoo",
+    "delivery_mobile": "9777937534",
+    "delivery_address": "kiit university,bhubaneswar",
+    "delivery_college": "KIIT UNIVERSITY",
+    "delivery_city": "bhubaneswar",
+    "delivery_pincode": "751003",
+    "subtotal": "350.00",
+    "delivery_charge": "0.00",
+    "discount_amount": "100.00",
+    "grand_total": "250.00",
+    "coupon": 5,
+    "coupon_code": "REF7UXVG5",
+    "payment_method": "upi",
+    "payment_status": true,
+    "payment_transaction_id": "",
+    "razorpay_order_id": "order_T5DyFjEJSrkLU3",
+    "razorpay_payment_id": "pay_T5E0RyznxLPDNP",
+    "razorpay_signature": "2519fc4331a03fd90cf3e8d7e6754a1d884636fe1d916eaae0bdb7f61dea91df",
+    "status": "confirmed",
+    "placed_at": "2026-06-23T21:40:11.734Z",
+    "updated_at": "2026-06-23T21:42:42.149Z",
+    "expected_delivery": "2026-06-25",
+    "notes": "",
+    "referral_reward_given": false,
+    "cancel_reason": "",
+    "cancelled_at": null
+  }
+},
+{
+  "model": "store.order",
+  "pk": 10,
+  "fields": {
+    "order_id": "CLDA9427610",
+    "user": 4,
+    "address": 2,
+    "delivery_name": "tapu",
+    "delivery_mobile": "7749885601",
+    "delivery_address": "kiit univwesity",
+    "delivery_college": "kiit",
+    "delivery_city": "bhubaneswar",
+    "delivery_pincode": "751029",
+    "subtotal": "150.00",
+    "delivery_charge": "30.00",
+    "discount_amount": "0.00",
+    "grand_total": "180.00",
+    "coupon": null,
+    "coupon_code": "",
+    "payment_method": "cod",
+    "payment_status": false,
+    "payment_transaction_id": "",
+    "razorpay_order_id": "",
+    "razorpay_payment_id": "",
+    "razorpay_signature": "",
+    "status": "confirmed",
+    "placed_at": "2026-06-23T21:52:31.240Z",
+    "updated_at": "2026-06-23T21:55:41.885Z",
+    "expected_delivery": "2026-06-25",
+    "notes": "",
+    "referral_reward_given": false,
+    "cancel_reason": "",
+    "cancelled_at": null
+  }
+},
+{
+  "model": "store.orderitem",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "product": null,
+    "product_name": "earring 001",
+    "product_image": "/media/products/earring.avif",
+    "quantity": 2,
+    "price": "99.00",
+    "original_price": "299.00"
+  }
+},
+{
+  "model": "store.orderitem",
+  "pk": 2,
+  "fields": {
+    "order": 2,
+    "product": null,
+    "product_name": "earring 001",
+    "product_image": "/media/products/earring.avif",
+    "quantity": 6,
+    "price": "99.00",
+    "original_price": "299.00"
+  }
+},
+{
+  "model": "store.orderitem",
+  "pk": 5,
+  "fields": {
+    "order": 5,
+    "product": null,
+    "product_name": "earring 001",
+    "product_image": "/media/products/earring.avif",
+    "quantity": 1,
+    "price": "99.00",
+    "original_price": "299.00"
+  }
+},
+{
+  "model": "store.orderitem",
+  "pk": 6,
+  "fields": {
+    "order": 6,
+    "product": null,
+    "product_name": "earring 001",
+    "product_image": "/media/products/earring.avif",
+    "quantity": 1,
+    "price": "99.00",
+    "original_price": "299.00"
+  }
+},
+{
+  "model": "store.orderitem",
+  "pk": 7,
+  "fields": {
+    "order": 7,
+    "product": 3,
+    "product_name": "earring 001",
+    "product_image": "https://res.cloudinary.com/dklhtatkx/image/upload/v1/media/products/earring_of0h1q",
+    "quantity": 3,
+    "price": "50.00",
+    "original_price": "199.00"
+  }
+},
+{
+  "model": "store.orderitem",
+  "pk": 8,
+  "fields": {
+    "order": 8,
+    "product": 3,
+    "product_name": "earring 001",
+    "product_image": "https://res.cloudinary.com/dklhtatkx/image/upload/v1/media/products/earring_of0h1q",
+    "quantity": 5,
+    "price": "50.00",
+    "original_price": "199.00"
+  }
+},
+{
+  "model": "store.orderitem",
+  "pk": 9,
+  "fields": {
+    "order": 9,
+    "product": 3,
+    "product_name": "earring 001",
+    "product_image": "https://res.cloudinary.com/dklhtatkx/image/upload/v1/media/products/earring_of0h1q",
+    "quantity": 7,
+    "price": "50.00",
+    "original_price": "199.00"
+  }
+},
+{
+  "model": "store.orderitem",
+  "pk": 10,
+  "fields": {
+    "order": 10,
+    "product": 3,
+    "product_name": "earring 001",
+    "product_image": "https://res.cloudinary.com/dklhtatkx/image/upload/v1/media/products/earring_of0h1q",
+    "quantity": 3,
+    "price": "50.00",
+    "original_price": "199.00"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "status": "placed",
+    "note": "Order placed successfully.",
+    "updated_at": "2026-06-12T07:03:06.883Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 2,
+  "fields": {
+    "order": 1,
+    "status": "confirmed",
+    "note": "",
+    "updated_at": "2026-06-12T08:04:37.436Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 3,
+  "fields": {
+    "order": 1,
+    "status": "out_for_delivery",
+    "note": "",
+    "updated_at": "2026-06-12T10:02:21.062Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 4,
+  "fields": {
+    "order": 1,
+    "status": "delivered",
+    "note": "",
+    "updated_at": "2026-06-12T10:12:34.026Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 5,
+  "fields": {
+    "order": 2,
+    "status": "placed",
+    "note": "Order placed successfully.",
+    "updated_at": "2026-06-12T10:20:11.332Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 6,
+  "fields": {
+    "order": 2,
+    "status": "confirmed",
+    "note": "thank you",
+    "updated_at": "2026-06-13T07:31:58.549Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 7,
+  "fields": {
+    "order": 2,
+    "status": "out_for_delivery",
+    "note": "",
+    "updated_at": "2026-06-13T07:33:59.554Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 12,
+  "fields": {
+    "order": 5,
+    "status": "placed",
+    "note": "Order placed successfully.",
+    "updated_at": "2026-06-14T12:21:09.850Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 13,
+  "fields": {
+    "order": 5,
+    "status": "confirmed",
+    "note": "Payment received. Payment ID: pay_T1ViAcyhe6pEbr",
+    "updated_at": "2026-06-14T12:25:59.614Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 14,
+  "fields": {
+    "order": 5,
+    "status": "cancelled",
+    "note": "Cancelled by customer. Reason: Other",
+    "updated_at": "2026-06-14T12:30:02.657Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 15,
+  "fields": {
+    "order": 6,
+    "status": "placed",
+    "note": "Order placed successfully.",
+    "updated_at": "2026-06-14T12:30:41.442Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 16,
+  "fields": {
+    "order": 6,
+    "status": "confirmed",
+    "note": "thank you for order",
+    "updated_at": "2026-06-14T12:40:48.575Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 17,
+  "fields": {
+    "order": 7,
+    "status": "placed",
+    "note": "Order placed successfully.",
+    "updated_at": "2026-06-17T13:11:52.399Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 18,
+  "fields": {
+    "order": 7,
+    "status": "confirmed",
+    "note": "Payment received. Payment ID: pay_T2i9xkfF3uM11k",
+    "updated_at": "2026-06-17T13:15:31.545Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 19,
+  "fields": {
+    "order": 8,
+    "status": "placed",
+    "note": "Order placed successfully.",
+    "updated_at": "2026-06-23T21:38:04.460Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 20,
+  "fields": {
+    "order": 9,
+    "status": "placed",
+    "note": "Order placed successfully.",
+    "updated_at": "2026-06-23T21:40:11.748Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 21,
+  "fields": {
+    "order": 9,
+    "status": "confirmed",
+    "note": "Payment received. Payment ID: pay_T5E0RyznxLPDNP",
+    "updated_at": "2026-06-23T21:42:42.145Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 22,
+  "fields": {
+    "order": 10,
+    "status": "placed",
+    "note": "Order placed successfully.",
+    "updated_at": "2026-06-23T21:52:31.251Z"
+  }
+},
+{
+  "model": "store.orderstatushistory",
+  "pk": 23,
+  "fields": {
+    "order": 10,
+    "status": "confirmed",
+    "note": "",
+    "updated_at": "2026-06-23T21:55:41.891Z"
+  }
+},
+{
+  "model": "store.banner",
+  "pk": 8,
+  "fields": {
+    "title": "new stock coming soon",
+    "subtitle": "grab it now",
+    "image": "media/banners/5_ydykxg",
+    "mobile_image": "media/banners/5_zztob2",
+    "link": "",
+    "banner_type": "hero",
+    "is_active": true,
+    "order": 1,
+    "start_date": "2026-06-16T15:14:00Z",
+    "end_date": "2026-06-30T15:14:00Z"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "title": "Order Placed!",
+    "message": "Your order CLD4D7E0E91 has been placed. Expected delivery: tomorrow.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-12T07:03:06.889Z",
+    "link": "/orders/CLD4D7E0E91/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "title": "Order Confirmed",
+    "message": "Your order CLD4D7E0E91 is now Confirmed.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-12T08:04:37.441Z",
+    "link": "/orders/CLD4D7E0E91/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 3,
+  "fields": {
+    "user": 2,
+    "title": "Order Out for Delivery",
+    "message": "Your order CLD4D7E0E91 is now Out for Delivery.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-12T10:02:21.068Z",
+    "link": "/orders/CLD4D7E0E91/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 4,
+  "fields": {
+    "user": 2,
+    "title": "Order Delivered",
+    "message": "Your order CLD4D7E0E91 is now Delivered.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-12T10:12:34.032Z",
+    "link": "/orders/CLD4D7E0E91/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 5,
+  "fields": {
+    "user": 2,
+    "title": "Order Placed!",
+    "message": "Your order CLDC6B30A7E has been placed. Expected delivery: tomorrow.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-12T10:20:11.337Z",
+    "link": "/orders/CLDC6B30A7E/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 6,
+  "fields": {
+    "user": 2,
+    "title": "Order Confirmed",
+    "message": "Your order CLDC6B30A7E is now Confirmed.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-13T07:31:58.556Z",
+    "link": "/orders/CLDC6B30A7E/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 7,
+  "fields": {
+    "user": 2,
+    "title": "Order Out for Delivery",
+    "message": "Your order CLDC6B30A7E is now Out for Delivery.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-13T07:33:59.562Z",
+    "link": "/orders/CLDC6B30A7E/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 8,
+  "fields": {
+    "user": 2,
+    "title": "Order Placed!",
+    "message": "Your order CLD9702924E has been placed. Expected delivery: tomorrow.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-14T08:28:58.172Z",
+    "link": "/orders/CLD9702924E/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 9,
+  "fields": {
+    "user": 2,
+    "title": "Order Confirmed",
+    "message": "Your order CLD9702924E is now Confirmed.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-14T08:29:29.293Z",
+    "link": "/orders/CLD9702924E/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 10,
+  "fields": {
+    "user": 2,
+    "title": "Order Cancelled",
+    "message": "Your order CLD9702924E has been cancelled successfully.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-14T08:29:47.682Z",
+    "link": "/orders/CLD9702924E/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 11,
+  "fields": {
+    "user": 2,
+    "title": "Payment Successful!",
+    "message": "Payment for order CLDB2655B80 received successfully.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-14T12:25:59.625Z",
+    "link": "/orders/CLDB2655B80/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 12,
+  "fields": {
+    "user": 2,
+    "title": "Order Cancelled",
+    "message": "Your order CLDB2655B80 has been cancelled successfully.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-14T12:30:02.662Z",
+    "link": "/orders/CLDB2655B80/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 13,
+  "fields": {
+    "user": 2,
+    "title": "Order Confirmed",
+    "message": "Your order CLDFDACA7D7 is now Confirmed.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-14T12:40:48.586Z",
+    "link": "/orders/CLDFDACA7D7/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 14,
+  "fields": {
+    "user": 2,
+    "title": "Payment Successful!",
+    "message": "Payment for order CLD6E6523C0 received successfully.",
+    "notif_type": "order",
+    "is_read": true,
+    "created_at": "2026-06-17T13:15:31.560Z",
+    "link": "/orders/CLD6E6523C0/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 15,
+  "fields": {
+    "user": 4,
+    "title": "Order Placed!",
+    "message": "Your order CLD39127E48 has been placed successfully.",
+    "notif_type": "order",
+    "is_read": false,
+    "created_at": "2026-06-23T21:38:04.469Z",
+    "link": "/orders/CLD39127E48/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 16,
+  "fields": {
+    "user": 2,
+    "title": "Referral Reward! 🎉",
+    "message": "tapu placed their first order using your referral code! You earned a ₹100 coupon: REF7UXVG5",
+    "notif_type": "offer",
+    "is_read": false,
+    "created_at": "2026-06-23T21:38:04.484Z",
+    "link": "/profile/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 17,
+  "fields": {
+    "user": 2,
+    "title": "Payment Successful!",
+    "message": "Payment for order CLD8B96C982 received successfully.",
+    "notif_type": "order",
+    "is_read": false,
+    "created_at": "2026-06-23T21:42:42.155Z",
+    "link": "/orders/CLD8B96C982/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 18,
+  "fields": {
+    "user": 4,
+    "title": "Order Placed!",
+    "message": "Your order CLDA9427610 has been placed successfully.",
+    "notif_type": "order",
+    "is_read": false,
+    "created_at": "2026-06-23T21:52:31.261Z",
+    "link": "/orders/CLDA9427610/"
+  }
+},
+{
+  "model": "store.notification",
+  "pk": 19,
+  "fields": {
+    "user": 4,
+    "title": "Order Confirmed",
+    "message": "Your order CLDA9427610 is now Confirmed.",
+    "notif_type": "order",
+    "is_read": false,
+    "created_at": "2026-06-23T21:55:41.897Z",
+    "link": "/orders/CLDA9427610/"
+  }
+},
+{
+  "model": "store.recentlyviewed",
+  "pk": 3,
+  "fields": {
+    "user": 2,
+    "session_key": null,
+    "product": 3,
+    "viewed_at": "2026-06-16T15:46:30.028Z"
+  }
+},
+{
+  "model": "store.recentlyviewed",
+  "pk": 4,
+  "fields": {
+    "user": null,
+    "session_key": "25g1tpnbpn1ox0svglnmmiv2rit13dkr",
+    "product": 3,
+    "viewed_at": "2026-06-22T16:37:31.679Z"
+  }
+},
+{
+  "model": "store.recentlyviewed",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "session_key": null,
+    "product": 3,
+    "viewed_at": "2026-06-24T13:48:47.437Z"
+  }
+},
+{
+  "model": "store.recentlyviewed",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "session_key": null,
+    "product": 4,
+    "viewed_at": "2026-06-24T14:12:51.713Z"
+  }
+}
+]
