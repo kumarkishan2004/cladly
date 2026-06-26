@@ -479,3 +479,25 @@ class RecentlyViewed(models.Model):
     class Meta:
         ordering = ['-viewed_at']
         unique_together = [['user', 'product'], ['session_key', 'product']]
+
+
+# ─────────────────────────────────────────────
+# COD ENABLE AND DISABLE
+# ─────────────────────────────────────────────
+
+
+class CODPincode(models.Model):
+    """Pincodes where Cash on Delivery is allowed. Add/remove from admin panel."""
+    pincode = models.CharField(max_length=10, unique=True, help_text="e.g. 751001")
+    area_note = models.CharField(max_length=200, blank=True, help_text="Optional label, e.g. 'Bhubaneswar - Patia'")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "COD Allowed Pincode"
+        verbose_name_plural = "COD Allowed Pincodes"
+        ordering = ['pincode']
+
+    def __str__(self):
+        return f"{self.pincode}{' - ' + self.area_note if self.area_note else ''}"
+

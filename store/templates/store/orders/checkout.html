@@ -17,6 +17,7 @@
           {% if addresses %}
             {% for addr in addresses %}
               <div class="address-card {% if forloop.first or addr.is_default %}selected{% endif %}"
+                   data-pincode="{{ addr.pincode }}"
                    onclick="selectAddress(this, '{{ addr.id }}')">
                 <div class="address-radio">
                   <input type="radio" name="address_id" value="{{ addr.id }}"
@@ -74,7 +75,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Pincode</label>
-                <input type="text" name="pincode" class="form-control" placeholder="6-digit pincode">
+                <input type="text" name="pincode" id="new-pincode-input" class="form-control" placeholder="6-digit pincode">
               </div>
             </div>
             {% if addresses %}
@@ -90,7 +91,8 @@
         <div class="checkout-section">
           <h3>💳 Payment Method</h3>
           <div class="payment-options">
-            <div class="payment-option selected" onclick="selectPayment(this,'cod')">
+
+            <div class="payment-option selected" id="cod-payment-option" onclick="selectPayment(this,'cod')">
               <input type="radio" name="payment_method" value="cod" checked style="accent-color:var(--gold);">
               <span class="payment-icon">💵</span>
               <div>
@@ -98,6 +100,11 @@
                 <div style="font-size:12px;color:var(--text-muted);">Pay when your order arrives</div>
               </div>
             </div>
+
+            <div id="cod-unavailable-msg" style="display:none;font-size:13px;color:var(--text-muted);padding:10px 14px;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:10px;">
+              📍 Cash on Delivery isn't available for your pincode yet — please pay online to complete your order.
+            </div>
+
             <div class="payment-option" onclick="selectPayment(this,'upi')">
               <input type="radio" name="payment_method" value="upi" style="accent-color:var(--gold);">
               <span class="payment-icon">📱</span>
@@ -106,6 +113,7 @@
                 <div style="font-size:12px;color:var(--text-muted);">GPay, PhonePe, Paytm & more</div>
               </div>
             </div>
+
             <div class="payment-option" onclick="selectPayment(this,'online')">
               <input type="radio" name="payment_method" value="online" style="accent-color:var(--gold);">
               <span class="payment-icon">🏦</span>
@@ -114,15 +122,7 @@
                 <div style="font-size:12px;color:var(--text-muted);">All major cards accepted</div>
               </div>
             </div>
-             <div class="payment-option" onclick="selectPayment(this,'online')">
-              <input type="radio" name="payment_method" value="online" style="accent-color:var(--gold);">
-              <span class="payment-icon">💵</span>
-              <div>
-                <div style="font-weight:600;font-size:14px;">Special COD 😁</div>
-                <div style="font-size:12px;color:var(--text-muted);">accepted order from CEO 🤣</div>
-              </div>
-            </div>
-    
+
           </div>
         </div>
       </div>
@@ -141,6 +141,9 @@
               {% endwith %}
               <div style="flex:1;">
                 <div style="font-size:13px;font-weight:500;">{{ item.product.name|truncatechars:30 }}</div>
+                {% if item.size %}
+                  <div style="font-size:11px;color:var(--gold);">Size: {{ item.size.size_label }}</div>
+                {% endif %}
                 <div style="font-size:12px;color:var(--text-muted);">Qty: {{ item.quantity }}</div>
               </div>
               <div style="font-weight:600;font-size:14px;color:var(--gold);">₹{{ item.subtotal|floatformat:0 }}</div>
@@ -179,25 +182,75 @@
 </div>
 
 <script>
-function selectAddress(card, id) {
-  document.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-  const radio = card.querySelector('input[type=radio]');
-  if (radio) radio.checked = true;
-  const newForm = document.getElementById('new-address-form');
-  if (newForm && id !== 'new') newForm.style.display = 'none';
-}
-function selectPayment(opt, val) {
-  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-  opt.classList.add('selected');
-  const radio = opt.querySelector('input[type=radio]');
-  if (radio) radio.checked = true;
-}
-document.getElementById('add-new-address')?.addEventListener('click', function() {
-  const f = document.getElementById('new-address-form');
-  f.style.display = f.style.display === 'none' ? 'block' : 'none';
-  const r = document.getElementById('use-new');
-  if (r) { r.checked = true; document.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected')); }
-});
+  const codAllowedPincodes = {{ cod_pincodes_json|safe }};
+
+  function checkCodAvailability(pincodeValue) {
+    const codOption = document.getElementById('cod-payment-option');
+    const codMsg = document.getElementById('cod-unavailable-msg');
+    if (!codOption) return;
+
+    const pincode = (pincodeValue || '').trim();
+    const isAllowed = codAllowedPincodes.includes(pincode);
+
+    if (isAllowed) {
+      codOption.style.display = '';
+      if (codMsg) codMsg.style.display = 'none';
+    } else {
+      codOption.style.display = 'none';
+      if (codMsg) codMsg.style.display = 'block';
+      // If COD was selected, auto-switch to UPI instead
+      const codRadio = codOption.querySelector('input[type=radio]');
+      if (codRadio && codRadio.checked) {
+        const upiOption = document.querySelector('.payment-option[onclick*="upi"]');
+        if (upiOption) {
+          const upiRadio = upiOption.querySelector('input[type=radio]');
+          document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+          upiOption.classList.add('selected');
+          upiRadio.checked = true;
+        }
+      }
+    }
+  }
+
+  function selectAddress(card, id) {
+    document.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    const radio = card.querySelector('input[type=radio]');
+    if (radio) radio.checked = true;
+    const newForm = document.getElementById('new-address-form');
+    if (newForm && id !== 'new') newForm.style.display = 'none';
+    checkCodAvailability(card.dataset.pincode || '');
+  }
+
+  function selectPayment(opt, val) {
+    if (opt.style.display === 'none') return; // can't select a hidden option
+    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    const radio = opt.querySelector('input[type=radio]');
+    if (radio) radio.checked = true;
+  }
+
+  document.getElementById('add-new-address')?.addEventListener('click', function() {
+    const f = document.getElementById('new-address-form');
+    f.style.display = f.style.display === 'none' ? 'block' : 'none';
+    const r = document.getElementById('use-new');
+    if (r) { r.checked = true; document.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected')); }
+  });
+
+  // Check COD availability as user types a new pincode
+  document.getElementById('new-pincode-input')?.addEventListener('input', function() {
+    checkCodAvailability(this.value);
+  });
+
+  // Run once on page load for whichever address is pre-selected
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectedCard = document.querySelector('.address-card.selected');
+    if (selectedCard) {
+      checkCodAvailability(selectedCard.dataset.pincode || '');
+    } else {
+      // No saved addresses — hide COD until a pincode is typed
+      checkCodAvailability('');
+    }
+  });
 </script>
 {% endblock %}

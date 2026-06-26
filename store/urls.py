@@ -91,7 +91,7 @@ urlpatterns = [
     path('admin-panel/customers/', views.admin_customers, name='admin_customers'),
     path('admin-panel/reviews/', views.admin_reviews, name='admin_reviews'),
 
-
+    # COMAPNY CONTACT AND SUPPORT PAGES 
     path('company/', views.company, name='company'),
     path('careers/', views.careers, name='careers'),
     path('contact/', views.contact, name='contact'),
@@ -100,4 +100,12 @@ urlpatterns = [
     path('returns/', views.returns, name='returns'),
     path('deliveryinfo/', views.deliveryinfo, name='deliveryinfo'),
 
+
+
+
+    #  ENABLE AND DISABLE THE COD 
+    path('admin-panel/cod-pincodes/', views.admin_cod_pincodes, name='admin_cod_pincodes'),
+    path('admin-panel/cod-pincodes/<int:pincode_id>/toggle/', views.admin_toggle_cod_pincode, name='admin_toggle_cod_pincode'),
+    path('admin-panel/cod-pincodes/<int:pincode_id>/delete/', views.admin_delete_cod_pincode, name='admin_delete_cod_pincode'),
+    path('admin-panel/cod-pincodes/bulk-add/', views.admin_bulk_add_cod_pincodes, name='admin_bulk_add_cod_pincodes'),
 ]

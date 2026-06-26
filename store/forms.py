@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import User, Address, Review, Product, Category, Coupon, Banner, ProductImage,ProductSize
+from .models import CODPincode, User, Address, Review, Product, Category, Coupon, Banner, ProductImage,ProductSize
 
 FORM_CTRL = 'form-control'
 
@@ -190,3 +190,13 @@ class BannerForm(forms.ModelForm):
         }
 
 
+# FOR COD DELIVERY ENABLE
+
+class CODPincodeForm(forms.ModelForm):
+    class Meta:
+        model = CODPincode
+        fields = ['pincode', 'area_note', 'is_active']
+        widgets = {
+            'pincode': forms.TextInput(attrs={'class': FORM_CTRL, 'placeholder': 'e.g. 751001', 'maxlength': 10}),
+            'area_note': forms.TextInput(attrs={'class': FORM_CTRL, 'placeholder': 'Optional — e.g. Patia, Bhubaneswar'}),
+        }

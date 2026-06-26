@@ -21,12 +21,12 @@ from .otp_utils import (
     delete_otp, increment_otp_attempts, get_otp_attempts, clear_otp_attempts
 )
 from .models import (
-    ProductSize, User, Category, Product, ProductImage, Address, Cart, Wishlist,
+    CODPincode, ProductSize, User, Category, Product, ProductImage, Address, Cart, Wishlist,
     Order, OrderItem, OrderStatusHistory, Coupon, Review, Banner,
     Notification, RecentlyViewed
 )
 from .forms import (
-    ProductSizeFormSet, RegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm,
+    CODPincodeForm, ProductSizeFormSet, RegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm,
     ProfileEditForm, AddressForm, ReviewForm, ProductForm, CategoryForm,
     CouponForm, BannerForm
 )
@@ -804,15 +804,17 @@ def checkout(request):
     addresses = Address.objects.filter(user=request.user)
     address_form = AddressForm()
 
+    cod_pincodes = list(CODPincode.objects.filter(is_active=True).values_list('pincode', flat=True))
+
     return render(request, 'store/orders/checkout.html', {
         'cart_items': cart_items,
         'addresses': addresses,
         'address_form': address_form,
         'coupon': coupon,
+        'cod_pincodes_json': json.dumps(cod_pincodes),
         **totals,
     })
-
-
+ 
 @login_required
 @require_POST
 
@@ -838,6 +840,13 @@ def place_order(request):
             return redirect('checkout')
 
     address = get_object_or_404(Address, id=address_id, user=request.user)
+
+    # ── COD pincode check — block before creating the order ──
+    if payment_method == 'cod':
+        if not CODPincode.objects.filter(pincode=address.pincode, is_active=True).exists():
+            messages.error(request, f'Cash on Delivery is not available for pincode {address.pincode}. Please pay online instead.')
+            return redirect('checkout')
+
     coupon = _get_session_coupon(request)
     totals = calculate_cart_totals(cart_items, coupon)
 
@@ -870,18 +879,17 @@ def place_order(request):
             quantity=item.quantity,
             price=item.product.selling_price,
             original_price=item.product.original_price,
-             )
+        )
 
-            # Reduce stock from the specific size if one was chosen, else from product total
+        # Reduce stock from the specific size if one was chosen, else from product total
         if item.size:
             item.size.stock_quantity = max(0, item.size.stock_quantity - item.quantity)
             item.size.save()
             item.product.stock_quantity = sum(s.stock_quantity for s in item.product.sizes.all())
         else:
             item.product.stock_quantity = max(0, item.product.stock_quantity - item.quantity)
-    
-        item.product.update_stock_status()
 
+        item.product.update_stock_status()
 
     # Increment coupon usage
     if coupon:
@@ -907,13 +915,13 @@ def place_order(request):
             link=f'/orders/{order.order_id}/',
         )
 
-
         return redirect('order_success', order_id=order.order_id)
 
     # ── UPI / Online — go to Razorpay ──
     else:
         # Don't clear cart yet — clear after payment verified
         return redirect('initiate_payment', order_id=order.order_id)
+
 
 
 @login_required
@@ -1591,7 +1599,63 @@ Message:
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'error': 'Could not send message. Please email us directly.'})
+    
+# COD DELIVERY ENABLE
 
+def is_cod_allowed(pincode):
+    """Check if COD is allowed for the given pincode."""
+    if not pincode:
+        return False
+    return CODPincode.objects.filter(
+        pincode=pincode.strip(),
+        is_active=True
+    ).exists()
+
+
+@user_passes_test(is_admin, login_url='/login/')
+def admin_cod_pincodes(request):
+    pincodes = CODPincode.objects.all().order_by('pincode')
+    form = CODPincodeForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Pincode added to COD list.')
+        return redirect('admin_cod_pincodes')
+    return render(request, 'store/admin/cod_pincodes.html', {'pincodes': pincodes, 'form': form})
+
+
+@user_passes_test(is_admin, login_url='/login/')
+@require_POST
+def admin_toggle_cod_pincode(request, pincode_id):
+    p = get_object_or_404(CODPincode, id=pincode_id)
+    p.is_active = not p.is_active
+    p.save()
+    messages.success(request, f'{p.pincode} COD {"enabled" if p.is_active else "disabled"}.')
+    return redirect('admin_cod_pincodes')
+
+
+@user_passes_test(is_admin, login_url='/login/')
+@require_POST
+def admin_delete_cod_pincode(request, pincode_id):
+    p = get_object_or_404(CODPincode, id=pincode_id)
+    p.delete()
+    messages.success(request, 'Pincode removed from COD list.')
+    return redirect('admin_cod_pincodes')
+
+
+@user_passes_test(is_admin, login_url='/login/')
+@require_POST
+def admin_bulk_add_cod_pincodes(request):
+    """Paste multiple pincodes at once, comma or newline separated."""
+    raw = request.POST.get('bulk_pincodes', '')
+    pincodes = [p.strip() for p in raw.replace(',', '\n').split('\n') if p.strip()]
+    added = 0
+    for pc in pincodes:
+        if pc.isdigit() and len(pc) == 6:
+            obj, created = CODPincode.objects.get_or_create(pincode=pc)
+            if created:
+                added += 1
+    messages.success(request, f'{added} new pincode(s) added.')
+    return redirect('admin_cod_pincodes')
 
 def contact(request):
     return render(request, 'store/pages/contact.html')
