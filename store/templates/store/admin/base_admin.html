@@ -45,6 +45,11 @@
     <a href="{% url 'admin_reviews' %}" class="admin-nav-item {% if 'admin_review' in request.resolver_match.url_name %}active{% endif %}">
       <span class="admin-nav-icon">⭐</span> Reviews
     </a>
+    <a href="{% url 'admin_cod_pincodes' %}" class="admin-nav-item {% if 'admin_cod_pincode' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="admin-nav-icon">📮</span>COD Pincodes
+   </a>
+
+
 
     <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
     <a href="{% url 'home' %}" class="admin-nav-item">

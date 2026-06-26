@@ -1,0 +1,66 @@
+{% extends 'store/admin/base_admin.html' %}
+{% block title %}COD Allowed Pincodes — Cladly Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div class="admin-page-title">Cash on Delivery — Allowed Pincodes</div>
+</div>
+
+<div style="max-width:680px;">
+
+  <div style="background:rgba(201,168,76,0.08);border:1px solid var(--border-gold);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--text-secondary);">
+    💡 Only the exact pincodes listed below will see <strong style="color:var(--gold);">Cash on Delivery</strong> at checkout. Everywhere else shows online payment only. Pincode is more reliable than city name since spellings vary (e.g. Balasore / Baleswar).
+  </div>
+
+  <!-- Add single pincode -->
+  <form method="post" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+    {% csrf_token %}
+    {{ form.pincode }}
+    {{ form.area_note }}
+    <button type="submit" class="btn btn-gold" style="flex-shrink:0;">+ Add</button>
+  </form>
+
+  <!-- Bulk add -->
+  <details style="margin-bottom:24px;">
+    <summary style="cursor:pointer;color:var(--gold);font-size:13px;font-weight:600;">📋 Bulk add multiple pincodes</summary>
+    <form method="post" action="{% url 'admin_bulk_add_cod_pincodes' %}" style="margin-top:12px;">
+      {% csrf_token %}
+      <textarea name="bulk_pincodes" rows="4" class="form-control"
+                placeholder="Paste pincodes, one per line or comma-separated:&#10;751001&#10;751002&#10;751003"
+                style="width:100%;margin-bottom:10px;"></textarea>
+      <button type="submit" class="btn btn-outline btn-sm">Add All</button>
+    </form>
+  </details>
+
+  <!-- Pincode list -->
+  <div style="background:var(--black-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
+    {% for p in pincodes %}
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;{% if not forloop.last %}border-bottom:1px solid var(--border);{% endif %}">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-weight:700;color:var(--gold);font-family:monospace;">{{ p.pincode }}</span>
+          {% if p.area_note %}<span style="font-size:12px;color:var(--text-muted);">{{ p.area_note }}</span>{% endif %}
+          {% if p.is_active %}
+            <span style="font-size:11px;color:var(--success);background:rgba(80,184,120,0.1);padding:2px 8px;border-radius:10px;">Active</span>
+          {% else %}
+            <span style="font-size:11px;color:var(--text-muted);background:var(--surface);padding:2px 8px;border-radius:10px;">Disabled</span>
+          {% endif %}
+        </div>
+        <div style="display:flex;gap:8px;">
+          <form method="post" action="{% url 'admin_toggle_cod_pincode' p.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline btn-sm">
+              {% if p.is_active %}Disable{% else %}Enable{% endif %}
+            </button>
+          </form>
+          <form method="post" action="{% url 'admin_delete_cod_pincode' p.id %}"
+                onsubmit="return confirm('Remove {{ p.pincode }}?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm" style="background:none;border:1px solid var(--error);color:var(--error);">Remove</button>
+          </form>
+        </div>
+      </div>
+    {% empty %}
+      <div style="padding:30px;text-align:center;color:var(--text-muted);">No pincodes added yet.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
