@@ -266,7 +266,7 @@
         <div class="items-list">
           {% for item in order.items.all %}
             <div class="item-row">
-              <span class="item-name">{{ item.product_name|truncatechars:25 }}</span>
+              <span class="item-name">{{ item.product_name|truncatechars:25 }}{% if item.size_label %} <strong>({{ item.size_label }})</strong>{% endif %}</span>
               <span class="item-qty">x{{ item.quantity }}</span>
               <span class="item-price">₹{{ item.subtotal|floatformat:0 }}</span>
             </div>

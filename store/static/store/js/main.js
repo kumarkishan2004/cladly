@@ -5,6 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSlider();
   initSearchSuggestions();
+  initSizeSelector();
   initCartButtons();
   initWishlistButtons();
   initGallery();
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPaymentSelect();
   initAddressSelect();
   initThemeToggle();
+  
 });
 
 // ─── Theme Toggle (Dark / Light) ───────────
@@ -21,8 +23,9 @@ function initThemeToggle() {
   const btn = document.getElementById('theme-toggle');
   if (!btn) return;
 
-  const iconDark = document.getElementById('theme-icon-dark');   // shown in light mode (sun icon already shown, click to go dark)
-  const iconLight = document.getElementById('theme-icon-light'); // shown in dark mode (moon icon, click to go light)
+  const iconDark = document.getElementById('theme-icon-dark');
+  const iconLight = document.getElementById('theme-icon-light');
+  if (!iconDark || !iconLight) return;
 
   function updateIcons() {
     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
@@ -398,3 +401,92 @@ document.querySelectorAll('.product-card, .category-card, .stat-card').forEach(e
   el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(el);
 });
+
+
+// fuction to init size selector
+function initSizeSelector() {
+  const sizePills = document.querySelectorAll('.size-pill');
+  if (sizePills.length === 0) return; // no size selector on this page
+
+  let selectedSizeId = null;
+
+  // Pre-select first in-stock size automatically
+  const firstAvailable = document.querySelector('.size-pill:not(.size-pill-disabled)');
+  if (firstAvailable) {
+    firstAvailable.classList.add('size-pill-selected');
+    selectedSizeId = firstAvailable.dataset.sizeId;
+  }
+
+  sizePills.forEach(pill => {
+    if (pill.classList.contains('size-pill-disabled')) return;
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.size-pill').forEach(p => p.classList.remove('size-pill-selected'));
+      this.classList.add('size-pill-selected');
+      selectedSizeId = this.dataset.sizeId;
+      const errorBox = document.getElementById('size-error');
+      if (errorBox) errorBox.style.display = 'none';
+    });
+  });
+
+  function getCsrfToken() {
+    const input = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (input) return input.value;
+    const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+    return cookie ? cookie.split('=')[1] : '';
+  }
+
+  function validateSize() {
+    const sizeWrap = document.getElementById('size-pills-wrap');
+    if (sizeWrap && !selectedSizeId) {
+      const errorBox = document.getElementById('size-error');
+      if (errorBox) errorBox.style.display = 'block';
+      return false;
+    }
+    return true;
+  }
+
+  function addToCart(productId, redirectToCheckout) {
+    if (!validateSize()) return;
+
+    const body = new URLSearchParams({
+      quantity: 1,
+      csrfmiddlewaretoken: getCsrfToken(),
+    });
+    if (selectedSizeId) {
+      body.append('size_id', selectedSizeId);
+    }
+
+    fetch(`/cart/add/${productId}/`, {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      body: body,
+    })
+    .then(() => {
+      if (redirectToCheckout) {
+        window.location.href = '/cart/';
+      } else {
+        const btn = document.getElementById('add-to-cart-btn');
+        if (btn) {
+          const original = btn.innerHTML;
+          btn.innerHTML = '✓ Added!';
+          setTimeout(() => { btn.innerHTML = original; }, 1500);
+        }
+      }
+    })
+    .catch(() => alert('Could not add to cart. Please try again.'));
+  }
+
+  const addBtn = document.getElementById('add-to-cart-btn');
+  if (addBtn) {
+    addBtn.addEventListener('click', function() {
+      addToCart(this.dataset.productId, false);
+    });
+  }
+
+  const buyBtn = document.getElementById('buy-now-btn');
+  if (buyBtn) {
+    buyBtn.addEventListener('click', function() {
+      addToCart(this.dataset.productId, true);
+    });
+  }
+}

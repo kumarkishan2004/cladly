@@ -26,7 +26,13 @@
             <div class="cart-item-info">
               <a href="{% url 'product_detail' item.product.slug %}">
                 <div class="cart-item-name">{{ item.product.name }}</div>
-                <div class="cart-item-name">{{ item.product.name }}</div>
+                {% if item.size %}
+                  <div style="font-size:12px;color:var(--gold);font-weight:600;">Size: {{ item.size.size_label }}</div>
+                {% elif item.product.has_size_variants %}
+                  <div style="font-size:12px;color:var(--error);">⚠ Size not selected</div>
+                {% else %}
+                  <div style="font-size:12px;color:var(--text-muted);">Size: Free Size</div>
+                {% endif %}
               </a>
               {% if item.product.category %}
                 <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">{{ item.product.category.name }}</div>
