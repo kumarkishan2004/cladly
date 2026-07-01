@@ -794,6 +794,15 @@ def move_to_cart(request, product_id):
 
 @login_required
 def checkout(request):
+
+    # If there's a pending Razorpay payment in session, clear it
+    # (customer went back to checkout after abandoning payment page)
+
+    if 'pending_order' in request.session:
+        request.session.pop('pending_order', None)
+        request.session.pop('razorpay_order_id', None)
+     
+
     cart_items = get_cart_items(request)
     if not cart_items.exists():
         messages.warning(request, 'Your cart is empty.')
@@ -850,7 +859,51 @@ def place_order(request):
     coupon = _get_session_coupon(request)
     totals = calculate_cart_totals(cart_items, coupon)
 
-    # Create order
+   # ── COD — create order immediately ──
+    if payment_method == 'cod':
+        order = _create_order(request, address, payment_method, coupon, totals, cart_items)
+        cart_items.delete()
+        Notification.objects.create(
+            user=request.user,
+            title='Order Placed!',
+            message=f'Your order {order.order_id} has been placed successfully.',
+            notif_type='order',
+            link=f'/orders/{order.order_id}/',
+        )
+        _process_referral_reward(order)
+        return redirect('order_success', order_id=order.order_id)
+
+    # ── Online payment — save intent to session, open Razorpay ──
+    else:
+        # Store everything needed to create the order after payment
+        request.session['pending_order'] = {
+            'address_id': str(address.id),
+            'payment_method': payment_method,
+            'coupon_id': coupon.id if coupon else None,
+        }
+
+        # Create Razorpay payment order (just a payment intent — not your Order model)
+        try:
+            razorpay_order = create_razorpay_order(totals['grand_total'], 'PENDING')
+        except Exception as e:
+            messages.error(request, 'Payment gateway error. Please try again.')
+            return redirect('checkout')
+
+        request.session['razorpay_order_id'] = razorpay_order['id']
+
+        return render(request, 'store/orders/payment.html', {
+            'razorpay_order_id': razorpay_order['id'],
+            'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+            'amount': int(float(totals['grand_total']) * 100),
+            'grand_total': totals['grand_total'],
+            'user_name': request.user.full_name,
+            'user_email': request.user.email,
+            'user_mobile': request.user.mobile or '',
+        })
+
+
+def _create_order(request, address, payment_method, coupon, totals, cart_items):
+    """Creates Order + OrderItems + reduces stock. Used by both COD and online payment."""
     order = Order.objects.create(
         user=request.user,
         address=address,
@@ -867,7 +920,6 @@ def place_order(request):
         **totals,
     )
 
-    # Create order items + reduce stock
     for item in cart_items:
         img = item.product.primary_image()
         OrderItem.objects.create(
@@ -881,7 +933,6 @@ def place_order(request):
             original_price=item.product.original_price,
         )
 
-        # Reduce stock from the specific size if one was chosen, else from product total
         if item.size:
             item.size.stock_quantity = max(0, item.size.stock_quantity - item.quantity)
             item.size.save()
@@ -891,61 +942,18 @@ def place_order(request):
 
         item.product.update_stock_status()
 
-    # Increment coupon usage
     if coupon:
         coupon.used_count += 1
         coupon.save()
         request.session.pop('coupon_id', None)
 
-    # Status history
     OrderStatusHistory.objects.create(
         order=order,
         status='placed',
         note='Order placed successfully.'
     )
 
-    # ── COD — clear cart immediately ──
-    if payment_method == 'cod':
-        cart_items.delete()
-        Notification.objects.create(
-            user=request.user,
-            title='Order Placed!',
-            message=f'Your order {order.order_id} has been placed successfully.',
-            notif_type='order',
-            link=f'/orders/{order.order_id}/',
-        )
-
-        return redirect('order_success', order_id=order.order_id)
-
-    # ── UPI / Online — go to Razorpay ──
-    else:
-        # Don't clear cart yet — clear after payment verified
-        return redirect('initiate_payment', order_id=order.order_id)
-
-
-
-@login_required
-def initiate_payment(request, order_id):
-    order = get_object_or_404(Order, order_id=order_id, user=request.user)
-
-    # Create Razorpay order
-    try:
-        razorpay_order = create_razorpay_order(order.grand_total, order.order_id)
-        order.razorpay_order_id = razorpay_order['id']
-        order.save()
-    except Exception as e:
-        messages.error(request, 'Payment gateway error. Please try again.')
-        return redirect('checkout')
-
-    return render(request, 'store/orders/payment.html', {
-        'order': order,
-        'razorpay_order_id': razorpay_order['id'],
-        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
-        'amount': int(float(order.grand_total) * 100),  # in paise
-        'user_name': request.user.full_name,
-        'user_email': request.user.email,
-        'user_mobile': request.user.mobile or '',
-    })
+    return order
 
 
 @require_POST
@@ -953,56 +961,77 @@ def verify_payment(request):
     razorpay_order_id = request.POST.get('razorpay_order_id')
     razorpay_payment_id = request.POST.get('razorpay_payment_id')
     razorpay_signature = request.POST.get('razorpay_signature')
-    order_id = request.POST.get('order_id')
 
-    order = get_object_or_404(Order, order_id=order_id)
-
-    # Verify signature
+    # Verify Razorpay signature first
     is_valid = verify_razorpay_payment(
         razorpay_order_id,
         razorpay_payment_id,
         razorpay_signature
     )
 
-    if is_valid:
-        # Payment successful
-        order.payment_status = True
+    if not is_valid:
+        messages.error(request, 'Payment verification failed. Please contact support.')
+        request.session.pop('pending_order', None)
+        request.session.pop('razorpay_order_id', None)
+        return redirect('checkout')
+
+    # Payment is genuine — now create the actual order
+    pending = request.session.get('pending_order')
+    if not pending:
+        messages.error(request, 'Session expired. Please try again.')
+        return redirect('checkout')
+
+    try:
+        address = get_object_or_404(Address, id=pending['address_id'], user=request.user)
+        payment_method = pending.get('payment_method', 'online')
+        coupon_id = pending.get('coupon_id')
+        coupon = Coupon.objects.filter(id=coupon_id).first() if coupon_id else None
+
+        cart_items = get_cart_items(request)
+        if not cart_items.exists():
+            messages.error(request, 'Your cart appears to be empty. Please contact support with your payment ID.')
+            return redirect('home')
+
+        totals = calculate_cart_totals(cart_items, coupon)
+
+        # Create the order now that payment is confirmed
+        order = _create_order(request, address, payment_method, coupon, totals, cart_items)
+
+        # Save Razorpay payment details on the order
+        order.razorpay_order_id = razorpay_order_id
         order.razorpay_payment_id = razorpay_payment_id
         order.razorpay_signature = razorpay_signature
-        order.save()
-
-        # Now clear cart
-        if order.user:
-            Cart.objects.filter(user=order.user).delete()
-
-        # Status history
-        OrderStatusHistory.objects.create(
-            order=order,
-            status='confirmed',
-            note=f'Payment received. Payment ID: {razorpay_payment_id}'
-        )
         order.status = 'confirmed'
         order.save()
 
-        # Notification
-        if order.user:
-            Notification.objects.create(
-                user=order.user,
-                title='Payment Successful!',
-                message=f'Payment for order {order.order_id} received successfully.',
-                notif_type='order',
-                link=f'/orders/{order.order_id}/',
-            )
+        # Clear cart and session
+        cart_items.delete()
+        request.session.pop('pending_order', None)
+        request.session.pop('razorpay_order_id', None)
+
+        OrderStatusHistory.objects.create(
+            order=order,
+            status='confirmed',
+            note=f'Payment received online. Payment ID: {razorpay_payment_id}'
+        )
+
+        Notification.objects.create(
+            user=request.user,
+            title='Payment Successful! 🎉',
+            message=f'Payment for order {order.order_id} received. Your order is confirmed.',
+            notif_type='order',
+            link=f'/orders/{order.order_id}/',
+        )
+
+        _process_referral_reward(order)
 
         return redirect('order_success', order_id=order.order_id)
 
-    else:
-        # Payment failed or tampered
-        order.status = 'cancelled'
-        order.save()
-        messages.error(request, 'Payment verification failed. Please contact support.')
-        return redirect('payment_failed', order_id=order.order_id)
-
+    except Exception as e:
+        # Payment was real but order creation failed — critical, log this
+        print(f"CRITICAL: Payment {razorpay_payment_id} succeeded but order creation failed: {e}")
+        messages.error(request, f'Payment received (ID: {razorpay_payment_id}) but order creation failed. Please contact support immediately with this payment ID.')
+        return redirect('home')
 
 @login_required
 def payment_failed(request, order_id):
@@ -1401,6 +1430,19 @@ def admin_delete_category(request, pk):
 @user_passes_test(is_admin, login_url='/login/')
 def admin_orders(request):
     orders = Order.objects.all().select_related('user').prefetch_related('items')
+    
+    # Search
+    search_query = request.GET.get('q', '').strip()
+    if search_query:
+        orders = orders.filter(
+            Q(order_id__icontains=search_query) |
+            Q(delivery_name__icontains=search_query) |
+            Q(delivery_mobile__icontains=search_query) |
+            Q(user__email__icontains=search_query)
+        )
+
+    # Status filter
+
     status_filter = request.GET.get('status')
     if status_filter:
         orders = orders.filter(status=status_filter)
@@ -1408,6 +1450,7 @@ def admin_orders(request):
     page = paginator.get_page(request.GET.get('page', 1))
     return render(request, 'store/admin/orders.html', {
         'orders': page,
+        'search_query': search_query,
         'status_choices': Order.STATUS_CHOICES,
         'current_status': status_filter,
     })
