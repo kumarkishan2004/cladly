@@ -2,8 +2,49 @@
 {% block title %}Orders — Cladly Admin{% endblock %}
 {% block admin_content %}
 <div class="admin-header">
-  <div class="admin-page-title">Orders</div>
+  <div class="admin-page-title">
+    Orders
+    {% if search_query %}
+      <span style="font-size:14px;color:var(--text-muted);font-weight:400;"> — results for "{{ search_query }}"</span>
+    {% endif %}
+  </div>
 </div>
+
+<!-- Search + Filter Bar -->
+<form method="get" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center;">
+
+  <!-- Search box -->
+  <div style="position:relative;flex:1;min-width:220px;">
+    <input type="text" name="q" value="{{ search_query }}"
+           placeholder="Search by Order ID, name, mobile, email..."
+           class="form-control"
+           style="padding-left:36px;"
+           autofocus>
+    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;">🔍</span>
+  </div>
+
+  <!-- Status filter -->
+  <select name="status" class="form-control" style="max-width:180px;">
+    <option value="">All Statuses</option>
+    {% for value, label in status_choices %}
+      <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+
+  <button type="submit" class="btn btn-gold btn-sm">Search</button>
+
+  {% if search_query or status_filter %}
+    <a href="{% url 'admin_orders' %}" class="btn btn-dark btn-sm">✕ Clear</a>
+  {% endif %}
+
+</form>
+
+<!-- Result count -->
+{% if search_query %}
+  <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+    Found <strong style="color:var(--gold);">{{ orders.paginator.count }}</strong> order{{ orders.paginator.count|pluralize }} matching "{{ search_query }}"
+  </div>
+{% endif %}
 
 <!-- Status filter -->
 <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px;">

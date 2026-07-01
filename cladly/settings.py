@@ -114,8 +114,8 @@ CACHES = {
 }
 
 # Razorpay payment
-RAZORPAY_KEY_ID = 'rzp_test_T1VGBthGJHr4J1'      #  key id
-RAZORPAY_KEY_SECRET = 'tcYvoTB70IirNiVN4Z5E6zrK' #  key secret
+RAZORPAY_KEY_ID = 'rzp_test_T8EGcCMjAKprLq'      #  key id
+RAZORPAY_KEY_SECRET = '8BASmshOo16gy1w1JN823tqB' #  key secret
 RAZORPAY_CURRENCY = 'INR'
 
 
