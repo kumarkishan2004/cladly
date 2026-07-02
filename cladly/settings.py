@@ -16,10 +16,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'cloudinary_storage',
     'cloudinary',
     'store',
-    'django.contrib.staticfiles',
+    
     
 ]
 
@@ -90,7 +91,7 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-FRONTEND_URL = 'http://127.0.0.1:8000'  # change to your domain in production
+# FRONTEND_URL = 'http://127.0.0.1:8000'  # change to your domain in production
 
 # Email settings (configure for production)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
