@@ -3,12 +3,11 @@ from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-import dj_database_url
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = os.environ.get("SECRET_KEY")
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+SECRET_KEY = 'cladly-secret-key-change-in-production-xyz123'
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
@@ -60,9 +59,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cladly.wsgi.application'
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL")
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cladlydb',
+        'USER': 'postgres',
+        'PASSWORD': 'Sahoo@2004',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -80,8 +84,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'store' / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
