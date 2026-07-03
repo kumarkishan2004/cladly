@@ -93,7 +93,7 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# FRONTEND_URL = 'http://127.0.0.1:8000'  # change to your domain in production
+FRONTEND_URL = 'http://127.0.0.1:8000'  # change to your domain in production
 
 # Email settings (configure for production)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
