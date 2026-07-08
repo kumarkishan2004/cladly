@@ -4,11 +4,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    preDeployCommand: |
-      python manage.py migrate --noinput
-      python manage.py createcachetable
-      python manage.py collectstatic --noinput
-    startCommand: gunicorn cladly.wsgi --log-file -
+    startCommand: python manage.py migrate --noinput && python manage.py createcachetable && python manage.py collectstatic --noinput && gunicorn cladly.wsgi --log-file -
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.11"
