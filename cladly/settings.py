@@ -107,12 +107,13 @@ FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://127.0.0.1:8000')
 
 # ── Email ──
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', '1') == '1'
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'fashioncladly@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Cladly <fashioncladly@gmail.com>')
+EMAIL_HOST = 'smtp.resend.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'resend'
+EMAIL_HOST_PASSWORD = 're_9YEa7TJi_7SSddcDJpt3c28jjxH9R9r1B'
+DEFAULT_FROM_EMAIL = 'Cladly <noreply@cladly.in>'
+
 
 # ── Session ──
 SESSION_COOKIE_AGE = 86400 * 30  # 30 days
