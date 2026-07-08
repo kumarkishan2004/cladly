@@ -1,0 +1,1 @@
+web: gunicorn cladly.wsgi --log-file -
