@@ -1,16 +1,19 @@
-preReleaseCommand: |
-  python manage.py migrate --noinput
-  python manage.py createcachetable
-  python manage.py collectstatic --noinput
 services:
   - type: web
     name: cladly
     runtime: python
+    plan: free
     buildCommand: pip install -r requirements.txt
+    preDeployCommand: |
+      python manage.py migrate --noinput
+      python manage.py createcachetable
+      python manage.py collectstatic --noinput
     startCommand: gunicorn cladly.wsgi --log-file -
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.11"
       - key: SECRET_KEY
-        sync: false
+        generateValue: true
       - key: DEBUG
         value: "0"
       - key: ALLOWED_HOSTS
