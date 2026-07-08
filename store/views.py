@@ -248,7 +248,11 @@ def login_view(request):
                 pass
 
         if user:
-            # Send OTP before logging in
+            # Skip OTP for staff/admin — log in directly
+            if user.is_staff or user.is_superuser:
+                login(request, user)
+                return redirect('admin_panel')
+            # Send OTP before logging in (regular users)
             otp = generate_otp()
             store_otp(user.email, otp, {
                 'purpose': 'login',
