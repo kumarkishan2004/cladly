@@ -1,14 +1,13 @@
 import os
 from pathlib import Path
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
-
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'cladly-secret-key-change-in-production-xyz123'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+
+# ── Core ──
+SECRET_KEY = os.environ.get('SECRET_KEY', 'cladly-secret-key-change-in-production-xyz123')
+DEBUG = os.environ.get('DEBUG', '1') == '1'
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -20,8 +19,6 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'cloudinary',
     'store',
-    
-    
 ]
 
 MIDDLEWARE = [
@@ -33,7 +30,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
 ]
 
 ROOT_URLCONF = 'cladly.urls'
@@ -58,25 +54,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cladly.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cladlydb',
-        'USER': 'postgres',
-        'PASSWORD': 'Sahoo@2004',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+# ── Database ──
+# Neon Postgres / Render Postgres via DATABASE_URL. Falls back to local SQLite when unset.
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
     }
-}
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -90,10 +85,16 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
+# ── Static & media ──
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'store' / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Use compressed manifest storage in production for cache-busting + gzip
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -102,22 +103,26 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-FRONTEND_URL = 'http://127.0.0.1:8000'  # change to your domain in production
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://127.0.0.1:8000')
 
-# Email settings (configure for production)
+# ── Email ──
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'fashioncladly@gmail.com'
-EMAIL_HOST_PASSWORD = 'iqrs sbnf tquf vaaz'
-DEFAULT_FROM_EMAIL = 'Cladly <fashioncladly@gmail.com>'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', '1') == '1'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'fashioncladly@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Cladly <fashioncladly@gmail.com>')
 
-# Session
+# ── Session ──
 SESSION_COOKIE_AGE = 86400 * 30  # 30 days
 SESSION_SAVE_EVERY_REQUEST = True
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# cache for otp store
+# ── Cache for OTP store ──
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
@@ -125,24 +130,19 @@ CACHES = {
     }
 }
 
-# Razorpay payment
-RAZORPAY_KEY_ID = 'REDACTED_RAZORPAY_ID'      #  key id
-RAZORPAY_KEY_SECRET = 'REDACTED_RAZORPAY_SECRET' #  key secret
+# ── Razorpay ──
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'REDACTED_RAZORPAY_ID')
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'REDACTED_RAZORPAY_SECRET')
 RAZORPAY_CURRENCY = 'INR'
 
-
-# ── Cloudinary Settings ──
-
+# ── Cloudinary ──
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dklhtatkx',    # from dashboard
-    'API_KEY': 'REDACTED_CLOUDINARY_KEY',          # from dashboard
-    'API_SECRET': 'REDACTED_CLOUDINARY_SECRET',    # from dashboard
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'dklhtatkx'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'REDACTED_CLOUDINARY_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'REDACTED_CLOUDINARY_SECRET'),
 }
 
-# Tell Django to use Cloudinary for media files
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Keep this same
 MEDIA_URL = '/media/'
-
 MEDIA_ROOT = BASE_DIR / 'media'
