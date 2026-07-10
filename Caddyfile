@@ -1,0 +1,3 @@
+cladly.in, www.cladly.in {
+    reverse_proxy localhost:8000
+}
