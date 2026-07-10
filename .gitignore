@@ -8,3 +8,5 @@ __pycache__/
 .env.*
 *.log
 .DS_Store
+local_data_dump.json
+deploy.sh
