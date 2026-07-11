@@ -1,5 +1,8 @@
+import logging
 from django.core.mail import send_mail
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 def send_welcome_email(user):
@@ -96,13 +99,16 @@ The Cladly Team 🖤
 Instagram: @cladly fashion
 """
 
-    send_mail(
-        subject=subject,
-        message=message,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[user.email],
-        fail_silently=False,
-    )
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+    except Exception:
+        logger.exception("Failed to send password reset email to %s", user.email)
 
 
 def send_order_cancelled_email(user, order):
