@@ -1,0 +1,12 @@
+venv/
+env/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+db.sqlite3
+media/
+.DS_Store
+local_data_dump.json
+*.log
+*.md
