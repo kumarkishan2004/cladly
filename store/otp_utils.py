@@ -1,7 +1,10 @@
+import logging
 import random
 from django.core.cache import cache
 from django.core.mail import send_mail
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 def generate_otp():
@@ -55,13 +58,16 @@ If you did not attempt to login, please reset your password immediately.
 The Cladly Team 🖤
 """
 
-    send_mail(
-        subject=subject,
-        message=message,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[user_email],
-        fail_silently=False,
-    )
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user_email],
+            fail_silently=False,
+        )
+    except Exception:
+        logger.exception("Failed to send OTP email to %s", user_email)
 
 
 def store_otp(identifier, otp, extra_data=None):
