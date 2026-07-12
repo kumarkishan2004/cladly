@@ -8,6 +8,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = os.environ.get('DEBUG', '1') == '1'
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
+# Always allow local loopback for health checks and internal routing/proxies
+for host in ('127.0.0.1', 'localhost'):
+    if host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(host)
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
