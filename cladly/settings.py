@@ -92,14 +92,15 @@ USE_TZ = True
 
 # ── Static & media ──
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'store' / 'static']
+STATICFILES_DIRS = []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Use compressed manifest storage in production for cache-busting + gzip
+# Use manifest storage in production for cache-busting
+# Whitenoise middleware handles compression and serving
 if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 else:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
