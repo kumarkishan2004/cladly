@@ -3,7 +3,7 @@ Management command to seed Cladly with sample categories and demo data.
 
 Usage:
     python manage.py seed_data
-    python manage.py seed_data --admin-email admin@cladly.com --admin-password admin123
+    python manage.py seed_data --admin-email kishankumarjob@gmail.com --admin-password Superadmin@cladlyfashion@2026
 """
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -14,8 +14,8 @@ class Command(BaseCommand):
     help = 'Seed Cladly with sample categories and a superuser admin'
 
     def add_arguments(self, parser):
-        parser.add_argument('--admin-email', default='admin@cladly.com')
-        parser.add_argument('--admin-password', default='cladly@admin123')
+        parser.add_argument('--admin-email', default='kishankumarjob@gmail.com')
+        parser.add_argument('--admin-password', default='Superadmin@cladlyfashion@2026')
         parser.add_argument('--admin-name', default='Cladly Admin')
 
     def handle(self, *args, **options):
