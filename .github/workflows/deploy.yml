@@ -23,6 +23,40 @@ jobs:
             git reset --hard origin/main
             git clean -fd
 
+            echo "🔥 Configuring firewall..."
+            if command -v ufw &>/dev/null; then
+                ufw allow 22/tcp 2>/dev/null || true
+                ufw allow 80/tcp 2>/dev/null || true
+                ufw allow 443/tcp 2>/dev/null || true
+                echo "y" | ufw enable 2>/dev/null || true
+                echo "✅ UFW configured"
+            else
+                echo "⚠️  ufw not found — checking iptables..."
+                iptables -C INPUT -p tcp --dport 80 -j ACCEPT 2>/dev/null || iptables -I INPUT -p tcp --dport 80 -j ACCEPT 2>/dev/null || true
+                iptables -C INPUT -p tcp --dport 443 -j ACCEPT 2>/dev/null || iptables -I INPUT -p tcp --dport 443 -j ACCEPT 2>/dev/null || true
+                echo "✅ iptables rules added"
+            fi
+
+            echo "🌐 Setting up Caddy..."
+            if ! command -v caddy &>/dev/null; then
+                echo "📦 Installing Caddy..."
+                apt-get update -qq && apt-get install -y -qq debian-keyring debian-archive-keyring apt-transport-https curl
+                curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg 2>/dev/null
+                curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list >/dev/null
+                apt-get update -qq && apt-get install -y -qq caddy
+                echo "✅ Caddy installed"
+            fi
+
+            cat > /etc/caddy/Caddyfile << 'CADDYEOF'
+            cladly.in, www.cladly.in {
+                reverse_proxy localhost:8000
+            }
+            CADDYEOF
+
+            systemctl enable caddy 2>/dev/null || true
+            systemctl restart caddy 2>/dev/null || caddy reload --config /etc/caddy/Caddyfile 2>/dev/null || true
+            echo "✅ Caddy configured and started"
+
             echo "🔐 Creating .env.prod..."
             cat > /root/cladly/.env.prod << 'ENVEOF'
             SECRET_KEY=${{ secrets.SECRET_KEY }}
