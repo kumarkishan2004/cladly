@@ -6,6 +6,7 @@ __pycache__/
 *.pyc
 .env
 .env.*
+!.env.deploy.example
 *.log
 .DS_Store
 local_data_dump.json
