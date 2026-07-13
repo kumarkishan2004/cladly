@@ -24,7 +24,7 @@ jobs:
             git clean -fd
 
             echo "🔐 Creating .env.prod..."
-            cat > .env.prod << 'ENVEOF'
+            cat > /root/cladly/.env.prod << 'ENVEOF'
             SECRET_KEY=${{ secrets.SECRET_KEY }}
             DEBUG=0
             ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
@@ -45,18 +45,39 @@ jobs:
             RAZORPAY_KEY_SECRET=${{ secrets.RAZORPAY_KEY_SECRET }}
             ENVEOF
 
+            echo "🔍 Verifying .env.prod was created..."
+            if [ ! -s /root/cladly/.env.prod ]; then
+                echo "❌ .env.prod is empty or missing!"
+                exit 1
+            fi
+            grep -q 'DATABASE_URL' /root/cladly/.env.prod || { echo "❌ DATABASE_URL missing from .env.prod"; exit 1; }
+            grep -q 'SECRET_KEY' /root/cladly/.env.prod || { echo "❌ SECRET_KEY missing from .env.prod"; exit 1; }
+
             echo "🚀 Rebuilding Docker containers..."
+            cd /root/cladly
             docker compose down --remove-orphans 2>/dev/null || true
             docker compose up -d --build
 
             echo "⏳ Waiting for app to be healthy..."
+            HEALTHY=false
             for i in $(seq 1 30); do
-                if curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/ | grep -qE '200|302'; then
+                HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/ 2>/dev/null || echo "000")
+                echo "  Attempt $i/30 — HTTP $HTTP_CODE"
+                if echo "$HTTP_CODE" | grep -qE '200|302'; then
                     echo "✅ App is up!"
+                    HEALTHY=true
                     break
                 fi
                 sleep 2
             done
+
+            if [ "$HEALTHY" != "true" ]; then
+                echo "❌ App failed to start after 60s!"
+                echo "--- Docker logs (last 50 lines) ---"
+                docker compose logs web --tail 50
+                echo "--- End logs ---"
+                exit 1
+            fi
 
             echo "🔧 Reloading Caddy..."
             if command -v caddy &>/dev/null; then
