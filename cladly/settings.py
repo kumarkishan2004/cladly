@@ -6,8 +6,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ── Core ──
 SECRET_KEY = os.environ['SECRET_KEY']
-DEBUG = os.environ.get('DEBUG', '1') == '1'
-ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
+DEBUG = (os.environ.get('DEBUG') or '1') == '1'
+ALLOWED_HOSTS = [h.strip() for h in (os.environ.get('ALLOWED_HOSTS') or 'localhost,127.0.0.1').split(',') if h.strip()]
 # Always allow local loopback for health checks and internal routing/proxies
 for host in ('127.0.0.1', 'localhost'):
     if host not in ALLOWED_HOSTS:
@@ -61,7 +61,7 @@ WSGI_APPLICATION = 'cladly.wsgi.application'
 
 # ── Database ──
 # Neon Postgres / Render Postgres via DATABASE_URL. Falls back to local SQLite when unset.
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = os.environ.get('DATABASE_URL') or None
 if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(
@@ -109,19 +109,19 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://127.0.0.1:8000')
+FRONTEND_URL = os.environ.get('FRONTEND_URL') or 'http://127.0.0.1:8000'
 
 # ── Email ──
 if os.environ.get('EMAIL_HOST_PASSWORD'):
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.resend.com')
-    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'resend')
+    EMAIL_HOST = os.environ.get('EMAIL_HOST') or 'smtp.resend.com'
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT') or '587')
+    EMAIL_USE_TLS = (os.environ.get('EMAIL_USE_TLS') or 'True') == 'True'
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER') or 'resend'
     EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Cladly <noreply@cladly.in>')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL') or 'Cladly <noreply@cladly.in>'
 
 
 # ── Session ──
@@ -132,10 +132,10 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in (os.environ.get('CSRF_TRUSTED_ORIGINS') or '').split(',') if o.strip()]
 
 # ── Cache (Redis when available, DB fallback) ──
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = os.environ.get('REDIS_URL') or None
 if REDIS_URL:
     CACHES = {
         'default': {
