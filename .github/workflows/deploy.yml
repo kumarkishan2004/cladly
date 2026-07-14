@@ -5,24 +5,42 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}
+          envs: GH_TOKEN
           script: |
             set -e
 
+            REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/kumarkishan2004/cladly.git"
+
             echo "📂 Pulling latest main..."
-            cd /root/cladly
-            git fetch origin
-            git reset --hard origin/main
-            git clean -fd
+            if [ -d "/root/cladly" ]; then
+                cd /root/cladly
+                git remote set-url origin "$REPO_URL"
+                git fetch origin
+                git checkout main 2>/dev/null || true
+                git reset --hard origin/main
+                git clean -fd
+            else
+                git clone "$REPO_URL" /root/cladly
+                cd /root/cladly
+            fi
+
+            # Reset remote to clean URL (don't leave token in git config permanently)
+            git remote set-url origin "https://github.com/kumarkishan2004/cladly.git"
 
             echo "🔥 Configuring firewall..."
             if command -v ufw &>/dev/null; then

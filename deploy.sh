@@ -3,19 +3,23 @@ set -e
 
 # ──────────────────────────────────────────────
 # deploy.sh — Dockerized Cladly deployment to VPS
-# Usage: ./deploy.sh VPS_IP VPS_PASSWORD
+# Usage: ./deploy.sh VPS_IP VPS_PASSWORD [GH_TOKEN]
 #
 # Reads secrets from local .env.deploy (gitignored)
 # NEVER commit .env.deploy — it contains production secrets
+#
+# If repo is private, provide a GitHub PAT as 3rd argument:
+#   ./deploy.sh VPS_IP VPS_PASSWORD ghp_xxxxx
 # ──────────────────────────────────────────────
 
 if [ $# -lt 2 ]; then
-    echo "Usage: $0 VPS_IP VPS_PASSWORD"
+    echo "Usage: $0 VPS_IP VPS_PASSWORD [GH_TOKEN]"
     exit 1
 fi
 
 VPS_IP=$1
 VPS_PASSWORD=$2
+GH_TOKEN=$3
 ENV_FILE=".env.deploy"
 
 if [ ! -f "$ENV_FILE" ]; then
@@ -35,12 +39,20 @@ fi
 # ── Read env file and send to VPS ──
 ENV_CONTENTS=$(cat "$ENV_FILE")
 
+# ── Build repo URL (with token if provided) ──
+if [ -n "$GH_TOKEN" ]; then
+    REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/kumarkishan2004/cladly.git"
+else
+    REPO_URL="https://github.com/kumarkishan2004/cladly.git"
+fi
+
 # ── Remote setup ──
 sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no root@"$VPS_IP" \
-    "$VPS_IP" "$ENV_CONTENTS" << 'REMOTE'
+    "$VPS_IP" "$ENV_CONTENTS" "$REPO_URL" << 'REMOTE'
 set -e
 VPS_IP=$1
 ENV_CONTENTS=$2
+REPO_URL=$3
 
 echo "📦 Installing Docker & Compose ..."
 if ! command -v docker &>/dev/null; then
@@ -53,12 +65,16 @@ fi
 echo "📂 Cloning / pulling repository ..."
 if [ -d "/root/cladly" ]; then
     cd /root/cladly
+    git remote set-url origin "$REPO_URL"
     git fetch origin
-    git checkout main
+    git checkout main 2>/dev/null || true
     git pull origin main
+    # Reset remote to clean URL (don't leave token in git config)
+    git remote set-url origin "https://github.com/kumarkishan2004/cladly.git"
 else
-    git clone --branch main https://github.com/kumarkishan2004/cladly.git /root/cladly
+    git clone --branch main "$REPO_URL" /root/cladly
     cd /root/cladly
+    git remote set-url origin "https://github.com/kumarkishan2004/cladly.git"
 fi
 
 echo "🔐 Creating .env.prod ..."
